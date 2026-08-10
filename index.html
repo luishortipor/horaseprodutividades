@@ -79,6 +79,9 @@
         }
 
         .toggle-sidebar-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
             background-color: var(--sidebar-bg);
             color: #ffffff;
             border: none;
@@ -90,7 +93,7 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
             transition: background-color 0.2s;
             z-index: 900;
             flex-shrink: 0;
@@ -246,11 +249,19 @@
         .main-content {
             flex: 1;
             padding: 24px 30px;
+            /* Margem superior em mobile para o botão fixo não sobrepor o cabeçalho */
+            padding-top: 70px;
             display: flex;
             flex-direction: column;
             gap: 20px;
             overflow-y: auto;
             width: 100%;
+        }
+
+        @media (min-width: 1024px) {
+            .main-content {
+                padding-top: 24px;
+            }
         }
 
         .header-bar {
@@ -272,12 +283,6 @@
             font-size: 1.8rem;
             color: var(--sidebar-bg);
             font-weight: 700;
-        }
-
-        .header-subtitle {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-top: 4px;
         }
 
         .activity-selector {
@@ -458,6 +463,11 @@
     <div class="sidebar-hover-trigger"></div>
     <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
 
+    <!-- Botão Fixo de Filtros para Mobile -->
+    <button class="toggle-sidebar-btn" onclick="toggleSidebar()" title="Abrir Filtros">
+        <span id="toggle-icon">☰</span>
+    </button>
+
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <svg viewBox="0 0 24 24"><path d="M17,8C15.5,8 14.15,8.5 13.06,9.35C11.6,7.56 9.38,6.38 6.84,6.07C7.54,4.27 9.17,2.88 11.23,2.33C11.83,2.17 12.2,1.55 12.04,0.95C11.88,0.35 11.26,-0.02 10.66,0.14C7.88,0.88 5.67,2.81 4.7,5.34C4.38,5.3 4.05,5.27 3.71,5.27C2.22,5.27 0.8,5.77 -0.34,6.72C-0.81,7.11 -0.87,7.81 -0.48,8.28C-0.09,8.75 0.61,8.81 1.08,8.42C1.84,7.79 2.87,7.42 4,7.42C7.03,7.42 9.68,9.22 10.87,11.83C9.07,12.56 7.6,13.97 6.77,15.77C5.35,14.73 3.5,14.15 1.5,14.28C0.89,14.32 0.43,14.85 0.47,15.46C0.51,16.07 1.04,16.53 1.65,16.49C3.21,16.39 4.69,16.85 5.83,17.72C4.69,19.34 4.07,21.32 4.14,23.36C4.16,23.97 4.67,24.44 5.28,24.42C5.89,24.4 6.36,23.89 6.34,23.28C6.28,21.6 6.78,19.95 7.74,18.61C9.28,20.08 11.39,20.95 13.65,20.95C18.07,20.95 21.65,17.37 21.65,12.95C21.65,10.22 19.8,7.92 17,8Z"/></svg>
@@ -489,13 +499,9 @@
 
     <main class="main-content">
         <div class="header-bar">
-            <div class="header-left">
-                <button class="toggle-sidebar-btn" onclick="toggleSidebar()" title="Abrir Filtros">
-                    <span id="toggle-icon">☰</span>
-                </button>
-                <div class="header-title">
+            <div class="header-left" style="width: 100%;">
+                <div class="header-title" style="margin-left: 45px;">
                     <h2>Análise de Produtividade</h2>
-                    <div class="header-subtitle" id="selected-summary">Anos recentes | Atividade: h/ha/semana</div>
                 </div>
             </div>
         </div>
@@ -45988,10 +45994,7 @@
 
         function updateDashboard() {
             const data = getFilteredData();
-            const unit = getActivityUnit(selectedActivity);
-            const yearStr = selectedYears.length === availableYears.length ? 'Todos os anos' : `Anos: ${selectedYears.join(', ')}`;
             
-            document.getElementById('selected-summary').innerText = `${yearStr} | Atividade: ${selectedActivity} (${unit})`;
             document.getElementById('line-chart-title').innerText = `Produtividade ao Longo do Tempo - ${selectedActivity}`;
             document.getElementById('bar-chart-title').innerText = `Comparação entre Quintas - ${selectedActivity}`;
             

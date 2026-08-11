@@ -46517,7 +46517,7 @@
             let avg = 0;
             let weeksWithDataCount = 0;
             let isValid = false;
-            let minRequired = weeksSubset.length <= 5 ? 2 : (weeksSubset.length <= 52 ? 13 : 39);
+            let minRequired = (weeksSubset.length <= 5) ? 2 : 13;
 
             if (act.keys.length === 1) {
                 let weeksMap = new Map();

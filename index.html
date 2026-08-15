@@ -296,6 +296,7 @@
             gap: 8px;
             margin-top: 4px;
             margin-bottom: 6px;
+            flex-wrap: wrap;
         }
 
         .tab-btn {
@@ -405,6 +406,28 @@
             border-color: var(--sidebar-bg);
         }
 
+        /* --- FILTROS TAB 3 --- */
+        .culture-filters {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 15px 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .culture-filters input[type="text"] {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #d5cebf;
+            font-size: 0.88rem;
+            background-color: #fcfbfa;
+            color: var(--text-dark);
+            outline: none;
+        }
+
         /* --- 8 CARDS EXATOS NA HORIZONTAL --- */
         .farms-cards-grid {
             display: grid;
@@ -439,15 +462,29 @@
             min-width: 0;
         }
 
+        .farm-card-header-container {
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px solid #f0ebe1;
+            padding-bottom: 3px;
+            min-width: 0;
+            overflow: hidden;
+        }
+
         .farm-card-header {
             font-size: 0.78rem;
             font-weight: 700;
             color: #1e3316;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #f0ebe1;
-            padding-bottom: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+            width: 100%;
+        }
+
+        .farm-card-sub {
+            font-size: 0.55rem;
+            color: var(--text-muted);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -576,7 +613,7 @@
         </div>
 
         <div class="filter-section" id="sidebar-filter-weeks">
-            <div class="filter-title">Semanas</div>
+            <div class="filter-title" id="weeks-filter-title">Semanas</div>
             <div class="btn-grid-1" id="weeks-grid"></div>
         </div>
 
@@ -603,6 +640,7 @@
         <div class="main-tabs" style="margin-left: 45px;">
             <button class="tab-btn active" id="tab-btn-1" onclick="switchTab(1)">Horas e produtividades</button>
             <button class="tab-btn" id="tab-btn-2" onclick="switchTab(2)">Últimas semanas</button>
+            <button class="tab-btn" id="tab-btn-3" onclick="switchTab(3)">Por cultura</button>
         </div>
 
         <!-- TAB 1: Horas e Produtividades -->
@@ -649,6 +687,31 @@
             </div>
             <div class="charts-row-52w" id="charts-52w"></div>
         </div>
+
+        <!-- TAB 3: Por cultura -->
+        <div class="tab-content" id="tab-content-3">
+            <div class="culture-filters">
+                <input type="text" id="culture-text-filter" placeholder="Filtrar cultura..." oninput="updateCultureChart()" style="width: 140px; min-width: unset; flex: unset;">
+                <div class="activity-btns" id="culture-size-btns">
+                    <button class="btn-act active" onclick="selectCultureSize('Todos', this)">Todos</button>
+                    <button class="btn-act" onclick="selectCultureSize('Grande', this)">Grande</button>
+                    <button class="btn-act" onclick="selectCultureSize('Mini', this)">Mini</button>
+                </div>
+            </div>
+
+            <!-- Grid de Cards de Quinta para o Separador Por Cultura -->
+            <div class="farms-cards-grid" id="culture-farms-cards-grid"></div>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">Horas / 20k pl / semana</div>
+                    <div class="chart-subtitle">Horas gastas em Plantas, Colheita, Outros e Limp/Prep (Ajustado a 2 pl/m²)</div>
+                </div>
+                <div class="chart-container" style="min-height: 420px;">
+                    <canvas id="cultureChart"></canvas>
+                </div>
+            </div>
+        </div>
     </main>
 
     <script>
@@ -659,10 +722,12 @@
 
             sidebar.classList.toggle('open');
             overlay.classList.toggle('active');
-            icon.innerText = sidebar.classList.contains('open') ? '✕' : '☰';
+            icon.innerText = sidebar.classList.contains('open' ) ? '✕' : '☰';
         }
 
         Chart.register(ChartDataLabels);
+	
+	////////////// Dados para o novo separador "Horas e produtividades" //////////////
 
         const rawData = [
   {
@@ -45907,6 +45972,2499 @@
   }
 ];
 
+        ////////////// Dados para o novo separador "Por cultura"//////////////
+
+        ////////////// Dados para o novo separador "Por cultura"//////////////
+
+        const cultureData = [
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Runner",
+        "Inicio": "15/12/22",
+        "Fim": "21/06/23",
+        "Horas Plantas": 46,
+        "Horas Colheita": 35,
+        "Horas Outros": 17,
+        "Horas Limp/Prep": 8,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Cauralina",
+        "Inicio": "16/12/22",
+        "Fim": "07/06/23",
+        "Horas Plantas": 50,
+        "Horas Colheita": 39,
+        "Horas Outros": 11,
+        "Horas Limp/Prep": 6,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Paipai",
+        "Inicio": "20/12/22",
+        "Fim": "28/06/23",
+        "Horas Plantas": 41,
+        "Horas Colheita": 34,
+        "Horas Outros": 13,
+        "Horas Limp/Prep": 9,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "CCS",
+        "Cultura": "Paipai",
+        "Inicio": "19/12/22",
+        "Fim": "16/06/23",
+        "Horas Plantas": 57,
+        "Horas Colheita": 29,
+        "Horas Outros": 6,
+        "Horas Limp/Prep": 14,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "Kumato",
+        "Inicio": "16/12/22",
+        "Fim": "22/05/23",
+        "Horas Plantas": 57,
+        "Horas Colheita": 33,
+        "Horas Outros": 32,
+        "Horas Limp/Prep": 12,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "Climberley",
+        "Inicio": "13/12/22",
+        "Fim": "31/05/23",
+        "Horas Plantas": 51,
+        "Horas Colheita": 36,
+        "Horas Outros": 22,
+        "Horas Limp/Prep": 7,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "Damarress BIO",
+        "Inicio": "16/12/22",
+        "Fim": "03/11/23",
+        "Horas Plantas": 67,
+        "Horas Colheita": 32,
+        "Horas Outros": 14,
+        "Horas Limp/Prep": 7,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Runner",
+        "Inicio": "12/12/22",
+        "Fim": "19/05/23",
+        "Horas Plantas": 76,
+        "Horas Colheita": 48,
+        "Horas Outros": 9,
+        "Horas Limp/Prep": 8,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Carbonero",
+        "Inicio": "12/12/22",
+        "Fim": "22/05/23",
+        "Horas Plantas": 64,
+        "Horas Colheita": 51,
+        "Horas Outros": 11,
+        "Horas Limp/Prep": 8,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Mini-Kumato",
+        "Inicio": "14/12/22",
+        "Fim": "08/01/24",
+        "Horas Plantas": 85,
+        "Horas Colheita": 51,
+        "Horas Outros": 2,
+        "Horas Limp/Prep": 2,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Buvena",
+        "Inicio": "08/02/23",
+        "Fim": "09/11/23",
+        "Horas Plantas": 43,
+        "Horas Colheita": 32,
+        "Horas Outros": 14,
+        "Horas Limp/Prep": 13,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Hyrule+\nParisetto",
+        "Inicio": "20/02/23",
+        "Fim": "05/12/23",
+        "Horas Plantas": 71,
+        "Horas Colheita": 34,
+        "Horas Outros": 12,
+        "Horas Limp/Prep": 8,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Caminhos da Cotovia",
+        "Cultura": "Solarino+\nDeliquia",
+        "Inicio": "17/02/23",
+        "Fim": "20/10/23",
+        "Horas Plantas": 111,
+        "Horas Colheita": 52,
+        "Horas Outros": 5,
+        "Horas Limp/Prep": 9,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "Pomorosa",
+        "Inicio": "15/02/23",
+        "Fim": "03/08/23",
+        "Horas Plantas": 122,
+        "Horas Colheita": 53,
+        "Horas Outros": 23,
+        "Horas Limp/Prep": 23,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "Cauralina",
+        "Inicio": "15/02/23",
+        "Fim": "18/07/23",
+        "Horas Plantas": 82,
+        "Horas Colheita": 98,
+        "Horas Outros": 31,
+        "Horas Limp/Prep": 21,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "Blue+Rosa\n+Moresco\n+Volley",
+        "Inicio": "15/02/23",
+        "Fim": "17/07/23",
+        "Horas Plantas": 83,
+        "Horas Colheita": 73,
+        "Horas Outros": 25,
+        "Horas Limp/Prep": 15,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "Paipai",
+        "Inicio": "14/02/23",
+        "Fim": "30/06/23",
+        "Horas Plantas": 82,
+        "Horas Colheita": 51,
+        "Horas Outros": 39,
+        "Horas Limp/Prep": 24,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "Kumato",
+        "Inicio": "14/02/23",
+        "Fim": "08/07/23",
+        "Horas Plantas": 68,
+        "Horas Colheita": 39,
+        "Horas Outros": 32,
+        "Horas Limp/Prep": 24,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "Carbonero",
+        "Inicio": "14/02/23",
+        "Fim": "19/07/23",
+        "Horas Plantas": 65,
+        "Horas Colheita": 67,
+        "Horas Outros": 42,
+        "Horas Limp/Prep": 20,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "Nebula",
+        "Inicio": "15/02/23",
+        "Fim": "27/11/23",
+        "Horas Plantas": 85,
+        "Horas Colheita": 45,
+        "Horas Outros": 12,
+        "Horas Limp/Prep": 12,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "Clodano",
+        "Inicio": "16/02/23",
+        "Fim": "18/07/23",
+        "Horas Plantas": 65,
+        "Horas Colheita": 50,
+        "Horas Outros": 13,
+        "Horas Limp/Prep": 8,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "Paipai",
+        "Inicio": "13/02/23",
+        "Fim": "21/07/23",
+        "Horas Plantas": 61,
+        "Horas Colheita": 55,
+        "Horas Outros": 10,
+        "Horas Limp/Prep": 3,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "Kumato",
+        "Inicio": "13/02/23",
+        "Fim": "11/07/23",
+        "Horas Plantas": 62,
+        "Horas Colheita": 44,
+        "Horas Outros": 13,
+        "Horas Limp/Prep": 6,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Inspired",
+        "Inicio": "14/04/23",
+        "Fim": "27/11/23",
+        "Horas Plantas": 58,
+        "Horas Colheita": 33,
+        "Horas Outros": 18,
+        "Horas Limp/Prep": 12,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Yarimaru",
+        "Inicio": "14/04/23",
+        "Fim": "28/11/23",
+        "Horas Plantas": 70,
+        "Horas Colheita": 48,
+        "Horas Outros": 15,
+        "Horas Limp/Prep": 12,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Caminhos da Cotovia",
+        "Cultura": "Brescia",
+        "Inicio": "20/04/23",
+        "Fim": "03/11/23",
+        "Horas Plantas": 106,
+        "Horas Colheita": 41,
+        "Horas Outros": 7,
+        "Horas Limp/Prep": 9,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Caminhos da Cotovia",
+        "Cultura": "Yarimaru",
+        "Inicio": "20/04/23",
+        "Fim": "03/11/23",
+        "Horas Plantas": 88,
+        "Horas Colheita": 56,
+        "Horas Outros": 8,
+        "Horas Limp/Prep": 12,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Caminhos da Cotovia",
+        "Cultura": "Iseos",
+        "Inicio": "20/04/23",
+        "Fim": "06/11/23",
+        "Horas Plantas": 98,
+        "Horas Colheita": 48,
+        "Horas Outros": 8,
+        "Horas Limp/Prep": 13,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Pegões",
+        "Cultura": "Paipai",
+        "Inicio": "24/04/23",
+        "Fim": "11/09/23",
+        "Horas Plantas": 64,
+        "Horas Colheita": 59,
+        "Horas Outros": 1,
+        "Horas Limp/Prep": 29,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Pegões",
+        "Cultura": "Kumato",
+        "Inicio": "24/03/23",
+        "Fim": "25/08/23",
+        "Horas Plantas": 70,
+        "Horas Colheita": 39,
+        "Horas Outros": 5,
+        "Horas Limp/Prep": 21,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Pegões",
+        "Cultura": "Kumato",
+        "Inicio": "27/04/23",
+        "Fim": "04/09/23",
+        "Horas Plantas": 63,
+        "Horas Colheita": 41,
+        "Horas Outros": 0,
+        "Horas Limp/Prep": 22,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Pegões",
+        "Cultura": "Cauralina",
+        "Inicio": "26/04/23",
+        "Fim": "05/09/23",
+        "Horas Plantas": 67,
+        "Horas Colheita": 68,
+        "Horas Outros": 0,
+        "Horas Limp/Prep": 27,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Clodano",
+        "Inicio": "17/04/23",
+        "Fim": "22/11/23",
+        "Horas Plantas": 65,
+        "Horas Colheita": 45,
+        "Horas Outros": 10,
+        "Horas Limp/Prep": 12,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Paipai",
+        "Inicio": "20/04/23",
+        "Fim": "15/11/23",
+        "Horas Plantas": 61,
+        "Horas Colheita": 59,
+        "Horas Outros": 5,
+        "Horas Limp/Prep": 16,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Iseos",
+        "Inicio": "24/04/23",
+        "Fim": "21/11/23",
+        "Horas Plantas": 69,
+        "Horas Colheita": 43,
+        "Horas Outros": 7,
+        "Horas Limp/Prep": 9,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "Volley",
+        "Inicio": "24/04/23",
+        "Fim": "04/12/23",
+        "Horas Plantas": 128,
+        "Horas Colheita": 87,
+        "Horas Outros": 19,
+        "Horas Limp/Prep": 19,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "ArticBlue",
+        "Inicio": "24/04/23",
+        "Fim": "04/12/23",
+        "Horas Plantas": 132,
+        "Horas Colheita": 49,
+        "Horas Outros": 22,
+        "Horas Limp/Prep": 19,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Inspired",
+        "Inicio": "30/05/23",
+        "Fim": "16/11/23",
+        "Horas Plantas": 41,
+        "Horas Colheita": 20,
+        "Horas Outros": 16,
+        "Horas Limp/Prep": 8,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Magneto",
+        "Inicio": "29/05/23",
+        "Fim": "24/11/23",
+        "Horas Plantas": 51,
+        "Horas Colheita": 21,
+        "Horas Outros": 11,
+        "Horas Limp/Prep": 8,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Albrice",
+        "Inicio": "05/06/23",
+        "Fim": "09/11/23",
+        "Horas Plantas": 51,
+        "Horas Colheita": 17,
+        "Horas Outros": 14,
+        "Horas Limp/Prep": 11,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "Babymunda",
+        "Inicio": "13/06/23",
+        "Fim": "07/12/23",
+        "Horas Plantas": 142,
+        "Horas Colheita": 43,
+        "Horas Outros": 24,
+        "Horas Limp/Prep": 12,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "Mini-Kumato",
+        "Inicio": "13/06/23",
+        "Fim": "15/01/24",
+        "Horas Plantas": 74,
+        "Horas Colheita": 34,
+        "Horas Outros": 6,
+        "Horas Limp/Prep": 1,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "Mini-Kumato",
+        "Inicio": "09/06/23",
+        "Fim": "16/01/24",
+        "Horas Plantas": 63,
+        "Horas Colheita": 34,
+        "Horas Outros": 7,
+        "Horas Limp/Prep": 7,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "Paipai",
+        "Inicio": "01/06/23",
+        "Fim": "15/12/23",
+        "Horas Plantas": 85,
+        "Horas Colheita": 57,
+        "Horas Outros": 16,
+        "Horas Limp/Prep": 16,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "Clodano",
+        "Inicio": "02/06/23",
+        "Fim": "29/11/23",
+        "Horas Plantas": 87,
+        "Horas Colheita": 59,
+        "Horas Outros": 13,
+        "Horas Limp/Prep": 13,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "Kumato",
+        "Inicio": "08/06/23",
+        "Fim": "22/11/23",
+        "Horas Plantas": 71,
+        "Horas Colheita": 44,
+        "Horas Outros": 25,
+        "Horas Limp/Prep": 16,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Cauralina",
+        "Inicio": "29/05/23",
+        "Fim": "27/11/23",
+        "Horas Plantas": 66,
+        "Horas Colheita": 71,
+        "Horas Outros": 6,
+        "Horas Limp/Prep": 2,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Kumato",
+        "Inicio": "29/05/23",
+        "Fim": "04/12/23",
+        "Horas Plantas": 49,
+        "Horas Colheita": 46,
+        "Horas Outros": 6,
+        "Horas Limp/Prep": 3,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "CCS",
+        "Cultura": "Sunstream\n+Bamano\n+Ivorino",
+        "Inicio": "05/07/23",
+        "Fim": NaN,
+        "Horas Plantas": 17,
+        "Horas Colheita": 9,
+        "Horas Outros": 3,
+        "Horas Limp/Prep": 0,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "Paipai",
+        "Inicio": "21/07/23",
+        "Fim": "10/01/24",
+        "Horas Plantas": 61,
+        "Horas Colheita": 29,
+        "Horas Outros": 13,
+        "Horas Limp/Prep": 16,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "Kumato",
+        "Inicio": "13/07/23",
+        "Fim": "01/02/24",
+        "Horas Plantas": 50,
+        "Horas Colheita": 30,
+        "Horas Outros": 10,
+        "Horas Limp/Prep": 12,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "Clodano",
+        "Inicio": "19/07/23",
+        "Fim": "09/01/24",
+        "Horas Plantas": 49,
+        "Horas Colheita": 26,
+        "Horas Outros": 11,
+        "Horas Limp/Prep": 12,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "Buvena",
+        "Inicio": "21/07/23",
+        "Fim": "31/12/23",
+        "Horas Plantas": 42,
+        "Horas Colheita": 0,
+        "Horas Outros": 16,
+        "Horas Limp/Prep": 15,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "Carbonero",
+        "Inicio": "21/07/23",
+        "Fim": "31/12/23",
+        "Horas Plantas": 63,
+        "Horas Colheita": 28,
+        "Horas Outros": 12,
+        "Horas Limp/Prep": 14,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "Cauralina",
+        "Inicio": "25/07/23",
+        "Fim": "15/01/24",
+        "Horas Plantas": 92,
+        "Horas Colheita": 61,
+        "Horas Outros": 31,
+        "Horas Limp/Prep": 20,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "Cauralina",
+        "Inicio": "29/08/23",
+        "Fim": "24/11/23",
+        "Horas Plantas": 101,
+        "Horas Colheita": 23,
+        "Horas Outros": 39,
+        "Horas Limp/Prep": 50,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Pegões",
+        "Cultura": "Runner",
+        "Inicio": "13/09/23",
+        "Fim": "04/03/24",
+        "Horas Plantas": 18,
+        "Horas Colheita": 17,
+        "Horas Outros": 12,
+        "Horas Limp/Prep": 6,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Pegões",
+        "Cultura": "Pai Pai",
+        "Inicio": "28/08/23",
+        "Fim": "09/02/24",
+        "Horas Plantas": 25,
+        "Horas Colheita": 17,
+        "Horas Outros": 10,
+        "Horas Limp/Prep": 5,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Pegões",
+        "Cultura": "Angelita",
+        "Inicio": "06/09/23",
+        "Fim": "28/02/24",
+        "Horas Plantas": 40,
+        "Horas Colheita": 48,
+        "Horas Outros": 12,
+        "Horas Limp/Prep": 6,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Pegões",
+        "Cultura": "Solarino",
+        "Inicio": "06/09/23",
+        "Fim": "28/02/24",
+        "Horas Plantas": 48,
+        "Horas Colheita": 41,
+        "Horas Outros": 12,
+        "Horas Limp/Prep": 6,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Pegões",
+        "Cultura": "Clodano",
+        "Inicio": "06/09/23",
+        "Fim": "11/03/24",
+        "Horas Plantas": 33,
+        "Horas Colheita": 16,
+        "Horas Outros": 16,
+        "Horas Limp/Prep": 10,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Pegões",
+        "Cultura": "Cauralina",
+        "Inicio": "06/09/23",
+        "Fim": "06/03/24",
+        "Horas Plantas": 26,
+        "Horas Colheita": 21,
+        "Horas Outros": 7,
+        "Horas Limp/Prep": 5,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "TN0079",
+        "Inicio": "18/12/23",
+        "Fim": "25/10/24",
+        "Horas Plantas": 60,
+        "Horas Colheita": 62,
+        "Horas Outros": 10,
+        "Horas Limp/Prep": 10,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Babymunda+\nRosa de Almeria+\nArtik Blu",
+        "Inicio": "14/12/23",
+        "Fim": "08/07/24",
+        "Horas Plantas": 38,
+        "Horas Colheita": 33,
+        "Horas Outros": 11,
+        "Horas Limp/Prep": 13,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Cauralina",
+        "Inicio": "13/12/23",
+        "Fim": "17/05/24",
+        "Horas Plantas": 63,
+        "Horas Colheita": 39,
+        "Horas Outros": 16,
+        "Horas Limp/Prep": 21,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Yarimaru",
+        "Inicio": "15/12/23",
+        "Fim": "29/05/24",
+        "Horas Plantas": 42,
+        "Horas Colheita": 32,
+        "Horas Outros": 14,
+        "Horas Limp/Prep": 11,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "ISI 52262",
+        "Inicio": "18/12/23",
+        "Fim": "29/05/24",
+        "Horas Plantas": 32,
+        "Horas Colheita": 37,
+        "Horas Outros": 12,
+        "Horas Limp/Prep": 11,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Parisetto",
+        "Inicio": "16/01/24",
+        "Fim": "04/11/24",
+        "Horas Plantas": 67,
+        "Horas Colheita": 77,
+        "Horas Outros": 11,
+        "Horas Limp/Prep": 11,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Hyrule",
+        "Inicio": "16/01/24",
+        "Fim": "24/10/24",
+        "Horas Plantas": 72,
+        "Horas Colheita": 42,
+        "Horas Outros": 11,
+        "Horas Limp/Prep": 12,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Sorentyno",
+        "Inicio": "16/01/24",
+        "Fim": "25/10/24",
+        "Horas Plantas": 67,
+        "Horas Colheita": 28,
+        "Horas Outros": 14,
+        "Horas Limp/Prep": 11,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Caminhos da Cotovia",
+        "Cultura": "Brescia",
+        "Inicio": "14/12/23",
+        "Fim": "24/10/24",
+        "Horas Plantas": 82,
+        "Horas Colheita": 22,
+        "Horas Outros": 8,
+        "Horas Limp/Prep": 7,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Caminhos da Cotovia",
+        "Cultura": "Hyrule",
+        "Inicio": "14/12/23",
+        "Fim": "01/11/24",
+        "Horas Plantas": 72,
+        "Horas Colheita": 29,
+        "Horas Outros": 8,
+        "Horas Limp/Prep": 7,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Caminhos da Cotovia",
+        "Cultura": "Parisetto",
+        "Inicio": "14/12/23",
+        "Fim": "11/11/24",
+        "Horas Plantas": 79,
+        "Horas Colheita": 59,
+        "Horas Outros": 6,
+        "Horas Limp/Prep": 7,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Caminhos da Cotovia",
+        "Cultura": "Prospano",
+        "Inicio": "14/12/23",
+        "Fim": "09/11/24",
+        "Horas Plantas": 93,
+        "Horas Colheita": 23,
+        "Horas Outros": 10,
+        "Horas Limp/Prep": 9,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Caminhos da Cotovia",
+        "Cultura": "Iseos",
+        "Inicio": "14/12/23",
+        "Fim": "06/11/24",
+        "Horas Plantas": 85,
+        "Horas Colheita": 28,
+        "Horas Outros": 10,
+        "Horas Limp/Prep": 12,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "CCS",
+        "Cultura": "DRC+Bamano+Ivorino+Parisetto",
+        "Inicio": "11/01/24",
+        "Fim": "03/10/24",
+        "Horas Plantas": 114,
+        "Horas Colheita": 53,
+        "Horas Outros": 11,
+        "Horas Limp/Prep": 5,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Magneto",
+        "Inicio": "14/12/23",
+        "Fim": "01/06/24",
+        "Horas Plantas": 64,
+        "Horas Colheita": 39,
+        "Horas Outros": 23,
+        "Horas Limp/Prep": 5,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Climberley",
+        "Inicio": "21/12/23",
+        "Fim": "08/06/24",
+        "Horas Plantas": 58,
+        "Horas Colheita": 33,
+        "Horas Outros": 13,
+        "Horas Limp/Prep": 4,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "Clodano",
+        "Inicio": "18/12/23",
+        "Fim": "07/06/24",
+        "Horas Plantas": 64,
+        "Horas Colheita": 39,
+        "Horas Outros": 19,
+        "Horas Limp/Prep": 15,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "Kumato",
+        "Inicio": "14/12/23",
+        "Fim": "23/05/24",
+        "Horas Plantas": 62,
+        "Horas Colheita": 35,
+        "Horas Outros": 16,
+        "Horas Limp/Prep": 15,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "Damaress BIO",
+        "Inicio": "14/12/23",
+        "Fim": "08/08/24",
+        "Horas Plantas": 45,
+        "Horas Colheita": 25,
+        "Horas Outros": 4,
+        "Horas Limp/Prep": 18,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "Babymunda",
+        "Inicio": "08/02/24",
+        "Fim": "28/10/24",
+        "Horas Plantas": 136,
+        "Horas Colheita": 73,
+        "Horas Outros": 11,
+        "Horas Limp/Prep": 20,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "Cauralina",
+        "Inicio": "08/02/24",
+        "Fim": "22/07/24",
+        "Horas Plantas": 81,
+        "Horas Colheita": 68,
+        "Horas Outros": 18,
+        "Horas Limp/Prep": 6,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "Runner",
+        "Inicio": "08/02/24",
+        "Fim": "23/07/24",
+        "Horas Plantas": 70,
+        "Horas Colheita": 91,
+        "Horas Outros": 27,
+        "Horas Limp/Prep": 5,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "Artik Blu",
+        "Inicio": "08/02/24",
+        "Fim": "19/08/24",
+        "Horas Plantas": 107,
+        "Horas Colheita": 83,
+        "Horas Outros": 21,
+        "Horas Limp/Prep": 6,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "Yarimaru",
+        "Inicio": "08/02/24",
+        "Fim": "06/08/24",
+        "Horas Plantas": 65,
+        "Horas Colheita": 56,
+        "Horas Outros": 22,
+        "Horas Limp/Prep": 22,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "Runner",
+        "Inicio": "08/02/24",
+        "Fim": "22/07/24",
+        "Horas Plantas": 101,
+        "Horas Colheita": 84,
+        "Horas Outros": 30,
+        "Horas Limp/Prep": 25,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Mini-Kumato",
+        "Inicio": "20/02/24",
+        "Fim": "17/03/25",
+        "Horas Plantas": 73,
+        "Horas Colheita": 50,
+        "Horas Outros": 1,
+        "Horas Limp/Prep": 6,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Kumato",
+        "Inicio": "13/03/24",
+        "Fim": "17/08/24",
+        "Horas Plantas": 65,
+        "Horas Colheita": 52,
+        "Horas Outros": 9,
+        "Horas Limp/Prep": 6,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Clodano",
+        "Inicio": "13/03/24",
+        "Fim": "23/08/24",
+        "Horas Plantas": 77,
+        "Horas Colheita": 52,
+        "Horas Outros": 7,
+        "Horas Limp/Prep": 5,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "Kumato",
+        "Inicio": "01/02/24",
+        "Fim": "15/06/24",
+        "Horas Plantas": 63,
+        "Horas Colheita": 38,
+        "Horas Outros": 11,
+        "Horas Limp/Prep": 10,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "ISI 52262",
+        "Inicio": "10/02/24",
+        "Fim": "16/07/24",
+        "Horas Plantas": 71,
+        "Horas Colheita": 56,
+        "Horas Outros": 13,
+        "Horas Limp/Prep": 15,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "Clodano",
+        "Inicio": "07/02/24",
+        "Fim": "18/07/24",
+        "Horas Plantas": 67,
+        "Horas Colheita": 59,
+        "Horas Outros": 5,
+        "Horas Limp/Prep": 8,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "ISI 52262",
+        "Inicio": "30/04/24",
+        "Fim": "07/11/24",
+        "Horas Plantas": 59,
+        "Horas Colheita": 45,
+        "Horas Outros": 13,
+        "Horas Limp/Prep": 12,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Yarimaru",
+        "Inicio": "02/05/24",
+        "Fim": "07/11/24",
+        "Horas Plantas": 55,
+        "Horas Colheita": 39,
+        "Horas Outros": 11,
+        "Horas Limp/Prep": 12,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Clodano",
+        "Inicio": "06/06/24",
+        "Fim": "08/11/24",
+        "Horas Plantas": 58,
+        "Horas Colheita": 27,
+        "Horas Outros": 14,
+        "Horas Limp/Prep": 16,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Yarimaru",
+        "Inicio": "06/06/24",
+        "Fim": "21/11/24",
+        "Horas Plantas": 60,
+        "Horas Colheita": 33,
+        "Horas Outros": 14,
+        "Horas Limp/Prep": 16,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Cauralina",
+        "Inicio": "17/04/24",
+        "Fim": "02/09/24",
+        "Horas Plantas": 66,
+        "Horas Colheita": 74,
+        "Horas Outros": 12,
+        "Horas Limp/Prep": 7,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Clodano",
+        "Inicio": "17/04/24",
+        "Fim": "25/11/24",
+        "Horas Plantas": 45,
+        "Horas Colheita": 32,
+        "Horas Outros": 11,
+        "Horas Limp/Prep": 10,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Isis",
+        "Inicio": "17/04/24",
+        "Fim": "11/11/24",
+        "Horas Plantas": 48,
+        "Horas Colheita": 39,
+        "Horas Outros": 5,
+        "Horas Limp/Prep": 13,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Magneto",
+        "Inicio": "17/04/24",
+        "Fim": "25/11/24",
+        "Horas Plantas": 52,
+        "Horas Colheita": 38,
+        "Horas Outros": 6,
+        "Horas Limp/Prep": 8,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Pegões",
+        "Cultura": "Kumato",
+        "Inicio": "18/04/24",
+        "Fim": "06/09/24",
+        "Horas Plantas": 61,
+        "Horas Colheita": 43,
+        "Horas Outros": 7,
+        "Horas Limp/Prep": 12,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Pegões",
+        "Cultura": "Lacio",
+        "Inicio": "16/04/24",
+        "Fim": "29/11/24",
+        "Horas Plantas": 82,
+        "Horas Colheita": 51,
+        "Horas Outros": 6,
+        "Horas Limp/Prep": 6,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Pegões",
+        "Cultura": "Damaress",
+        "Inicio": "17/04/24",
+        "Fim": "22/11/24",
+        "Horas Plantas": 77,
+        "Horas Colheita": 46,
+        "Horas Outros": 4,
+        "Horas Limp/Prep": 5,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "Kumato",
+        "Inicio": "31/05/24",
+        "Fim": "11/11/24",
+        "Horas Plantas": 52,
+        "Horas Colheita": 37,
+        "Horas Outros": 15,
+        "Horas Limp/Prep": 18,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "Cauralina",
+        "Inicio": "30/05/24",
+        "Fim": "05/11/24",
+        "Horas Plantas": 66,
+        "Horas Colheita": 74,
+        "Horas Outros": 19,
+        "Horas Limp/Prep": 19,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "CCS",
+        "Cultura": "Parisetto",
+        "Inicio": "22/05/24",
+        "Fim": "26/02/25",
+        "Horas Plantas": 122,
+        "Horas Colheita": 50,
+        "Horas Outros": 5,
+        "Horas Limp/Prep": 12,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "CCS",
+        "Cultura": "DRC564",
+        "Inicio": "22/05/24",
+        "Fim": "26/02/25",
+        "Horas Plantas": 108,
+        "Horas Colheita": 33,
+        "Horas Outros": 6,
+        "Horas Limp/Prep": 12,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "CCS",
+        "Cultura": "Bamano+Ivorino",
+        "Inicio": "22/05/24",
+        "Fim": "26/02/25",
+        "Horas Plantas": 115,
+        "Horas Colheita": 46,
+        "Horas Outros": 6,
+        "Horas Limp/Prep": 14,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "Rosa",
+        "Inicio": "09/08/24",
+        "Fim": "06/11/24",
+        "Horas Plantas": 64,
+        "Horas Colheita": 25,
+        "Horas Outros": 141,
+        "Horas Limp/Prep": 131,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "Azul",
+        "Inicio": "09/08/24",
+        "Fim": "21/11/24",
+        "Horas Plantas": 53,
+        "Horas Colheita": 10,
+        "Horas Outros": 108,
+        "Horas Limp/Prep": 114,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "Babymunda",
+        "Inicio": "22/08/24",
+        "Fim": "20/01/25",
+        "Horas Plantas": 77,
+        "Horas Colheita": 16,
+        "Horas Outros": 81,
+        "Horas Limp/Prep": 66,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "Cauralina",
+        "Inicio": "08/08/24",
+        "Fim": "26/11/24",
+        "Horas Plantas": 82,
+        "Horas Colheita": 17,
+        "Horas Outros": 39,
+        "Horas Limp/Prep": 15,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "Mini Kumato",
+        "Inicio": "10/08/24",
+        "Fim": "24/02/25",
+        "Horas Plantas": 51,
+        "Horas Colheita": 44,
+        "Horas Outros": 15,
+        "Horas Limp/Prep": 7,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "Yarimaru",
+        "Inicio": "09/08/24",
+        "Fim": "11/02/25",
+        "Horas Plantas": 48,
+        "Horas Colheita": 18,
+        "Horas Outros": 40,
+        "Horas Limp/Prep": 29,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "Mini Kumato",
+        "Inicio": "09/08/24",
+        "Fim": "10/02/25",
+        "Horas Plantas": 79,
+        "Horas Colheita": 58,
+        "Horas Outros": 22,
+        "Horas Limp/Prep": 16,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "ISI 52262",
+        "Inicio": "22/08/24",
+        "Fim": "24/02/25",
+        "Horas Plantas": 51,
+        "Horas Colheita": 26,
+        "Horas Outros": 27,
+        "Horas Limp/Prep": 14,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "Faladi",
+        "Inicio": "22/08/24",
+        "Fim": "24/02/25",
+        "Horas Plantas": 40,
+        "Horas Colheita": 18,
+        "Horas Outros": 26,
+        "Horas Limp/Prep": 15,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "Cauralina",
+        "Inicio": "22/08/24",
+        "Fim": "20/02/25",
+        "Horas Plantas": 74,
+        "Horas Colheita": 31,
+        "Horas Outros": 19,
+        "Horas Limp/Prep": 19,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Mini Kumato",
+        "Inicio": "31/08/24",
+        "Fim": "04/04/25",
+        "Horas Plantas": 39,
+        "Horas Colheita": 35,
+        "Horas Outros": 4,
+        "Horas Limp/Prep": 8,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "ISI 52262",
+        "Inicio": "18/07/24",
+        "Fim": "30/12/24",
+        "Horas Plantas": 54,
+        "Horas Colheita": 32,
+        "Horas Outros": 23,
+        "Horas Limp/Prep": 18,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "Kumato",
+        "Inicio": "19/07/24",
+        "Fim": "17/12/24",
+        "Horas Plantas": 46,
+        "Horas Colheita": 26,
+        "Horas Outros": 11,
+        "Horas Limp/Prep": 21,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "Clodano",
+        "Inicio": "10/07/24",
+        "Fim": "02/01/25",
+        "Horas Plantas": 64,
+        "Horas Colheita": 38,
+        "Horas Outros": 9,
+        "Horas Limp/Prep": 18,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Cauralina",
+        "Inicio": "20/09/24",
+        "Fim": "03/03/25",
+        "Horas Plantas": 68,
+        "Horas Colheita": 39,
+        "Horas Outros": 11,
+        "Horas Limp/Prep": 29,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Bigram",
+        "Inicio": "20/09/24",
+        "Fim": "03/03/25",
+        "Horas Plantas": 59,
+        "Horas Colheita": 32,
+        "Horas Outros": 14,
+        "Horas Limp/Prep": 27,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "Isis",
+        "Inicio": "09/09/24",
+        "Fim": "04/03/25",
+        "Horas Plantas": 58,
+        "Horas Colheita": 14,
+        "Horas Outros": 10,
+        "Horas Limp/Prep": 6,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "Damaress",
+        "Inicio": "09/09/24",
+        "Fim": "04/03/25",
+        "Horas Plantas": 66,
+        "Horas Colheita": 11,
+        "Horas Outros": 10,
+        "Horas Limp/Prep": 5,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "Parisetto",
+        "Inicio": "09/09/24",
+        "Fim": "04/03/25",
+        "Horas Plantas": 92,
+        "Horas Colheita": 61,
+        "Horas Outros": 10,
+        "Horas Limp/Prep": 9,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Pegões",
+        "Cultura": "Bigram",
+        "Inicio": "13/09/24",
+        "Fim": "20/03/25",
+        "Horas Plantas": 37,
+        "Horas Colheita": 12,
+        "Horas Outros": 4,
+        "Horas Limp/Prep": 1,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Pegões",
+        "Cultura": "Cauralina",
+        "Inicio": "14/09/24",
+        "Fim": "20/03/25",
+        "Horas Plantas": 36,
+        "Horas Colheita": 30,
+        "Horas Outros": 2,
+        "Horas Limp/Prep": 2,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Kumato",
+        "Inicio": "18/12/24",
+        "Fim": "04/06/25",
+        "Horas Plantas": 31,
+        "Horas Colheita": 29,
+        "Horas Outros": 15,
+        "Horas Limp/Prep": 9,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Portobello",
+        "Inicio": "13/12/24",
+        "Fim": "05/06/25",
+        "Horas Plantas": 34,
+        "Horas Colheita": 28,
+        "Horas Outros": 21,
+        "Horas Limp/Prep": 10,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Tentadero",
+        "Inicio": "11/12/24",
+        "Fim": "29/10/25",
+        "Horas Plantas": 63,
+        "Horas Colheita": 18,
+        "Horas Outros": 20,
+        "Horas Limp/Prep": 9,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Parisetto+Tatoo",
+        "Inicio": "11/12/24",
+        "Fim": "07/11/25",
+        "Horas Plantas": 66,
+        "Horas Colheita": 67,
+        "Horas Outros": 14,
+        "Horas Limp/Prep": 9,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Novero\nSVTH5912",
+        "Inicio": "21/12/24",
+        "Fim": "02/07/25",
+        "Horas Plantas": 40,
+        "Horas Colheita": 39,
+        "Horas Outros": 17,
+        "Horas Limp/Prep": 12,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "DRTH2913",
+        "Inicio": "23/12/24",
+        "Fim": "02/07/25",
+        "Horas Plantas": 43,
+        "Horas Colheita": 38,
+        "Horas Outros": 22,
+        "Horas Limp/Prep": 15,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Yarimaru",
+        "Inicio": "23/12/24",
+        "Fim": "10/06/25",
+        "Horas Plantas": 44,
+        "Horas Colheita": 32,
+        "Horas Outros": 25,
+        "Horas Limp/Prep": 19,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Rosa de Almeria",
+        "Inicio": "21/12/24",
+        "Fim": "26/05/25",
+        "Horas Plantas": 40,
+        "Horas Colheita": 25,
+        "Horas Outros": 20,
+        "Horas Limp/Prep": 20,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Sweetloom",
+        "Inicio": "21/12/24",
+        "Fim": "27/05/25",
+        "Horas Plantas": 40,
+        "Horas Colheita": 38,
+        "Horas Outros": 26,
+        "Horas Limp/Prep": 24,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Caminhos da Cotovia",
+        "Cultura": "Parisetto",
+        "Inicio": "16/12/24",
+        "Fim": "11/11/25",
+        "Horas Plantas": 60,
+        "Horas Colheita": 45,
+        "Horas Outros": 13,
+        "Horas Limp/Prep": 5,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Caminhos da Cotovia",
+        "Cultura": "Cygnary",
+        "Inicio": "16/12/24",
+        "Fim": "11/11/25",
+        "Horas Plantas": 55,
+        "Horas Colheita": 51,
+        "Horas Outros": 12,
+        "Horas Limp/Prep": 5,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Caminhos da Cotovia",
+        "Cultura": "Sanpirlo",
+        "Inicio": "16/12/24",
+        "Fim": "05/11/25",
+        "Horas Plantas": 66,
+        "Horas Colheita": 23,
+        "Horas Outros": 14,
+        "Horas Limp/Prep": 8,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Caminhos da Cotovia",
+        "Cultura": "Azores",
+        "Inicio": "16/12/24",
+        "Fim": "27/10/25",
+        "Horas Plantas": 57,
+        "Horas Colheita": 19,
+        "Horas Outros": 13,
+        "Horas Limp/Prep": 6,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Caminhos da Cotovia",
+        "Cultura": "Prospano",
+        "Inicio": "16/12/24",
+        "Fim": "31/10/25",
+        "Horas Plantas": 85,
+        "Horas Colheita": 23,
+        "Horas Outros": 15,
+        "Horas Limp/Prep": 8,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Kumato",
+        "Inicio": "20/12/24",
+        "Fim": "18/06/25",
+        "Horas Plantas": 43,
+        "Horas Colheita": 36,
+        "Horas Outros": 7,
+        "Horas Limp/Prep": 12,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Lacio",
+        "Inicio": "17/12/24",
+        "Fim": "23/06/25",
+        "Horas Plantas": 47,
+        "Horas Colheita": 34,
+        "Horas Outros": 3,
+        "Horas Limp/Prep": 18,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Clodano",
+        "Inicio": "17/12/24",
+        "Fim": "20/06/25",
+        "Horas Plantas": 47,
+        "Horas Colheita": 31,
+        "Horas Outros": 2,
+        "Horas Limp/Prep": 15,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "Lacio",
+        "Inicio": "17/12/24",
+        "Fim": "06/06/25",
+        "Horas Plantas": 52,
+        "Horas Colheita": 23,
+        "Horas Outros": 9,
+        "Horas Limp/Prep": 6,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "Damaress",
+        "Inicio": "30/12/24",
+        "Fim": "21/06/25",
+        "Horas Plantas": 45,
+        "Horas Colheita": 25,
+        "Horas Outros": 5,
+        "Horas Limp/Prep": 8,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "ISI 52262",
+        "Inicio": "09/01/25",
+        "Fim": "27/06/25",
+        "Horas Plantas": 72,
+        "Horas Colheita": 23,
+        "Horas Outros": 28,
+        "Horas Limp/Prep": 23,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "CCS",
+        "Cultura": "Cygnary",
+        "Inicio": "16/12/24",
+        "Fim": "16/10/25",
+        "Horas Plantas": 65,
+        "Horas Colheita": 58,
+        "Horas Outros": 6,
+        "Horas Limp/Prep": 9,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "CCS",
+        "Cultura": "Hateno",
+        "Inicio": "16/12/24",
+        "Fim": "07/10/25",
+        "Horas Plantas": 75,
+        "Horas Colheita": 33,
+        "Horas Outros": 7,
+        "Horas Limp/Prep": 8,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "CCS",
+        "Cultura": "Brescia",
+        "Inicio": "16/12/24",
+        "Fim": "15/10/25",
+        "Horas Plantas": 75,
+        "Horas Colheita": 33,
+        "Horas Outros": 6,
+        "Horas Limp/Prep": 9,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "Yarimaru",
+        "Inicio": "10/03/25",
+        "Fim": "25/08/25",
+        "Horas Plantas": 100,
+        "Horas Colheita": 64,
+        "Horas Outros": 44,
+        "Horas Limp/Prep": 16,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "Rosa de Almeria",
+        "Inicio": "10/03/25",
+        "Fim": "26/09/25",
+        "Horas Plantas": 98,
+        "Horas Colheita": 54,
+        "Horas Outros": 16,
+        "Horas Limp/Prep": 22,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "Sweetloom",
+        "Inicio": "10/03/25",
+        "Fim": "20/10/25",
+        "Horas Plantas": 89,
+        "Horas Colheita": 65,
+        "Horas Outros": 13,
+        "Horas Limp/Prep": 21,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "Portobello",
+        "Inicio": "10/03/25",
+        "Fim": "26/09/25",
+        "Horas Plantas": 106,
+        "Horas Colheita": 61,
+        "Horas Outros": 25,
+        "Horas Limp/Prep": 17,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "Yarimaru",
+        "Inicio": "15/03/25",
+        "Fim": "25/09/25",
+        "Horas Plantas": 104,
+        "Horas Colheita": 48,
+        "Horas Outros": 33,
+        "Horas Limp/Prep": 21,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "DRTH",
+        "Inicio": "15/03/25",
+        "Fim": "01/08/25",
+        "Horas Plantas": 69,
+        "Horas Colheita": 44,
+        "Horas Outros": 21,
+        "Horas Limp/Prep": 24,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "Damaress",
+        "Inicio": "15/03/25",
+        "Fim": "20/10/25",
+        "Horas Plantas": 114,
+        "Horas Colheita": 42,
+        "Horas Outros": 32,
+        "Horas Limp/Prep": 16,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "Portobello",
+        "Inicio": "15/03/25",
+        "Fim": "06/08/25",
+        "Horas Plantas": 100,
+        "Horas Colheita": 67,
+        "Horas Outros": 24,
+        "Horas Limp/Prep": 22,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "Isis",
+        "Inicio": "19/02/25",
+        "Fim": "24/07/25",
+        "Horas Plantas": 51,
+        "Horas Colheita": 18,
+        "Horas Outros": 4,
+        "Horas Limp/Prep": 6,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "Kumato",
+        "Inicio": "19/02/25",
+        "Fim": "31/07/25",
+        "Horas Plantas": 60,
+        "Horas Colheita": 31,
+        "Horas Outros": 4,
+        "Horas Limp/Prep": 5,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Portos Brancos",
+        "Cultura": "Tentadero",
+        "Inicio": "24/03/25",
+        "Fim": "12/08/25",
+        "Horas Plantas": 75,
+        "Horas Colheita": 12,
+        "Horas Outros": 6,
+        "Horas Limp/Prep": 12,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "CCS",
+        "Cultura": "Heredero",
+        "Inicio": "09/04/25",
+        "Fim": "19/09/25",
+        "Horas Plantas": 102,
+        "Horas Colheita": 59,
+        "Horas Outros": 34,
+        "Horas Limp/Prep": 23,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "CCS",
+        "Cultura": "Azores",
+        "Inicio": "24/04/25",
+        "Fim": "23/09/25",
+        "Horas Plantas": 95,
+        "Horas Colheita": 63,
+        "Horas Outros": 37,
+        "Horas Limp/Prep": 24,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Kumato",
+        "Inicio": "14/04/25",
+        "Fim": "15/10/25",
+        "Horas Plantas": 79,
+        "Horas Colheita": 50,
+        "Horas Outros": 5,
+        "Horas Limp/Prep": 12,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Babymunda",
+        "Inicio": "30/04/25",
+        "Fim": "07/10/25",
+        "Horas Plantas": 104,
+        "Horas Colheita": 51,
+        "Horas Outros": 7,
+        "Horas Limp/Prep": 10,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Heredero",
+        "Inicio": "24/05/25",
+        "Fim": "20/11/25",
+        "Horas Plantas": 56,
+        "Horas Colheita": 37,
+        "Horas Outros": 11,
+        "Horas Limp/Prep": 15,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Yarimaru",
+        "Inicio": "29/04/25",
+        "Fim": "21/11/25",
+        "Horas Plantas": 49,
+        "Horas Colheita": 32,
+        "Horas Outros": 6,
+        "Horas Limp/Prep": 12,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Rosa de Almeria",
+        "Inicio": "18/06/25",
+        "Fim": "04/12/25",
+        "Horas Plantas": 54,
+        "Horas Colheita": 31,
+        "Horas Outros": 11,
+        "Horas Limp/Prep": 17,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "SVTH5912",
+        "Inicio": "05/06/25",
+        "Fim": "29/11/25",
+        "Horas Plantas": 48,
+        "Horas Colheita": 30,
+        "Horas Outros": 9,
+        "Horas Limp/Prep": 15,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Pegões",
+        "Cultura": "Azores",
+        "Inicio": "30/04/25",
+        "Fim": "21/01/26",
+        "Horas Plantas": 57,
+        "Horas Colheita": 32,
+        "Horas Outros": 5,
+        "Horas Limp/Prep": 6,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Pegões",
+        "Cultura": "Heredero",
+        "Inicio": "11/04/25",
+        "Fim": "21/01/26",
+        "Horas Plantas": 60,
+        "Horas Colheita": 35,
+        "Horas Outros": 3,
+        "Horas Limp/Prep": 5,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Pegões",
+        "Cultura": "Clodano",
+        "Inicio": "17/04/25",
+        "Fim": "13/01/26",
+        "Horas Plantas": 77,
+        "Horas Colheita": 41,
+        "Horas Outros": 4,
+        "Horas Limp/Prep": 6,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Pegões",
+        "Cultura": "Kumato",
+        "Inicio": "11/04/25",
+        "Fim": "10/10/25",
+        "Horas Plantas": 79,
+        "Horas Colheita": 45,
+        "Horas Outros": 4,
+        "Horas Limp/Prep": 8,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Kumato",
+        "Inicio": "21/06/25",
+        "Fim": "19/11/25",
+        "Horas Plantas": 45,
+        "Horas Colheita": 28,
+        "Horas Outros": 2,
+        "Horas Limp/Prep": 10,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Clodano",
+        "Inicio": "19/06/25",
+        "Fim": "27/11/25",
+        "Horas Plantas": 60,
+        "Horas Colheita": 37,
+        "Horas Outros": 2,
+        "Horas Limp/Prep": 18,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Azores",
+        "Inicio": "25/06/25",
+        "Fim": "20/11/25",
+        "Horas Plantas": 54,
+        "Horas Colheita": 52,
+        "Horas Outros": 2,
+        "Horas Limp/Prep": 21,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "Azores",
+        "Inicio": "14/08/25",
+        "Fim": "29/01/26",
+        "Horas Plantas": 91,
+        "Horas Colheita": 59,
+        "Horas Outros": 102,
+        "Horas Limp/Prep": 22,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "Climberley",
+        "Inicio": "10/08/25",
+        "Fim": "13/01/26",
+        "Horas Plantas": 105,
+        "Horas Colheita": 38,
+        "Horas Outros": 85,
+        "Horas Limp/Prep": 82,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "Azores",
+        "Inicio": "21/08/25",
+        "Fim": "13/01/26",
+        "Horas Plantas": 112,
+        "Horas Colheita": 61,
+        "Horas Outros": 97,
+        "Horas Limp/Prep": 58,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Pegões",
+        "Cultura": "Cauralina",
+        "Inicio": "26/10/25",
+        "Fim": "28/03/26",
+        "Horas Plantas": 28,
+        "Horas Colheita": 17,
+        "Horas Outros": 6,
+        "Horas Limp/Prep": 8,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Kumato",
+        "Inicio": "30/10/25",
+        "Fim": "30/03/26",
+        "Horas Plantas": 30,
+        "Horas Colheita": 21,
+        "Horas Outros": 7,
+        "Horas Limp/Prep": 28,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Runner",
+        "Inicio": "28/10/25",
+        "Fim": "18/03/26",
+        "Horas Plantas": 37,
+        "Horas Colheita": 26,
+        "Horas Outros": 16,
+        "Horas Limp/Prep": 44,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "CCS",
+        "Cultura": "Lacio",
+        "Inicio": "06/11/25",
+        "Fim": "29/04/26",
+        "Horas Plantas": 49,
+        "Horas Colheita": 25,
+        "Horas Outros": 8,
+        "Horas Limp/Prep": 20,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Caminhos da Cotovia",
+        "Cultura": "Mini Kumato",
+        "Inicio": "15/12/25",
+        "Fim": NaN,
+        "Horas Plantas": 71,
+        "Horas Colheita": 32,
+        "Horas Outros": 5,
+        "Horas Limp/Prep": 14,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Caminhos da Cotovia",
+        "Cultura": "Cygnary",
+        "Inicio": "15/12/25",
+        "Fim": NaN,
+        "Horas Plantas": 60,
+        "Horas Colheita": 73,
+        "Horas Outros": 7,
+        "Horas Limp/Prep": 14,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Caminhos da Cotovia",
+        "Cultura": "Parisetto",
+        "Inicio": "15/12/25",
+        "Fim": NaN,
+        "Horas Plantas": 73,
+        "Horas Colheita": 69,
+        "Horas Outros": 5,
+        "Horas Limp/Prep": 13,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Caminhos da Cotovia",
+        "Cultura": "San Blas",
+        "Inicio": "05/01/26",
+        "Fim": NaN,
+        "Horas Plantas": 90,
+        "Horas Colheita": 31,
+        "Horas Outros": 9,
+        "Horas Limp/Prep": 22,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Portobello",
+        "Inicio": "19/12/25",
+        "Fim": "23/05/26",
+        "Horas Plantas": 36,
+        "Horas Colheita": 29,
+        "Horas Outros": 13,
+        "Horas Limp/Prep": 20,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "RZ 73-CB0901",
+        "Inicio": "19/12/25",
+        "Fim": "21/05/26",
+        "Horas Plantas": 36,
+        "Horas Colheita": 29,
+        "Horas Outros": 11,
+        "Horas Limp/Prep": 15,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Yarimaru",
+        "Inicio": "19/12/25",
+        "Fim": "27/05/26",
+        "Horas Plantas": 36,
+        "Horas Colheita": 33,
+        "Horas Outros": 14,
+        "Horas Limp/Prep": 14,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Kumato",
+        "Inicio": "26/12/25",
+        "Fim": "02/06/26",
+        "Horas Plantas": 40,
+        "Horas Colheita": 28,
+        "Horas Outros": 16,
+        "Horas Limp/Prep": 43,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Bronski",
+        "Inicio": "27/12/25",
+        "Fim": "30/06/26",
+        "Horas Plantas": 42,
+        "Horas Colheita": 25,
+        "Horas Outros": 16,
+        "Horas Limp/Prep": 24,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Parisetto",
+        "Inicio": "13/01/26",
+        "Fim": NaN,
+        "Horas Plantas": 61,
+        "Horas Colheita": 89,
+        "Horas Outros": 10,
+        "Horas Limp/Prep": 5,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Cygnary",
+        "Inicio": "13/01/26",
+        "Fim": NaN,
+        "Horas Plantas": 51,
+        "Horas Colheita": 102,
+        "Horas Outros": 13,
+        "Horas Limp/Prep": 5,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "CCS",
+        "Cultura": "Parisetto",
+        "Inicio": "16/12/25",
+        "Fim": NaN,
+        "Horas Plantas": 67,
+        "Horas Colheita": 54,
+        "Horas Outros": 5,
+        "Horas Limp/Prep": 5,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "CCS",
+        "Cultura": "Cygnary",
+        "Inicio": "17/12/25",
+        "Fim": NaN,
+        "Horas Plantas": 58,
+        "Horas Colheita": 48,
+        "Horas Outros": 5,
+        "Horas Limp/Prep": 5,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Kumato",
+        "Inicio": "17/12/25",
+        "Fim": "19/06/26",
+        "Horas Plantas": 48,
+        "Horas Colheita": 39,
+        "Horas Outros": 4,
+        "Horas Limp/Prep": 15,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Climberley",
+        "Inicio": "18/12/25",
+        "Fim": "06/07/26",
+        "Horas Plantas": 44,
+        "Horas Colheita": 32,
+        "Horas Outros": 4,
+        "Horas Limp/Prep": 13,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Bronski",
+        "Inicio": "30/12/25",
+        "Fim": "06/07/26",
+        "Horas Plantas": 51,
+        "Horas Colheita": 33,
+        "Horas Outros": 6,
+        "Horas Limp/Prep": 15,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Pegões",
+        "Cultura": "Yarimaru",
+        "Inicio": "12/02/26",
+        "Fim": NaN,
+        "Horas Plantas": 54,
+        "Horas Colheita": 43,
+        "Horas Outros": 8,
+        "Horas Limp/Prep": 10,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "RZ 73-CB0901",
+        "Inicio": "11/02/26",
+        "Fim": NaN,
+        "Horas Plantas": 120,
+        "Horas Colheita": 69,
+        "Horas Outros": 25,
+        "Horas Limp/Prep": 19,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "Yarimaru",
+        "Inicio": "11/02/26",
+        "Fim": NaN,
+        "Horas Plantas": 100,
+        "Horas Colheita": 44,
+        "Horas Outros": 22,
+        "Horas Limp/Prep": 17,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "Yarimaru",
+        "Inicio": "12/03/26",
+        "Fim": NaN,
+        "Horas Plantas": 71,
+        "Horas Colheita": 60,
+        "Horas Outros": 12,
+        "Horas Limp/Prep": 14,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "Yarimaru",
+        "Inicio": "13/02/26",
+        "Fim": NaN,
+        "Horas Plantas": 52,
+        "Horas Colheita": 44,
+        "Horas Outros": 18,
+        "Horas Limp/Prep": 20,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Kumato",
+        "Inicio": "15/04/26",
+        "Fim": NaN,
+        "Horas Plantas": 60,
+        "Horas Colheita": 56,
+        "Horas Outros": 3,
+        "Horas Limp/Prep": 7,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Yarimaru",
+        "Inicio": "05/05/26",
+        "Fim": NaN,
+        "Horas Plantas": 49,
+        "Horas Colheita": 30,
+        "Horas Outros": 12,
+        "Horas Limp/Prep": 2,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Pinkmaru",
+        "Inicio": "26/04/26",
+        "Fim": NaN,
+        "Horas Plantas": 51,
+        "Horas Colheita": 36,
+        "Horas Outros": 15,
+        "Horas Limp/Prep": 2,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Pegões",
+        "Cultura": "San Blas",
+        "Inicio": "21/04/26",
+        "Fim": NaN,
+        "Horas Plantas": 70,
+        "Horas Colheita": 23,
+        "Horas Outros": 7,
+        "Horas Limp/Prep": 12,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Pegões",
+        "Cultura": "Bronski",
+        "Inicio": "22/04/26",
+        "Fim": NaN,
+        "Horas Plantas": 77,
+        "Horas Colheita": 24,
+        "Horas Outros": 6,
+        "Horas Limp/Prep": 2,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Pegões",
+        "Cultura": "Tiac",
+        "Inicio": "22/04/26",
+        "Fim": NaN,
+        "Horas Plantas": 74,
+        "Horas Colheita": 26,
+        "Horas Outros": 6,
+        "Horas Limp/Prep": 2,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "CCS",
+        "Cultura": "Bronski",
+        "Inicio": "14/05/26",
+        "Fim": NaN,
+        "Horas Plantas": 102,
+        "Horas Colheita": 22,
+        "Horas Outros": 7,
+        "Horas Limp/Prep": 5,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "CCS",
+        "Cultura": "San Blas",
+        "Inicio": "15/05/26",
+        "Fim": NaN,
+        "Horas Plantas": 89,
+        "Horas Colheita": 24,
+        "Horas Outros": 7,
+        "Horas Limp/Prep": 5,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Yarimaru",
+        "Inicio": "05/06/26",
+        "Fim": NaN,
+        "Horas Plantas": 65,
+        "Horas Colheita": 13,
+        "Horas Outros": 6,
+        "Horas Limp/Prep": 6,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Keisha",
+        "Inicio": "09/06/26",
+        "Fim": NaN,
+        "Horas Plantas": 71,
+        "Horas Colheita": 7,
+        "Horas Outros": 14,
+        "Horas Limp/Prep": 8,
+        "Tipo": "Mini"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Kumato",
+        "Inicio": "06/06/26",
+        "Fim": NaN,
+        "Horas Plantas": 53,
+        "Horas Colheita": 14,
+        "Horas Outros": 5,
+        "Horas Limp/Prep": 10,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "San Blas",
+        "Inicio": "07/06/26",
+        "Fim": NaN,
+        "Horas Plantas": 74,
+        "Horas Colheita": 8,
+        "Horas Outros": 3,
+        "Horas Limp/Prep": 6,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Lacio",
+        "Inicio": "03/06/26",
+        "Fim": NaN,
+        "Horas Plantas": 62,
+        "Horas Colheita": 9,
+        "Horas Outros": 2,
+        "Horas Limp/Prep": 7,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Tiac",
+        "Inicio": "10/06/26",
+        "Fim": NaN,
+        "Horas Plantas": 60,
+        "Horas Colheita": 3,
+        "Horas Outros": 1,
+        "Horas Limp/Prep": 6,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "Yarimaru",
+        "Inicio": "16/07/26",
+        "Fim": NaN,
+        "Horas Plantas": 41,
+        "Horas Colheita": 0,
+        "Horas Outros": 2,
+        "Horas Limp/Prep": 17,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "RZ 73-CB0901",
+        "Inicio": "08/07/26",
+        "Fim": NaN,
+        "Horas Plantas": 37,
+        "Horas Colheita": 0,
+        "Horas Outros": 1,
+        "Horas Limp/Prep": 12,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "Komakai",
+        "Inicio": "03/06/26",
+        "Fim": NaN,
+        "Horas Plantas": 45,
+        "Horas Colheita": 6,
+        "Horas Outros": 33,
+        "Horas Limp/Prep": 13,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "Yarimaru",
+        "Inicio": "22/06/26",
+        "Fim": NaN,
+        "Horas Plantas": 85,
+        "Horas Colheita": 0,
+        "Horas Outros": 21,
+        "Horas Limp/Prep": 34,
+        "Tipo": "Grande"
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "Komakai",
+        "Inicio": "12/06/26",
+        "Fim": NaN,
+        "Horas Plantas": 86,
+        "Horas Colheita": 0,
+        "Horas Outros": 25,
+        "Horas Limp/Prep": 22,
+        "Tipo": "Grande"
+    }
+];
+
         const activityUnits = {
             'h/ha/semana': 'h/ha/semana',
             'Reb/Arg': 'pl/h',
@@ -45976,27 +48534,61 @@
 
         let selectedWeekRanges = ['1-10', '11-20', '21-30', '31-40', '41-52'];
         let selectedActivity = 'h/ha/semana';
-        let selectedFarms = Object.keys(farmColors);
+        
+        // Ordem exata solicitada para as quintas
+        const farmOrder = [
+            'Horticilha',
+            'CCS',
+            'Portos Brancos',
+            'Zambujeira',
+            'Pegões',
+            'Sobreiro',
+            'Campelos',
+            'Caminhos da Cotovia'
+        ];
+
+        let selectedFarms = [...farmOrder];
         let homologComparison = false;
         let currentTab = 1;
         let currentSubTab = 5;
+        let selectedCultureSize = 'Todos';
 
         let lineChartInstance = null;
         let barChartInstance = null;
+        let cultureChartInstance = null;
 
         function getActivityUnit(act) { return activityUnits[act] || ''; }
         function isLowerBetter(act) { return act === 'h/ha/semana'; }
+
+        function selectCultureSize(size, btn) {
+            selectedCultureSize = size;
+            const container = document.getElementById('culture-size-btns');
+            if (container) {
+                container.querySelectorAll('.btn-act').forEach(b => b.classList.remove('active'));
+            }
+            btn.classList.add('active');
+            updateCultureChart();
+        }
 
         function switchTab(tabNum) {
             currentTab = tabNum;
             document.getElementById('tab-btn-1').classList.toggle('active', tabNum === 1);
             document.getElementById('tab-btn-2').classList.toggle('active', tabNum === 2);
+            document.getElementById('tab-btn-3').classList.toggle('active', tabNum === 3);
+
             document.getElementById('tab-content-1').classList.toggle('active', tabNum === 1);
             document.getElementById('tab-content-2').classList.toggle('active', tabNum === 2);
+            document.getElementById('tab-content-3').classList.toggle('active', tabNum === 3);
 
-            document.getElementById('sidebar-filter-years').style.display = tabNum === 1 ? 'flex' : 'none';
-            document.getElementById('sidebar-filter-weeks').style.display = tabNum === 1 ? 'flex' : 'none';
+            document.getElementById('sidebar-filter-years').style.display = (tabNum === 1 || tabNum === 3) ? 'flex' : 'none';
+            document.getElementById('sidebar-filter-weeks').style.display = (tabNum === 1 || tabNum === 3) ? 'flex' : 'none';
             document.getElementById('sidebar-filter-homolog').style.display = tabNum === 1 ? 'flex' : 'none';
+
+            // Altera o título do filtro das semanas conforme o separador ativo
+            const weeksFilterTitle = document.getElementById('weeks-filter-title');
+            if (weeksFilterTitle) {
+                weeksFilterTitle.innerText = (tabNum === 3) ? 'Semanas de plantação' : 'Semanas';
+            }
 
             const farmsFilterSection = document.getElementById('sidebar-filter-farms');
             if (tabNum === 2) {
@@ -46004,6 +48596,10 @@
                 renderPeriodCharts(currentSubTab);
             } else {
                 farmsFilterSection.classList.remove('sidebar-disabled');
+            }
+
+            if (tabNum === 3) {
+                updateCultureChart();
             }
         }
 
@@ -46056,7 +48652,7 @@
         function renderFarmButtons() {
             const farmsGrid = document.getElementById('farms-grid');
             farmsGrid.innerHTML = '';
-            Object.keys(farmColors).forEach(farm => {
+            farmOrder.forEach(farm => {
                 const btn = document.createElement('button');
                 const isActive = selectedFarms.includes(farm);
                 btn.className = `btn-filter ${isActive ? 'active' : ''}`;
@@ -46089,6 +48685,7 @@
                 btn.classList.add('active');
             }
             updateDashboard();
+            if (currentTab === 3) updateCultureChart();
         }
 
         function toggleWeekRange(label, btn) {
@@ -46102,6 +48699,7 @@
                 btn.classList.add('active');
             }
             updateDashboard();
+            if (currentTab === 3) updateCultureChart();
         }
 
         function toggleFarm(farm) {
@@ -46114,6 +48712,7 @@
             }
             renderFarmButtons();
             updateDashboard();
+            if (currentTab === 3) updateCultureChart();
         }
 
         function selectActivity(act) {
@@ -46165,10 +48764,13 @@
         function renderFarmCards(data) {
             const grid = document.getElementById('farms-cards-grid');
             grid.innerHTML = '';
-            const unit = getActivityUnit(selectedActivity);
+            const rawUnit = getActivityUnit(selectedActivity);
+            const unit = rawUnit === 'h/ha/semana' ? 'h' : rawUnit;
             const lowerIsBetter = isLowerBetter(selectedActivity);
 
-            selectedFarms.forEach(farm => {
+            const orderedFarmsToRender = farmOrder.filter(farm => selectedFarms.includes(farm));
+
+            orderedFarmsToRender.forEach(farm => {
                 let farmRecords = [];
                 data.forEach(d => {
                     if (d[farm] !== null && d[farm] !== undefined && !isNaN(d[farm]) && d[farm] !== 0) {
@@ -46185,8 +48787,8 @@
 
                 if (farmRecords.length === 0) {
                     card.innerHTML = `
-                        <div class="farm-card-header" title="${farm}">
-                            <span>${farm}</span>
+                        <div class="farm-card-header-container">
+                            <span class="farm-card-header" title="${farm}">${farm}</span>
                         </div>
                         <div style="font-size: 0.65rem; color: #999; padding: 4px 0;">Sem dados</div>
                     `;
@@ -46205,21 +48807,20 @@
                     const extremeLabel = lowerIsBetter ? 'Mín' : 'Máx';
 
                     card.innerHTML = `
-                        <div class="farm-card-header" title="${farm}">
-                            <span>${farm}</span>
+                        <div class="farm-card-header-container">
+                            <span class="farm-card-header" title="${farm}">${farm}</span>
                         </div>
                         <div class="farm-card-metrics">
                             <div class="metric-row">
                                 <span class="metric-label">Média</span>
                                 <div class="metric-value-box">
-                                    <div class="metric-val">${Math.round(avg)}</div>
-                                    <div class="metric-sub">${unit}</div>
+                                    <div class="metric-val">${Math.round(avg)} <span style="font-size: 0.6rem; font-weight: 600; color: #888888; font-family: 'Inter', sans-serif;">${unit}</span></div>
                                 </div>
                             </div>
                             <div class="metric-row">
                                 <span class="metric-label">${extremeLabel}</span>
                                 <div class="metric-value-box">
-                                    <div class="metric-val">${Math.round(targetRecord.val)}</div>
+                                    <div class="metric-val">${Math.round(targetRecord.val)} <span style="font-size: 0.6rem; font-weight: 600; color: #888888; font-family: 'Inter', sans-serif;">${unit}</span></div>
                                     <div class="metric-sub">S${targetRecord.week}, ${targetRecord.year}</div>
                                 </div>
                             </div>
@@ -46235,7 +48836,8 @@
             const ctx = document.getElementById('lineChart').getContext('2d');
             if (lineChartInstance) lineChartInstance.destroy();
 
-            const unit = getActivityUnit(selectedActivity);
+            let unit = getActivityUnit(selectedActivity);
+            if (unit === 'h/ha/semana') unit = 'h';
             let activeWeeks = [];
             weekRanges.forEach(wr => {
                 if (selectedWeekRanges.includes(wr.label)) {
@@ -46245,9 +48847,10 @@
             activeWeeks.sort((a,b) => a - b);
 
             let datasets = [];
+            const orderedFarmsToRender = farmOrder.filter(farm => selectedFarms.includes(farm));
 
             if (!homologComparison) {
-                selectedFarms.forEach(farm => {
+                orderedFarmsToRender.forEach(farm => {
                     let weekData = activeWeeks.map(w => {
                         let rows = data.filter(d => d.Semana === w && d[farm] !== null && d[farm] !== undefined && d[farm] !== 0);
                         if (rows.length === 0) return null;
@@ -46267,7 +48870,7 @@
                 });
             } else {
                 const sortedYears = [...selectedYears].sort();
-                selectedFarms.forEach(farm => {
+                orderedFarmsToRender.forEach(farm => {
                     sortedYears.forEach((yr, idx) => {
                         let weekData = activeWeeks.map(w => {
                             let row = data.find(d => d.Ano === yr && d.Semana === w);
@@ -46350,9 +48953,10 @@
             const lowerIsBetter = isLowerBetter(selectedActivity);
             let unit = getActivityUnit(selectedActivity);
             
-            const displayUnit = unit === 'h/ha/semana' ? 'h/ha/sem' : unit;
+            const displayUnit = unit === 'h/ha/semana' ? 'h' : unit;
 
             const sortedYears = [...selectedYears].sort((a,b) => a - b);
+            const orderedFarmsToRender = farmOrder.filter(farm => selectedFarms.includes(farm));
 
             let labels = [];
             let chartData = [];
@@ -46362,7 +48966,7 @@
 
             if (!homologComparison) {
                 let farmStats = [];
-                selectedFarms.forEach(farm => {
+                orderedFarmsToRender.forEach(farm => {
                     let vals = [];
                     data.forEach(d => {
                         if (d[farm] !== null && d[farm] !== undefined && !isNaN(d[farm]) && d[farm] !== 0) {
@@ -46376,16 +48980,16 @@
                 });
 
                 farmStats.sort((a, b) => lowerIsBetter ? a.avg - b.avg : b.avg - a.avg);
-                const bestVal = farmStats.length > 0 ? farmStats[0].avg : 0;
+                let bestVal = farmStats.length > 0 ? farmStats[0].avg : 0;
 
-                farmStats.forEach((s, idx) => {
+                farmStats.forEach(s => {
                     const labelAbbr = farmAbbreviations[s.farm] || s.farm;
                     labels.push(labelAbbr);
                     chartData.push(s.avg);
                     bgColors.push(farmColors[s.farm] || '#cccccc');
                     borderColors.push(farmBorderColors[s.farm] || '#666666');
 
-                    if (idx === 0) {
+                    if (s.avg === bestVal) {
                         variations.push({ text: '(Melhor)', isBest: true });
                     } else {
                         const diffPct = ((s.avg - bestVal) / bestVal) * 100;
@@ -46394,54 +48998,33 @@
                     }
                 });
             } else {
-                let farmAverages = [];
-                selectedFarms.forEach(farm => {
-                    let vals = [];
-                    data.forEach(d => {
-                        if (d[farm] !== null && d[farm] !== undefined && !isNaN(d[farm]) && d[farm] !== 0) vals.push(d[farm]);
-                    });
-                    let avg = vals.length > 0 ? vals.reduce((a,b)=>a+b,0)/vals.length : (lowerIsBetter ? Infinity : -Infinity);
-                    farmAverages.push({ farm, avg });
-                });
-                farmAverages.sort((a, b) => lowerIsBetter ? a.avg - b.avg : b.avg - a.avg);
-
-                farmAverages.forEach(fObj => {
-                    const farm = fObj.farm;
+                let allItemsToסsort = [];
+                orderedFarmsToRender.forEach(farm => {
                     const labelAbbr = farmAbbreviations[farm] || farm;
-                    let yearDataList = [];
-
                     sortedYears.forEach(yr => {
                         let vals = data.filter(d => d.Ano === yr && d[farm] !== null && d[farm] !== undefined && d[farm] !== 0).map(d => d[farm]);
                         if (vals.length > 0) {
                             let avg = vals.reduce((a,b)=>a+b,0)/vals.length;
-                            yearDataList.push({ year: yr, avg });
+                            allItemsToסsort.push({ farm, year: yr, labelAbbr, avg });
                         }
                     });
+                });
 
-                    if (yearDataList.length > 0) {
-                        let bestYearVal = yearDataList[0].avg;
-                        yearDataList.forEach(yItem => {
-                            if (lowerIsBetter ? yItem.avg < bestYearVal : yItem.avg > bestYearVal) {
-                                bestYearVal = yItem.avg;
-                            }
-                        });
+                allItemsToסsort.sort((a, b) => lowerIsBetter ? a.avg - b.avg : b.avg - a.avg);
+                let bestVal = allItemsToסsort.length > 0 ? allItemsToסsort[0].avg : 0;
 
-                        yearDataList.sort((a, b) => a.year - b.year);
+                allItemsToסsort.forEach(item => {
+                    labels.push(`${item.labelAbbr}\n(${item.year})`);
+                    chartData.push(item.avg);
+                    bgColors.push(farmColors[item.farm] || '#cccccc');
+                    borderColors.push(farmBorderColors[item.farm] || '#666666');
 
-                        yearDataList.forEach(yItem => {
-                            labels.push(`${labelAbbr}\n(${yItem.year})`);
-                            chartData.push(yItem.avg);
-                            bgColors.push(farmColors[farm] || '#cccccc');
-                            borderColors.push(farmBorderColors[farm] || '#666666');
-
-                            if (yItem.avg === bestYearVal) {
-                                variations.push({ text: '(Melhor)', isBest: true });
-                            } else {
-                                const diffPct = ((yItem.avg - bestYearVal) / bestYearVal) * 100;
-                                const sign = diffPct > 0 ? '+' : '';
-                                variations.push({ text: `${sign}${diffPct.toFixed(0)}%`, isBest: false });
-                            }
-                        });
+                    if (item.avg === bestVal) {
+                        variations.push({ text: '(Melhor)', isBest: true });
+                    } else {
+                        const diffPct = ((item.avg - bestVal) / bestVal) * 100;
+                        const sign = diffPct > 0 ? '+' : '';
+                        variations.push({ text: `${sign}${diffPct.toFixed(0)}%`, isBest: false });
                     }
                 });
             }
@@ -46619,10 +49202,12 @@
 
             targetActivities52w.forEach(act => {
                 const unit = activityUnits[act.keys[0]] || '';
-                const displayUnit = isVarMode ? '%' : (unit === 'h/ha/semana' ? 'h/ha/sem' : unit);
+                const displayUnit = isVarMode ? '%' : (unit === 'h/ha/semana' ? 'h' : unit);
+                const lowerIsBetter = isLowerBetter(act.keys[0]);
 
                 let farmStats = [];
-                Object.keys(farmColors).forEach(farm => {
+                farmOrder.forEach(farm => {
+                    if (!selectedFarms.includes(farm)) return;
                     let avg = 0;
                     let isValid = false;
 
@@ -46645,9 +49230,8 @@
                 farmStats = farmStats.filter(s => s.isValid);
                 if (farmStats.length === 0) return;
 
-                farmStats.sort((a, b) => b.avg - a.avg);
-
-                const bestVal = farmStats[0].avg;
+                farmStats.sort((a, b) => lowerIsBetter ? a.avg - b.avg : b.avg - a.avg);
+                let bestVal = farmStats.length > 0 ? farmStats[0].avg : 0;
 
                 let labels = [];
                 let chartData = [];
@@ -46655,44 +49239,37 @@
                 let borderColors = [];
                 let variations = [];
 
-                farmStats.forEach((s, idx) => {
+                farmStats.forEach(s => {
                     const labelAbbr = farmAbbreviations[s.farm] || s.farm;
                     labels.push(labelAbbr);
                     chartData.push(s.avg);
                     bgColors.push(farmColors[s.farm] || '#cccccc');
                     borderColors.push(farmBorderColors[s.farm] || '#666666');
 
-                    if (isVarMode) {
-                        if (idx === 0) {
-                            variations.push({ text: '(Melhor)', isBest: true });
-                        } else {
-                            variations.push({ text: '', isBest: false });
-                        }
+                    if (s.avg === bestVal || bestVal === 0) {
+                        variations.push({ text: '(Melhor)', isBest: true });
                     } else {
-                        if (idx === 0 || bestVal === 0) {
-                            variations.push({ text: '(Melhor)', isBest: true });
-                        } else {
-                            const diffPct = ((s.avg - bestVal) / bestVal) * 100;
-                            const sign = diffPct > 0 ? '+' : '';
-                            variations.push({ text: `${sign}${diffPct.toFixed(0)}%`, isBest: false });
-                        }
+                        const diffPct = ((s.avg - bestVal) / bestVal) * 100;
+                        const sign = diffPct > 0 ? '+' : '';
+                        variations.push({ text: `${sign}${diffPct.toFixed(0)}%`, isBest: false });
                     }
                 });
 
-                let periodTitleSuffix = '';
+                let periodSubtitleText = '';
                 if (periodType === 5) {
-                    periodTitleSuffix = ' (5 semanas)';
+                    periodSubtitleText = '5 semanas';
                 } else if (periodType === 52) {
-                    periodTitleSuffix = ' (52 semanas)';
+                    periodSubtitleText = '52 semanas';
                 } else if (isVarMode) {
-                    periodTitleSuffix = ' (Último ano vs 4 anos)';
+                    periodSubtitleText = 'Último ano vs 4 anos';
                 }
 
                 const div = document.createElement('div');
                 div.className = 'chart-card';
                 div.innerHTML = `
                     <div class="chart-header" style="margin-bottom: 10px;">
-                        <div class="chart-title" style="font-size: 0.95rem;">${act.label}${periodTitleSuffix}</div>
+                        <div class="chart-title" style="font-size: 0.95rem;">${act.label}</div>
+                        <div class="chart-subtitle" style="font-size: 0.72rem; color: var(--text-muted); margin-top: 1px;">${periodSubtitleText}</div>
                     </div>
                     <div class="chart-container-52w">
                         <canvas id="chart-period-${act.label.replace(/[\/\s]+/g, '-')}"></canvas>
@@ -46761,6 +49338,270 @@
                         }
                     }
                 });
+            });
+        }
+
+        function parseDate(dateStr) {
+            if (!dateStr) return null;
+            const parts = dateStr.split('/');
+            if (parts.length !== 3) return null;
+            const day = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10) - 1;
+            let year = parseInt(parts[2], 10);
+            if (year < 100) year += 2000;
+            return new Date(year, month, day);
+        }
+
+        function getCultureWeeksDuration(inicioStr, fimStr) {
+            const start = parseDate(inicioStr);
+            const end = parseDate(fimStr);
+            if (!start || !end || isNaN(start) || isNaN(end)) return 1;
+            const diffTime = Math.abs(end - start);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            const weeks = diffDays / 7;
+            return weeks > 0 ? weeks : 1;
+        }
+
+        function getCultureWeekAndYear(dateStr) {
+            const date = parseDate(dateStr);
+            if (!date) return { year: 2023, week: 1 };
+            
+            const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+            d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
+            const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+            const weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
+            return { year: date.getFullYear(), week: weekNo };
+        }
+
+        function getFilteredCultureData() {
+            let activeWeeks = [];
+            weekRanges.forEach(wr => {
+                if (selectedWeekRanges.includes(wr.label)) {
+                    for (let w = wr.min; w <= wr.max; w++) activeWeeks.push(w);
+                }
+            });
+
+            const textFilter = document.getElementById('culture-text-filter').value.toLowerCase();
+
+            return cultureData.filter(item => {
+                if (!selectedFarms.includes(item.Quinta)) return false;
+
+                const { year, week } = getCultureWeekAndYear(item.Inicio);
+                if (!selectedYears.includes(year)) return false;
+                if (!activeWeeks.includes(week)) return false;
+                if (selectedCultureSize !== 'Todos' && item.Tipo !== selectedCultureSize) return false;
+                if (textFilter && !item.Cultura.toLowerCase().includes(textFilter)) return false;
+
+                return true;
+            });
+        }
+
+        function renderCultureFarmCards() {
+            const grid = document.getElementById('culture-farms-cards-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            let filtered = getFilteredCultureData();
+            const orderedFarmsToRender = farmOrder.filter(farm => selectedFarms.includes(farm));
+            const unitHtml = `<span style="font-size: 0.6rem; font-weight: 600; color: #888888; font-family: 'Inter', sans-serif;">h</span>`;
+
+            orderedFarmsToRender.forEach(farm => {
+                let farmItems = filtered.filter(item => item.Quinta === farm);
+                const farmColor = farmColors[farm] || '#e2d9cc';
+
+                const card = document.createElement('div');
+                card.className = 'farm-card';
+                card.style.borderColor = farmColor;
+                card.style.borderTopColor = farmColor;
+
+                if (farmItems.length === 0) {
+                    card.innerHTML = `
+                        <div class="farm-card-header-container">
+                            <span class="farm-card-header" title="${farm}">${farm}</span>
+                        </div>
+                        <div style="font-size: 0.65rem; color: #999; padding: 4px 0;">Sem dados</div>
+                    `;
+                } else {
+                    let sumPlantas = 0, sumColheita = 0, sumOutros = 0, sumTotalLimpPrep = 0;
+                    farmItems.forEach(item => {
+                        sumPlantas += item['Horas Plantas'] || 0;
+                        sumColheita += item['Horas Colheita'] || 0;
+                        sumOutros += item['Horas Outros'] || 0;
+                        
+                        const weeks = getCultureWeeksDuration(item.Inicio, item.Fim);
+                        const weeklyLimpPrep = item['Horas Limp/Prep'] || 0;
+                        sumTotalLimpPrep += (weeklyLimpPrep * weeks);
+                    });
+                    const count = farmItems.length;
+                    const avgPlantas = sumPlantas / count;
+                    const avgColheita = sumColheita / count;
+                    const avgOutros = sumOutros / count;
+                    const avgTotalLimpPrep = sumTotalLimpPrep / count;
+
+                    card.innerHTML = `
+                        <div class="farm-card-header-container" style="border-bottom: 1px solid #e2d9cc; padding-bottom: 2px; margin-bottom: 4px;">
+                            <span class="farm-card-header" title="${farm}">${farm}</span>
+                        </div>
+                        <div class="farm-card-sub" style="font-size: 0.6rem; margin-bottom: 4px;">(h/20k pl/sem)</div>
+                        <div class="farm-card-metrics">
+                            <div class="metric-row">
+                                <span class="metric-label">PLANTAS</span>
+                                <div class="metric-value-box">
+                                    <div class="metric-val">${Math.round(avgPlantas)} ${unitHtml}</div>
+                                </div>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">COLHEITA</span>
+                                <div class="metric-value-box">
+                                    <div class="metric-val">${Math.round(avgColheita)} ${unitHtml}</div>
+                                </div>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">OUTROS</span>
+                                <div class="metric-value-box">
+                                    <div class="metric-val">${Math.round(avgOutros)} ${unitHtml}</div>
+                                </div>
+                            </div>
+                            <div style="border-top: 1px solid #e2d9cc; margin: 4px 0; padding-top: 2px;">
+                                <div class="farm-card-sub" style="font-size: 0.6rem; margin-bottom: 2px;">Horas totais</div>
+                                <div class="metric-row">
+                                    <span class="metric-label" style="font-weight: 700;">LIMP/PREP</span>
+                                    <div class="metric-value-box">
+                                        <div class="metric-val">${Math.round(avgTotalLimpPrep)} ${unitHtml}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                grid.appendChild(card);
+            });
+        }
+
+        function updateCultureChart() {
+            renderCultureFarmCards();
+
+            const ctx = document.getElementById('cultureChart').getContext('2d');
+            if (cultureChartInstance) cultureChartInstance.destroy();
+
+            let filtered = getFilteredCultureData();
+
+            filtered.sort((a, b) => {
+                const totalA = (a['Horas Plantas'] || 0) + (a['Horas Colheita'] || 0) + (a['Horas Outros'] || 0) + (a['Horas Limp/Prep'] || 0);
+                const totalB = (b['Horas Plantas'] || 0) + (b['Horas Colheita'] || 0) + (b['Horas Outros'] || 0) + (b['Horas Limp/Prep'] || 0);
+                return totalA - totalB;
+            });
+
+            const labels = filtered.map(d => {
+                const abbr = farmAbbreviations[d.Quinta] || d.Quinta;
+                const { year } = getCultureWeekAndYear(d.Inicio);
+                const yy = year.toString().slice(-2);
+                return `${abbr}-${d.Cultura} (${yy})`;
+            });
+
+            const totals = filtered.map(d => (d['Horas Plantas'] || 0) + (d['Horas Colheita'] || 0) + (d['Horas Outros'] || 0) + (d['Horas Limp/Prep'] || 0));
+            const bestTotal = totals.length > 0 ? Math.min(...totals) : 0;
+
+            const variations = totals.map((total, idx) => {
+                if (idx === 0 || total === bestTotal) {
+                    return { text: '(Melhor)', isBest: true };
+                } else {
+                    const diffPct = ((total - bestTotal) / bestTotal) * 100;
+                    const sign = diffPct > 0 ? '+' : '';
+                    return { text: `${sign}${diffPct.toFixed(0)}%`, isBest: false };
+                }
+            });
+
+            cultureChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { 
+                            label: 'Plantas', 
+                            data: filtered.map(d => d['Horas Plantas'] || 0), 
+                            backgroundColor: '#c6e0b4', 
+                            borderRadius: 0,
+                            borderSkipped: false 
+                        },
+                        { 
+                            label: 'Colheita', 
+                            data: filtered.map(d => d['Horas Colheita'] || 0), 
+                            backgroundColor: '#ff7575', 
+                            borderRadius: 0,
+                            borderSkipped: false 
+                        },
+                        { 
+                            label: 'Outros', 
+                            data: filtered.map(d => d['Horas Outros'] || 0), 
+                            backgroundColor: '#fff2cc', 
+                            borderRadius: 0,
+                            borderSkipped: false 
+                        },
+                        { 
+                            label: 'Limp/Prep', 
+                            data: filtered.map(d => d['Horas Limp/Prep'] || 0), 
+                            backgroundColor: '#f8cbad', 
+                            borderRadius: { topLeft: 6, topRight: 6, bottomLeft: 0, bottomRight: 0 },
+                            borderSkipped: false 
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: { duration: 1000 },
+                    layout: { padding: { top: 35 } },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { usePointStyle: true, boxWidth: 8, font: { size: 11 } }
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) label += ': ';
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y + ' h';
+                                    }
+                                    return label;
+                                },
+                                footer: function(tooltipItems) {
+                                    let total = 0;
+                                    tooltipItems.forEach(item => {
+                                        total += item.parsed.y;
+                                    });
+                                    return 'Total: ' + total + ' h';
+                                }
+                            }
+                        },
+                        datalabels: {
+                            display: function(context) {
+                                return context.datasetIndex === context.chart.data.datasets.length - 1;
+                            },
+                            anchor: 'end',
+                            align: 'top',
+                            offset: 2,
+                            font: { weight: 'bold', size: 10 },
+                            textAlign: 'center',
+                            color: '#555555',
+                            formatter: function(value, context) {
+                                const idx = context.dataIndex;
+                                const total = totals[idx];
+                                const varInfo = variations[idx];
+                                return `${total} h\n${varInfo ? varInfo.text : ''}`;
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { stacked: true, grid: { display: false } },
+                        y: { stacked: true, grid: { color: '#f0ebd9' }, beginAtZero: true, grace: '15%' }
+                    }
+                }
             });
         }
 

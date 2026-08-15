@@ -42,7 +42,6 @@
             position: relative;
         }
 
-        /* --- COMPORTAMENTO MÓVEL (< 1024px) --- */
         .sidebar-hover-trigger {
             position: fixed;
             top: 0;
@@ -121,7 +120,6 @@
             visibility: visible;
         }
 
-        /* --- DESKTOP (>= 1024px) --- */
         @media (min-width: 1024px) {
             .sidebar-hover-trigger { display: none; }
             .toggle-sidebar-btn { display: none; }
@@ -135,7 +133,6 @@
             }
         }
 
-        /* --- COMPONENTES DA SIDEBAR --- */
         .sidebar-header {
             display: flex;
             align-items: center;
@@ -251,7 +248,6 @@
             filter: grayscale(40%);
         }
 
-        /* --- CONTEÚDO PRINCIPAL --- */
         .main-content {
             flex: 1;
             padding: 24px 30px;
@@ -290,7 +286,6 @@
             font-weight: 700;
         }
 
-        /* --- ABAS / SEPARADORES PRINCIPAIS --- */
         .main-tabs {
             display: flex;
             gap: 8px;
@@ -340,25 +335,24 @@
         }
 
         .sub-tab-btn {
-            background-color: #eae3d5;
-            color: #3b4d32;
-            border: 1px solid #d0c5b4;
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-size: 0.8rem;
+            background-color: #f0ebe1;
+            color: #444;
+            border: 1px solid #d5cebf;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.78rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
+            white-space: nowrap;
         }
 
-        .sub-tab-btn:hover {
-            background-color: #dfd6c5;
-        }
+        .sub-tab-btn:hover { background-color: #e2dacb; }
 
         .sub-tab-btn.active {
-            background-color: #3d682c;
+            background-color: var(--sidebar-bg);
             color: #ffffff;
-            border-color: #3d682c;
+            border-color: var(--sidebar-bg);
         }
 
         .activity-selector {
@@ -406,7 +400,6 @@
             border-color: var(--sidebar-bg);
         }
 
-        /* --- FILTROS TAB 3 --- */
         .culture-filters {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -428,7 +421,6 @@
             outline: none;
         }
 
-        /* --- 8 CARDS EXATOS NA HORIZONTAL --- */
         .farms-cards-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -526,7 +518,6 @@
             margin-top: 1px;
         }
 
-        /* --- CHARTS ROW --- */
         .charts-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -568,7 +559,6 @@
             width: 100%;
         }
 
-        /* --- 6 GRÁFICOS (3x2) --- */
         .charts-row-52w {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -589,11 +579,9 @@
 </head>
 <body>
 
-    <!-- Zona de Gatilho e Overlay para Mobile -->
     <div class="sidebar-hover-trigger"></div>
     <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
 
-    <!-- Botão Fixo de Filtros para Mobile -->
     <button class="toggle-sidebar-btn" onclick="toggleSidebar()" title="Abrir Filtros">
         <span id="toggle-icon">☰</span>
     </button>
@@ -636,7 +624,6 @@
             </div>
         </div>
 
-        <!-- Abas / Separadores -->
         <div class="main-tabs" style="margin-left: 45px;">
             <button class="tab-btn active" id="tab-btn-1" onclick="switchTab(1)">Horas e produtividades</button>
             <button class="tab-btn" id="tab-btn-2" onclick="switchTab(2)">Últimas semanas</button>
@@ -645,16 +632,13 @@
 
         <!-- TAB 1: Horas e Produtividades -->
         <div class="tab-content active" id="tab-content-1">
-            <!-- Atividades Selector -->
             <div class="activity-selector">
                 <div class="activity-label">Atividade:</div>
                 <div class="activity-btns" id="activities-btns"></div>
             </div>
 
-            <!-- Grid de Cards de Quinta -->
             <div class="farms-cards-grid" id="farms-cards-grid"></div>
 
-            <!-- Charts Row -->
             <div class="charts-row">
                 <div class="chart-card">
                     <div class="chart-header">
@@ -693,21 +677,31 @@
             <div class="culture-filters">
                 <input type="text" id="culture-text-filter" placeholder="Filtrar cultura..." oninput="updateCultureChart()" style="width: 140px; min-width: unset; flex: unset;">
                 <div class="activity-btns" id="culture-size-btns">
-                    <button class="btn-act active" onclick="selectCultureSize('Todos', this)">Todos</button>
+                    <button class="btn-act active" onclick="selectCultureSize('Todas', this)">Todas</button>
                     <button class="btn-act" onclick="selectCultureSize('Grande', this)">Grande</button>
                     <button class="btn-act" onclick="selectCultureSize('Mini', this)">Mini</button>
                 </div>
             </div>
 
-            <!-- Grid de Cards de Quinta para o Separador Por Cultura -->
             <div class="farms-cards-grid" id="culture-farms-cards-grid"></div>
 
             <div class="chart-card">
-                <div class="chart-header">
-                    <div class="chart-title">Horas / 20k pl / semana</div>
-                    <div class="chart-subtitle">Horas gastas em Plantas, Colheita, Outros e Limp/Prep (Ajustado a 2 pl/m²)</div>
+                <div class="chart-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <div class="chart-title">Horas / 20k pl / semana</div>
+                        <div class="chart-subtitle" style="margin-bottom: 0;">Horas gastas em Plantas, Colheita, Outros e Limp/Prep (Ajustado a 2 pl/m²)</div>
+                    </div>
+                    <!-- Checkboxes para filtros de cultura (Finalizadas e Em curso) sem fundo nem borda -->
+                    <div style="display: flex; gap: 15px; align-items: center; font-size: 0.85rem; font-weight: 600; color: var(--sidebar-bg); padding: 4px 0;">
+                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                            <input type="checkbox" id="chk-finalizadas" checked onchange="updateCultureChart()" style="accent-var: var(--sidebar-bg); width: 15px; height: 15px; cursor: pointer;"> Finalizadas
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                            <input type="checkbox" id="chk-emcurso" checked onchange="updateCultureChart()" style="accent-var: var(--sidebar-bg); width: 15px; height: 15px; cursor: pointer;"> Em curso
+                        </label>
+                    </div>
                 </div>
-                <div class="chart-container" style="min-height: 420px;">
+                <div class="chart-container" style="min-height: 420px; margin-top: 10px;">
                     <canvas id="cultureChart"></canvas>
                 </div>
             </div>
@@ -726,8 +720,6 @@
         }
 
         Chart.register(ChartDataLabels);
-	
-	////////////// Dados para o novo separador "Horas e produtividades" //////////////
 
         const rawData = [
   {
@@ -45972,8 +45964,6 @@
   }
 ];
 
-        ////////////// Dados para o novo separador "Por cultura"//////////////
-
         const cultureData = [
     {
         "Quinta": "Zambujeira",
@@ -48755,11 +48745,9 @@
         availableYears.sort((a, b) => a - b);
 
         let selectedYears = availableYears.filter(yr => yr >= 2023);
-
         let selectedWeekRanges = ['1-10', '11-20', '21-30', '31-40', '41-52'];
         let selectedActivity = 'h/ha/semana';
         
-        // Ordem exata solicitada para as quintas
         const farmOrder = [
             'Horticilha',
             'CCS',
@@ -48775,7 +48763,7 @@
         let homologComparison = false;
         let currentTab = 1;
         let currentSubTab = 5;
-        let selectedCultureSize = 'Todos';
+        let selectedCultureSize = 'Todas';
 
         let lineChartInstance = null;
         let barChartInstance = null;
@@ -48808,7 +48796,6 @@
             document.getElementById('sidebar-filter-weeks').style.display = (tabNum === 1 || tabNum === 3) ? 'flex' : 'none';
             document.getElementById('sidebar-filter-homolog').style.display = tabNum === 1 ? 'flex' : 'none';
 
-            // Altera o título do filtro das semanas conforme o separador ativo
             const weeksFilterTitle = document.getElementById('weeks-filter-title');
             if (weeksFilterTitle) {
                 weeksFilterTitle.innerText = (tabNum === 3) ? 'Semanas de plantação' : 'Semanas';
@@ -49176,7 +49163,6 @@
 
             const lowerIsBetter = isLowerBetter(selectedActivity);
             let unit = getActivityUnit(selectedActivity);
-            
             const displayUnit = unit === 'h/ha/semana' ? 'h' : unit;
 
             const sortedYears = [...selectedYears].sort((a,b) => a - b);
@@ -49222,22 +49208,22 @@
                     }
                 });
             } else {
-                let allItemsToסsort = [];
+                let allItemsToSort = [];
                 orderedFarmsToRender.forEach(farm => {
                     const labelAbbr = farmAbbreviations[farm] || farm;
                     sortedYears.forEach(yr => {
                         let vals = data.filter(d => d.Ano === yr && d[farm] !== null && d[farm] !== undefined && d[farm] !== 0).map(d => d[farm]);
                         if (vals.length > 0) {
                             let avg = vals.reduce((a,b)=>a+b,0)/vals.length;
-                            allItemsToסsort.push({ farm, year: yr, labelAbbr, avg });
+                            allItemsToSort.push({ farm, year: yr, labelAbbr, avg });
                         }
                     });
                 });
 
-                allItemsToסsort.sort((a, b) => lowerIsBetter ? a.avg - b.avg : b.avg - a.avg);
-                let bestVal = allItemsToסsort.length > 0 ? allItemsToסsort[0].avg : 0;
+                allItemsToSort.sort((a, b) => lowerIsBetter ? a.avg - b.avg : b.avg - a.avg);
+                let bestVal = allItemsToSort.length > 0 ? allItemsToSort[0].avg : 0;
 
-                allItemsToסsort.forEach(item => {
+                allItemsToSort.forEach(item => {
                     labels.push(`${item.labelAbbr}\n(${item.year})`);
                     chartData.push(item.avg);
                     bgColors.push(farmColors[item.farm] || '#cccccc');
@@ -49481,9 +49467,9 @@
 
                 let periodSubtitleText = '';
                 if (periodType === 5) {
-                    periodSubtitleText = '5 semanas';
+                    periodSubtitleText = 'Últimas 5 semanas';
                 } else if (periodType === 52) {
-                    periodSubtitleText = '52 semanas';
+                    periodSubtitleText = 'Últimas 52 semanas';
                 } else if (isVarMode) {
                     periodSubtitleText = 'Último ano vs 4 anos';
                 }
@@ -49606,15 +49592,22 @@
             });
 
             const textFilter = document.getElementById('culture-text-filter').value.toLowerCase();
+            const showFinalizadas = document.getElementById('chk-finalizadas').checked;
+            const showEmCurso = document.getElementById('chk-emcurso').checked;
 
             return cultureData.filter(item => {
                 if (!selectedFarms.includes(item.Quinta)) return false;
 
-                const { year, week } = getCultureWeekAndYear(item.Inicio);
+                const startDateStr = item.Inicio || item.Início;
+                const { year, week } = getCultureWeekAndYear(startDateStr);
                 if (!selectedYears.includes(year)) return false;
                 if (!activeWeeks.includes(week)) return false;
-                if (selectedCultureSize !== 'Todos' && item.Tipo !== selectedCultureSize) return false;
+                if (selectedCultureSize !== 'Todas' && item.Tipo !== selectedCultureSize) return false;
                 if (textFilter && !item.Cultura.toLowerCase().includes(textFilter)) return false;
+
+                const isAcabada = (item.Fim && item.Fim.trim() !== "");
+                if (isAcabada && !showFinalizadas) return false;
+                if (!isAcabada && !showEmCurso) return false;
 
                 return true;
             });
@@ -49652,7 +49645,8 @@
                         sumColheita += item['Horas Colheita'] || 0;
                         sumOutros += item['Horas Outros'] || 0;
                         
-                        const weeks = getCultureWeeksDuration(item.Inicio, item.Fim);
+                        const startDateStr = item.Inicio || item.Início;
+                        const weeks = (item.Fim && item.Fim.trim() !== "") ? getCultureWeeksDuration(startDateStr, item.Fim) : 1;
                         const weeklyLimpPrep = item['Horas Limp/Prep'] || 0;
                         sumTotalLimpPrep += (weeklyLimpPrep * weeks);
                     });
@@ -49719,7 +49713,8 @@
 
             const labels = filtered.map(d => {
                 const abbr = farmAbbreviations[d.Quinta] || d.Quinta;
-                const { year } = getCultureWeekAndYear(d.Inicio);
+                const startDateStr = d.Inicio || d.Início;
+                const { year } = getCultureWeekAndYear(startDateStr);
                 const yy = year.toString().slice(-2);
                 return `${abbr}-${d.Cultura} (${yy})`;
             });
@@ -49783,36 +49778,43 @@
                             labels: { usePointStyle: true, boxWidth: 8, font: { size: 11 } }
                         },
                         tooltip: {
-                mode: 'index',
-                intersect: false,
-                callbacks: {
-                    label: function(context) {
-                        let label = context.dataset.label || '';
-                        if (label) label += ': ';
-                        if (context.parsed.y !== null) {
-                            label += context.parsed.y + ' h';
-                        }
-                        return label;
-                    },
-                    // ADIÇÃO DOS NOVOS DADOS NO TOOLTIP
-                    footer: function(tooltipItems) {
-                        const dataIndex = tooltipItems[0].dataIndex;
-                        const d = filtered[dataIndex];
-                        const semanas = Math.round(getCultureWeeksDuration(d.Inicio, d.Fim));
-                        
-                        let total = 0;
-                        tooltipItems.forEach(item => total += item.parsed.y);
-                        
-                        return [
-                            `Total: ${total} h`,
-                            `Inicio: ${d.Inicio}`,
-                            `Fim: ${d.Fim}`,
-                            `Nº Semanas: ${semanas}`,
-                            `kg/m²: ${d["kg/m²"] || 'N/A'}`
-                        ];
-                    }
-                }
-            },
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) label += ': ';
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y + ' h';
+                                    }
+                                    return label;
+                                },
+                                footer: function(tooltipItems) {
+                                    const dataIndex = tooltipItems[0].dataIndex;
+                                    const d = filtered[dataIndex];
+                                    const startDateStr = d.Inicio || d.Início;
+                                    
+                                    const hasFim = (d.Fim && d.Fim.trim() !== "");
+                                    const semanas = hasFim ? Math.round(getCultureWeeksDuration(startDateStr, d.Fim)) : "Em curso";
+                                    const dataFim = hasFim ? d.Fim : "Em curso";
+                                    
+                                    const kgVal = (d["kg/m²"] && d["kg/m²"].toString().trim() !== "") ? d["kg/m²"] : "Sem dados";
+
+                                    let total = 0;
+                                    tooltipItems.forEach(item => {
+                                        total += item.parsed.y;
+                                    });
+
+                                    return [
+                                        `Total: ${total} h`,
+                                        `Início: ${startDateStr}`,
+                                        `Fim: ${dataFim}`,
+                                        `Nº Semanas: ${semanas}`,
+                                        `kg/m²: ${kgVal}`
+                                    ];
+                                }
+                            }
+                        },
                         datalabels: {
                             display: function(context) {
                                 return context.datasetIndex === context.chart.data.datasets.length - 1;

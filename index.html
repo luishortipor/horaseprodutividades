@@ -49038,11 +49038,11 @@
                 weeksFilterTitle.innerText = (tabNum === 3) ? 'Semanas de plantação' : 'Semanas';
             }
 
-            const farmsFilterSection = document.getElementById('sidebar-filter-farms');
-            if (tabNum === 2) {
-                farmsFilterSection.classList.add('sidebar-disabled');
-                renderPeriodCharts(currentSubTab);
-            } else {
+const farmsFilterSection = document.getElementById('sidebar-filter-farms');
+farmsFilterSection.classList.remove('sidebar-disabled');
+if (tabNum === 2) {
+    renderPeriodCharts(currentSubTab);
+} else {
                 farmsFilterSection.classList.remove('sidebar-disabled');
             }
 
@@ -49150,18 +49150,19 @@
             if (currentTab === 3) updateCultureChart();
         }
 
-        function toggleFarm(farm) {
-            if (selectedFarms.includes(farm)) {
-                if (selectedFarms.length > 1) {
-                    selectedFarms = selectedFarms.filter(f => f !== farm);
-                }
-            } else {
-                selectedFarms.push(farm);
-            }
-            renderFarmButtons();
-            updateDashboard();
-            if (currentTab === 3) updateCultureChart();
+ function toggleFarm(farm) {
+    if (selectedFarms.includes(farm)) {
+        if (selectedFarms.length > 1) {
+            selectedFarms = selectedFarms.filter(f => f !== farm);
         }
+    } else {
+        selectedFarms.push(farm);
+    }
+    renderFarmButtons();
+    updateDashboard();
+    if (currentTab === 2) renderPeriodCharts(currentSubTab);
+    if (currentTab === 3) updateCultureChart();
+}
 
         function selectActivity(act) {
             selectedActivity = act;

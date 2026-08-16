@@ -688,10 +688,9 @@
             <div class="chart-card">
                 <div class="chart-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
                     <div>
-                        <div class="chart-title">Horas / 20k pl / semana</div>
+                        <div class="chart-title">Horas/semana (2pl/m²)</div>
                         <div class="chart-subtitle" style="margin-bottom: 0;">Horas gastas em Plantas, Colheita, Outros e Limp/Prep (Ajustado a 2 pl/m²)</div>
                     </div>
-                    <!-- Checkboxes para filtros de cultura (Finalizadas e Em curso) sem fundo nem borda -->
                     <div style="display: flex; gap: 15px; align-items: center; font-size: 0.85rem; font-weight: 600; color: var(--sidebar-bg); padding: 4px 0;">
                         <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
                             <input type="checkbox" id="chk-finalizadas" onchange="updateCultureChart()" style="accent-var: var(--sidebar-bg); width: 15px; height: 15px; cursor: pointer;"> Finalizadas
@@ -705,6 +704,17 @@
                     <canvas id="cultureChart"></canvas>
                 </div>
             </div>
+
+            <!-- GRÁFICO: h/ton -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">Horas/tonelada</div>
+                    <div class="chart-subtitle">Horas trabalhadas por tonelada produzida</div>
+                </div>
+                <div class="chart-container" style="min-height: 380px; margin-top: 10px;">
+                    <canvas id="cultureHTonChart"></canvas>
+                </div>
+            </div>
         </div>
     </main>
 
@@ -716,7 +726,7 @@
 
             sidebar.classList.toggle('open');
             overlay.classList.toggle('active');
-            icon.innerText = sidebar.classList.contains('open' ) ? '✕' : '☰';
+            icon.innerText = sidebar.classList.contains('open') ? '✕' : '☰';
         }
 
         Chart.register(ChartDataLabels);
@@ -45975,7 +45985,8 @@
         "Horas Outros": 9,
         "Horas Limp/Prep": 8,
         "Tipo": "Grande",
-        "kg/m²": "13,95"
+        "kg/m²": 13.95,
+        "h/ton": 23
     },
     {
         "Quinta": "Zambujeira",
@@ -45987,7 +45998,8 @@
         "Horas Outros": 11,
         "Horas Limp/Prep": 8,
         "Tipo": "Grande",
-        "kg/m²": "13,90"
+        "kg/m²": 13.9,
+        "h/ton": 22
     },
     {
         "Quinta": "Portos Brancos",
@@ -45999,19 +46011,8 @@
         "Horas Outros": 22,
         "Horas Limp/Prep": 7,
         "Tipo": "Grande",
-        "kg/m²": NaN
-    },
-    {
-        "Quinta": "CCS",
-        "Cultura": "Sunstream\n+Bamano\n+Ivorino",
-        "Inicio": "14/12/22",
-        "Fim": "27/10/23",
-        "Horas Plantas": 87,
-        "Horas Colheita": 53,
-        "Horas Outros": 5,
-        "Horas Limp/Prep": 17,
-        "Tipo": "Mini",
-        "kg/m²": "28,05"
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Zambujeira",
@@ -46023,7 +46024,21 @@
         "Horas Outros": 2,
         "Horas Limp/Prep": 2,
         "Tipo": "Mini",
-        "kg/m²": "15,83"
+        "kg/m²": 15.83,
+        "h/ton": 99
+    },
+    {
+        "Quinta": "CCS",
+        "Cultura": "Sunstream\n+Bamano\n+Ivorino",
+        "Inicio": "14/12/22",
+        "Fim": "27/10/23",
+        "Horas Plantas": 87,
+        "Horas Colheita": 53,
+        "Horas Outros": 5,
+        "Horas Limp/Prep": 17,
+        "Tipo": "Mini",
+        "kg/m²": 28.05,
+        "h/ton": 59
     },
     {
         "Quinta": "Horticilha",
@@ -46035,19 +46050,8 @@
         "Horas Outros": 17,
         "Horas Limp/Prep": 8,
         "Tipo": "Grande",
-        "kg/m²": "23,24"
-    },
-    {
-        "Quinta": "Horticilha",
-        "Cultura": "Cauralina",
-        "Inicio": "16/12/22",
-        "Fim": "07/06/23",
-        "Horas Plantas": 50,
-        "Horas Colheita": 39,
-        "Horas Outros": 11,
-        "Horas Limp/Prep": 6,
-        "Tipo": "Grande",
-        "kg/m²": "21,99"
+        "kg/m²": 23.24,
+        "h/ton": 19
     },
     {
         "Quinta": "Portos Brancos",
@@ -46059,7 +46063,8 @@
         "Horas Outros": 32,
         "Horas Limp/Prep": 12,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Portos Brancos",
@@ -46071,7 +46076,21 @@
         "Horas Outros": 14,
         "Horas Limp/Prep": 7,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Cauralina",
+        "Inicio": "16/12/22",
+        "Fim": "07/06/23",
+        "Horas Plantas": 50,
+        "Horas Colheita": 39,
+        "Horas Outros": 11,
+        "Horas Limp/Prep": 6,
+        "Tipo": "Grande",
+        "kg/m²": 21.99,
+        "h/ton": 18
     },
     {
         "Quinta": "CCS",
@@ -46083,7 +46102,8 @@
         "Horas Outros": 6,
         "Horas Limp/Prep": 14,
         "Tipo": "Grande",
-        "kg/m²": "16,12"
+        "kg/m²": 16.12,
+        "h/ton": 27
     },
     {
         "Quinta": "Horticilha",
@@ -46095,7 +46115,8 @@
         "Horas Outros": 13,
         "Horas Limp/Prep": 9,
         "Tipo": "Grande",
-        "kg/m²": "24,12"
+        "kg/m²": 24.12,
+        "h/ton": 17
     },
     {
         "Quinta": "Horticilha",
@@ -46107,7 +46128,8 @@
         "Horas Outros": 14,
         "Horas Limp/Prep": 13,
         "Tipo": "Grande",
-        "kg/m²": "31,29"
+        "kg/m²": 31.29,
+        "h/ton": 19
     },
     {
         "Quinta": "Portos Brancos",
@@ -46119,7 +46141,8 @@
         "Horas Outros": 10,
         "Horas Limp/Prep": 3,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Portos Brancos",
@@ -46131,7 +46154,8 @@
         "Horas Outros": 13,
         "Horas Limp/Prep": 6,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Campelos",
@@ -46143,7 +46167,8 @@
         "Horas Outros": 39,
         "Horas Limp/Prep": 24,
         "Tipo": "Grande",
-        "kg/m²": "9,09"
+        "kg/m²": 9.09,
+        "h/ton": 50
     },
     {
         "Quinta": "Campelos",
@@ -46155,7 +46180,8 @@
         "Horas Outros": 32,
         "Horas Limp/Prep": 24,
         "Tipo": "Grande",
-        "kg/m²": "9,41"
+        "kg/m²": 9.41,
+        "h/ton": 48
     },
     {
         "Quinta": "Campelos",
@@ -46167,7 +46193,8 @@
         "Horas Outros": 42,
         "Horas Limp/Prep": 20,
         "Tipo": "Grande",
-        "kg/m²": "14,61"
+        "kg/m²": 14.61,
+        "h/ton": 38
     },
     {
         "Quinta": "Sobreiro",
@@ -46179,19 +46206,8 @@
         "Horas Outros": 23,
         "Horas Limp/Prep": 23,
         "Tipo": "Grande",
-        "kg/m²": "10,42"
-    },
-    {
-        "Quinta": "Sobreiro",
-        "Cultura": "Cauralina",
-        "Inicio": "15/02/23",
-        "Fim": "18/07/23",
-        "Horas Plantas": 82,
-        "Horas Colheita": 98,
-        "Horas Outros": 31,
-        "Horas Limp/Prep": 21,
-        "Tipo": "Grande",
-        "kg/m²": "20,23"
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Sobreiro",
@@ -46203,7 +46219,8 @@
         "Horas Outros": 25,
         "Horas Limp/Prep": 15,
         "Tipo": "Grande",
-        "kg/m²": "13,33"
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Campelos",
@@ -46215,7 +46232,21 @@
         "Horas Outros": 12,
         "Horas Limp/Prep": 12,
         "Tipo": "Mini",
-        "kg/m²": "12,47"
+        "kg/m²": null,
+        "h/ton": null
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "Cauralina",
+        "Inicio": "15/02/23",
+        "Fim": "18/07/23",
+        "Horas Plantas": 82,
+        "Horas Colheita": 98,
+        "Horas Outros": 31,
+        "Horas Limp/Prep": 21,
+        "Tipo": "Grande",
+        "kg/m²": 20.23,
+        "h/ton": 33
     },
     {
         "Quinta": "Portos Brancos",
@@ -46227,7 +46258,8 @@
         "Horas Outros": 13,
         "Horas Limp/Prep": 8,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Caminhos da Cotovia",
@@ -46239,7 +46271,8 @@
         "Horas Outros": 5,
         "Horas Limp/Prep": 9,
         "Tipo": "Mini",
-        "kg/m²": "14,60"
+        "kg/m²": 14.6,
+        "h/ton": 106
     },
     {
         "Quinta": "Horticilha",
@@ -46251,7 +46284,8 @@
         "Horas Outros": 12,
         "Horas Limp/Prep": 8,
         "Tipo": "Mini",
-        "kg/m²": "19,56"
+        "kg/m²": 19.56,
+        "h/ton": 61
     },
     {
         "Quinta": "Pegões",
@@ -46263,19 +46297,8 @@
         "Horas Outros": 5,
         "Horas Limp/Prep": 21,
         "Tipo": "Grande",
-        "kg/m²": "14,29"
-    },
-    {
-        "Quinta": "Horticilha",
-        "Cultura": "Inspired",
-        "Inicio": "14/04/23",
-        "Fim": "27/11/23",
-        "Horas Plantas": 58,
-        "Horas Colheita": 33,
-        "Horas Outros": 18,
-        "Horas Limp/Prep": 12,
-        "Tipo": "Grande",
-        "kg/m²": "25,40"
+        "kg/m²": 14.29,
+        "h/ton": 25
     },
     {
         "Quinta": "Horticilha",
@@ -46287,7 +46310,21 @@
         "Horas Outros": 15,
         "Horas Limp/Prep": 12,
         "Tipo": "Grande",
-        "kg/m²": "29,46"
+        "kg/m²": 29.46,
+        "h/ton": 22
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Inspired",
+        "Inicio": "14/04/23",
+        "Fim": "27/11/23",
+        "Horas Plantas": 58,
+        "Horas Colheita": 33,
+        "Horas Outros": 18,
+        "Horas Limp/Prep": 12,
+        "Tipo": "Grande",
+        "kg/m²": 25.4,
+        "h/ton": 22
     },
     {
         "Quinta": "Zambujeira",
@@ -46299,7 +46336,8 @@
         "Horas Outros": 10,
         "Horas Limp/Prep": 12,
         "Tipo": "Grande",
-        "kg/m²": "30,59"
+        "kg/m²": 30.59,
+        "h/ton": 18
     },
     {
         "Quinta": "Caminhos da Cotovia",
@@ -46311,7 +46349,8 @@
         "Horas Outros": 7,
         "Horas Limp/Prep": 9,
         "Tipo": "Mini",
-        "kg/m²": "19,20"
+        "kg/m²": 19.2,
+        "h/ton": 60
     },
     {
         "Quinta": "Caminhos da Cotovia",
@@ -46323,19 +46362,8 @@
         "Horas Outros": 8,
         "Horas Limp/Prep": 12,
         "Tipo": "Grande",
-        "kg/m²": "26,30"
-    },
-    {
-        "Quinta": "Caminhos da Cotovia",
-        "Cultura": "Iseos",
-        "Inicio": "20/04/23",
-        "Fim": "06/11/23",
-        "Horas Plantas": 98,
-        "Horas Colheita": 48,
-        "Horas Outros": 8,
-        "Horas Limp/Prep": 13,
-        "Tipo": "Grande",
-        "kg/m²": "31,70"
+        "kg/m²": 26.3,
+        "h/ton": 27
     },
     {
         "Quinta": "Zambujeira",
@@ -46347,31 +46375,21 @@
         "Horas Outros": 5,
         "Horas Limp/Prep": 16,
         "Tipo": "Grande",
-        "kg/m²": "23,66"
+        "kg/m²": 23.66,
+        "h/ton": 24
     },
     {
-        "Quinta": "Pegões",
-        "Cultura": "Paipai",
-        "Inicio": "24/04/23",
-        "Fim": "11/09/23",
-        "Horas Plantas": 64,
-        "Horas Colheita": 59,
-        "Horas Outros": 1,
-        "Horas Limp/Prep": 29,
-        "Tipo": "Grande",
-        "kg/m²": "18,14"
-    },
-    {
-        "Quinta": "Zambujeira",
+        "Quinta": "Caminhos da Cotovia",
         "Cultura": "Iseos",
-        "Inicio": "24/04/23",
-        "Fim": "21/11/23",
-        "Horas Plantas": 69,
-        "Horas Colheita": 43,
-        "Horas Outros": 7,
-        "Horas Limp/Prep": 9,
+        "Inicio": "20/04/23",
+        "Fim": "06/11/23",
+        "Horas Plantas": 98,
+        "Horas Colheita": 48,
+        "Horas Outros": 8,
+        "Horas Limp/Prep": 13,
         "Tipo": "Grande",
-        "kg/m²": "22,35"
+        "kg/m²": 31.7,
+        "h/ton": 23
     },
     {
         "Quinta": "Campelos",
@@ -46383,7 +46401,8 @@
         "Horas Outros": 19,
         "Horas Limp/Prep": 19,
         "Tipo": "Grande",
-        "kg/m²": "17,48"
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Campelos",
@@ -46395,7 +46414,34 @@
         "Horas Outros": 22,
         "Horas Limp/Prep": 19,
         "Tipo": "Grande",
-        "kg/m²": "7,49"
+        "kg/m²": null,
+        "h/ton": null
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Iseos",
+        "Inicio": "24/04/23",
+        "Fim": "21/11/23",
+        "Horas Plantas": 69,
+        "Horas Colheita": 43,
+        "Horas Outros": 7,
+        "Horas Limp/Prep": 9,
+        "Tipo": "Grande",
+        "kg/m²": 22.35,
+        "h/ton": 23
+    },
+    {
+        "Quinta": "Pegões",
+        "Cultura": "Paipai",
+        "Inicio": "24/04/23",
+        "Fim": "11/09/23",
+        "Horas Plantas": 64,
+        "Horas Colheita": 59,
+        "Horas Outros": 1,
+        "Horas Limp/Prep": 29,
+        "Tipo": "Grande",
+        "kg/m²": 18.14,
+        "h/ton": 20
     },
     {
         "Quinta": "Pegões",
@@ -46407,7 +46453,8 @@
         "Horas Outros": 0,
         "Horas Limp/Prep": 27,
         "Tipo": "Grande",
-        "kg/m²": "17,66"
+        "kg/m²": 17.66,
+        "h/ton": 20
     },
     {
         "Quinta": "Pegões",
@@ -46419,31 +46466,8 @@
         "Horas Outros": 0,
         "Horas Limp/Prep": 22,
         "Tipo": "Grande",
-        "kg/m²": "14,32"
-    },
-    {
-        "Quinta": "Horticilha",
-        "Cultura": "Magneto",
-        "Inicio": "29/05/23",
-        "Fim": "24/11/23",
-        "Horas Plantas": 51,
-        "Horas Colheita": 21,
-        "Horas Outros": 11,
-        "Horas Limp/Prep": 8,
-        "Tipo": "Grande",
-        "kg/m²": "14,94"
-    },
-    {
-        "Quinta": "Zambujeira",
-        "Cultura": "Cauralina",
-        "Inicio": "29/05/23",
-        "Fim": "27/11/23",
-        "Horas Plantas": 66,
-        "Horas Colheita": 71,
-        "Horas Outros": 6,
-        "Horas Limp/Prep": 2,
-        "Tipo": "Grande",
-        "kg/m²": "21,35"
+        "kg/m²": 14.32,
+        "h/ton": 19
     },
     {
         "Quinta": "Zambujeira",
@@ -46455,7 +46479,34 @@
         "Horas Outros": 6,
         "Horas Limp/Prep": 3,
         "Tipo": "Grande",
-        "kg/m²": "15,09"
+        "kg/m²": 15.09,
+        "h/ton": 25
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Magneto",
+        "Inicio": "29/05/23",
+        "Fim": "24/11/23",
+        "Horas Plantas": 51,
+        "Horas Colheita": 21,
+        "Horas Outros": 11,
+        "Horas Limp/Prep": 8,
+        "Tipo": "Grande",
+        "kg/m²": 14.94,
+        "h/ton": 24
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Cauralina",
+        "Inicio": "29/05/23",
+        "Fim": "27/11/23",
+        "Horas Plantas": 66,
+        "Horas Colheita": 71,
+        "Horas Outros": 6,
+        "Horas Limp/Prep": 2,
+        "Tipo": "Grande",
+        "kg/m²": 21.35,
+        "h/ton": 23
     },
     {
         "Quinta": "Horticilha",
@@ -46467,7 +46518,8 @@
         "Horas Outros": 16,
         "Horas Limp/Prep": 8,
         "Tipo": "Grande",
-        "kg/m²": "13,84"
+        "kg/m²": 13.84,
+        "h/ton": 23
     },
     {
         "Quinta": "Portos Brancos",
@@ -46479,7 +46531,8 @@
         "Horas Outros": 16,
         "Horas Limp/Prep": 16,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Portos Brancos",
@@ -46491,7 +46544,8 @@
         "Horas Outros": 13,
         "Horas Limp/Prep": 13,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Horticilha",
@@ -46503,7 +46557,8 @@
         "Horas Outros": 14,
         "Horas Limp/Prep": 11,
         "Tipo": "Grande",
-        "kg/m²": "16,38"
+        "kg/m²": 16.38,
+        "h/ton": 19
     },
     {
         "Quinta": "Portos Brancos",
@@ -46515,7 +46570,8 @@
         "Horas Outros": 25,
         "Horas Limp/Prep": 16,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Campelos",
@@ -46527,7 +46583,21 @@
         "Horas Outros": 7,
         "Horas Limp/Prep": 7,
         "Tipo": "Mini",
-        "kg/m²": "5,75"
+        "kg/m²": 5.75,
+        "h/ton": 154
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "Mini-Kumato",
+        "Inicio": "13/06/23",
+        "Fim": "15/01/24",
+        "Horas Plantas": 74,
+        "Horas Colheita": 34,
+        "Horas Outros": 6,
+        "Horas Limp/Prep": 1,
+        "Tipo": "Mini",
+        "kg/m²": 4.57,
+        "h/ton": 193
     },
     {
         "Quinta": "Sobreiro",
@@ -46539,19 +46609,8 @@
         "Horas Outros": 24,
         "Horas Limp/Prep": 12,
         "Tipo": "Grande",
-        "kg/m²": "8,81"
-    },
-    {
-        "Quinta": "Sobreiro",
-        "Cultura": "Mini-Kumato",
-        "Inicio": "13/06/23",
-        "Fim": "15/01/24",
-        "Horas Plantas": 74,
-        "Horas Colheita": 34,
-        "Horas Outros": 6,
-        "Horas Limp/Prep": 1,
-        "Tipo": "Mini",
-        "kg/m²": "4,57"
+        "kg/m²": 8.81,
+        "h/ton": 76
     },
     {
         "Quinta": "Portos Brancos",
@@ -46563,7 +46622,8 @@
         "Horas Outros": 10,
         "Horas Limp/Prep": 12,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Portos Brancos",
@@ -46575,7 +46635,8 @@
         "Horas Outros": 11,
         "Horas Limp/Prep": 12,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Portos Brancos",
@@ -46587,7 +46648,8 @@
         "Horas Outros": 13,
         "Horas Limp/Prep": 16,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Campelos",
@@ -46599,7 +46661,8 @@
         "Horas Outros": 16,
         "Horas Limp/Prep": 15,
         "Tipo": "Grande",
-        "kg/m²": "0,00"
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Campelos",
@@ -46611,7 +46674,8 @@
         "Horas Outros": 12,
         "Horas Limp/Prep": 14,
         "Tipo": "Grande",
-        "kg/m²": "0,00"
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Campelos",
@@ -46623,7 +46687,8 @@
         "Horas Outros": 31,
         "Horas Limp/Prep": 20,
         "Tipo": "Grande",
-        "kg/m²": "9,43"
+        "kg/m²": 9.43,
+        "h/ton": 52
     },
     {
         "Quinta": "Pegões",
@@ -46635,7 +46700,8 @@
         "Horas Outros": 10,
         "Horas Limp/Prep": 5,
         "Tipo": "Grande",
-        "kg/m²": "5,94"
+        "kg/m²": 5.94,
+        "h/ton": 27
     },
     {
         "Quinta": "Sobreiro",
@@ -46647,7 +46713,21 @@
         "Horas Outros": 39,
         "Horas Limp/Prep": 50,
         "Tipo": "Grande",
-        "kg/m²": "0,00"
+        "kg/m²": null,
+        "h/ton": null
+    },
+    {
+        "Quinta": "Pegões",
+        "Cultura": "Solarino",
+        "Inicio": "06/09/23",
+        "Fim": "28/02/24",
+        "Horas Plantas": 48,
+        "Horas Colheita": 41,
+        "Horas Outros": 12,
+        "Horas Limp/Prep": 6,
+        "Tipo": "Mini",
+        "kg/m²": 4.03,
+        "h/ton": 79
     },
     {
         "Quinta": "Pegões",
@@ -46659,19 +46739,8 @@
         "Horas Outros": 12,
         "Horas Limp/Prep": 6,
         "Tipo": "Grande",
-        "kg/m²": "5,10"
-    },
-    {
-        "Quinta": "Pegões",
-        "Cultura": "Solarino",
-        "Inicio": "06/09/23",
-        "Fim": "28/02/24",
-        "Horas Plantas": 48,
-        "Horas Colheita": 41,
-        "Horas Outros": 12,
-        "Horas Limp/Prep": 6,
-        "Tipo": "Grande",
-        "kg/m²": "4,03"
+        "kg/m²": 5.1,
+        "h/ton": 63
     },
     {
         "Quinta": "Pegões",
@@ -46683,7 +46752,8 @@
         "Horas Outros": 16,
         "Horas Limp/Prep": 10,
         "Tipo": "Grande",
-        "kg/m²": "10,01"
+        "kg/m²": 10.01,
+        "h/ton": 23
     },
     {
         "Quinta": "Pegões",
@@ -46695,7 +46765,8 @@
         "Horas Outros": 7,
         "Horas Limp/Prep": 5,
         "Tipo": "Grande",
-        "kg/m²": "8,67"
+        "kg/m²": 8.67,
+        "h/ton": 20
     },
     {
         "Quinta": "Pegões",
@@ -46707,7 +46778,8 @@
         "Horas Outros": 12,
         "Horas Limp/Prep": 6,
         "Tipo": "Grande",
-        "kg/m²": "8,59"
+        "kg/m²": 8.59,
+        "h/ton": 18
     },
     {
         "Quinta": "Horticilha",
@@ -46719,91 +46791,8 @@
         "Horas Outros": 16,
         "Horas Limp/Prep": 21,
         "Tipo": "Grande",
-        "kg/m²": "16,37"
-    },
-    {
-        "Quinta": "Horticilha",
-        "Cultura": "Babymunda+\nRosa de Almeria+\nArtik Blu",
-        "Inicio": "14/12/23",
-        "Fim": "08/07/24",
-        "Horas Plantas": 38,
-        "Horas Colheita": 33,
-        "Horas Outros": 11,
-        "Horas Limp/Prep": 13,
-        "Tipo": "Grande",
-        "kg/m²": "10,35"
-    },
-    {
-        "Quinta": "Caminhos da Cotovia",
-        "Cultura": "Brescia",
-        "Inicio": "14/12/23",
-        "Fim": "24/10/24",
-        "Horas Plantas": 82,
-        "Horas Colheita": 22,
-        "Horas Outros": 8,
-        "Horas Limp/Prep": 7,
-        "Tipo": "Mini",
-        "kg/m²": "25,30"
-    },
-    {
-        "Quinta": "Caminhos da Cotovia",
-        "Cultura": "Hyrule",
-        "Inicio": "14/12/23",
-        "Fim": "01/11/24",
-        "Horas Plantas": 72,
-        "Horas Colheita": 29,
-        "Horas Outros": 8,
-        "Horas Limp/Prep": 7,
-        "Tipo": "Mini",
-        "kg/m²": "16,40"
-    },
-    {
-        "Quinta": "Caminhos da Cotovia",
-        "Cultura": "Parisetto",
-        "Inicio": "14/12/23",
-        "Fim": "11/11/24",
-        "Horas Plantas": 79,
-        "Horas Colheita": 59,
-        "Horas Outros": 6,
-        "Horas Limp/Prep": 7,
-        "Tipo": "Mini",
-        "kg/m²": "30,50"
-    },
-    {
-        "Quinta": "Caminhos da Cotovia",
-        "Cultura": "Prospano",
-        "Inicio": "14/12/23",
-        "Fim": "09/11/24",
-        "Horas Plantas": 93,
-        "Horas Colheita": 23,
-        "Horas Outros": 10,
-        "Horas Limp/Prep": 9,
-        "Tipo": "Grande",
-        "kg/m²": "25,20"
-    },
-    {
-        "Quinta": "Caminhos da Cotovia",
-        "Cultura": "Iseos",
-        "Inicio": "14/12/23",
-        "Fim": "06/11/24",
-        "Horas Plantas": 85,
-        "Horas Colheita": 28,
-        "Horas Outros": 10,
-        "Horas Limp/Prep": 12,
-        "Tipo": "Grande",
-        "kg/m²": "37,20"
-    },
-    {
-        "Quinta": "Zambujeira",
-        "Cultura": "Magneto",
-        "Inicio": "14/12/23",
-        "Fim": "01/06/24",
-        "Horas Plantas": 64,
-        "Horas Colheita": 39,
-        "Horas Outros": 23,
-        "Horas Limp/Prep": 5,
-        "Tipo": "Grande",
-        "kg/m²": "13,70"
+        "kg/m²": 16.37,
+        "h/ton": 26
     },
     {
         "Quinta": "Portos Brancos",
@@ -46815,7 +46804,8 @@
         "Horas Outros": 16,
         "Horas Limp/Prep": 15,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Portos Brancos",
@@ -46827,7 +46817,99 @@
         "Horas Outros": 4,
         "Horas Limp/Prep": 18,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
+    },
+    {
+        "Quinta": "Caminhos da Cotovia",
+        "Cultura": "Hyrule",
+        "Inicio": "14/12/23",
+        "Fim": "01/11/24",
+        "Horas Plantas": 72,
+        "Horas Colheita": 29,
+        "Horas Outros": 8,
+        "Horas Limp/Prep": 7,
+        "Tipo": "Mini",
+        "kg/m²": 16.4,
+        "h/ton": 82
+    },
+    {
+        "Quinta": "Caminhos da Cotovia",
+        "Cultura": "Parisetto",
+        "Inicio": "14/12/23",
+        "Fim": "11/11/24",
+        "Horas Plantas": 79,
+        "Horas Colheita": 59,
+        "Horas Outros": 6,
+        "Horas Limp/Prep": 7,
+        "Tipo": "Mini",
+        "kg/m²": 30.5,
+        "h/ton": 59
+    },
+    {
+        "Quinta": "Caminhos da Cotovia",
+        "Cultura": "Brescia",
+        "Inicio": "14/12/23",
+        "Fim": "24/10/24",
+        "Horas Plantas": 82,
+        "Horas Colheita": 22,
+        "Horas Outros": 8,
+        "Horas Limp/Prep": 7,
+        "Tipo": "Mini",
+        "kg/m²": 25.3,
+        "h/ton": 52
+    },
+    {
+        "Quinta": "Caminhos da Cotovia",
+        "Cultura": "Prospano",
+        "Inicio": "14/12/23",
+        "Fim": "09/11/24",
+        "Horas Plantas": 93,
+        "Horas Colheita": 23,
+        "Horas Outros": 10,
+        "Horas Limp/Prep": 9,
+        "Tipo": "Grande",
+        "kg/m²": 25.2,
+        "h/ton": 42
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Babymunda+\nRosa de Almeria+\nArtik Blu",
+        "Inicio": "14/12/23",
+        "Fim": "08/07/24",
+        "Horas Plantas": 38,
+        "Horas Colheita": 33,
+        "Horas Outros": 11,
+        "Horas Limp/Prep": 13,
+        "Tipo": "Grande",
+        "kg/m²": 10.35,
+        "h/ton": 40
+    },
+    {
+        "Quinta": "Caminhos da Cotovia",
+        "Cultura": "Iseos",
+        "Inicio": "14/12/23",
+        "Fim": "06/11/24",
+        "Horas Plantas": 85,
+        "Horas Colheita": 28,
+        "Horas Outros": 10,
+        "Horas Limp/Prep": 12,
+        "Tipo": "Grande",
+        "kg/m²": 37.2,
+        "h/ton": 28
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Magneto",
+        "Inicio": "14/12/23",
+        "Fim": "01/06/24",
+        "Horas Plantas": 64,
+        "Horas Colheita": 39,
+        "Horas Outros": 23,
+        "Horas Limp/Prep": 5,
+        "Tipo": "Grande",
+        "kg/m²": 13.7,
+        "h/ton": 23
     },
     {
         "Quinta": "Horticilha",
@@ -46839,31 +46921,8 @@
         "Horas Outros": 14,
         "Horas Limp/Prep": 11,
         "Tipo": "Grande",
-        "kg/m²": "19,05"
-    },
-    {
-        "Quinta": "Horticilha",
-        "Cultura": "TN0079",
-        "Inicio": "18/12/23",
-        "Fim": "25/10/24",
-        "Horas Plantas": 60,
-        "Horas Colheita": 62,
-        "Horas Outros": 10,
-        "Horas Limp/Prep": 10,
-        "Tipo": "Mini",
-        "kg/m²": "18,47"
-    },
-    {
-        "Quinta": "Horticilha",
-        "Cultura": "ISI 52262",
-        "Inicio": "18/12/23",
-        "Fim": "29/05/24",
-        "Horas Plantas": 32,
-        "Horas Colheita": 37,
-        "Horas Outros": 12,
-        "Horas Limp/Prep": 11,
-        "Tipo": "Grande",
-        "kg/m²": "16,01"
+        "kg/m²": 22.15,
+        "h/ton": 16
     },
     {
         "Quinta": "Portos Brancos",
@@ -46875,7 +46934,34 @@
         "Horas Outros": 19,
         "Horas Limp/Prep": 15,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "TN0079",
+        "Inicio": "18/12/23",
+        "Fim": "25/10/24",
+        "Horas Plantas": 60,
+        "Horas Colheita": 62,
+        "Horas Outros": 10,
+        "Horas Limp/Prep": 10,
+        "Tipo": "Mini",
+        "kg/m²": 18.47,
+        "h/ton": 80
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "ISI 52262",
+        "Inicio": "18/12/23",
+        "Fim": "29/05/24",
+        "Horas Plantas": 32,
+        "Horas Colheita": 37,
+        "Horas Outros": 12,
+        "Horas Limp/Prep": 11,
+        "Tipo": "Grande",
+        "kg/m²": 16.01,
+        "h/ton": 21
     },
     {
         "Quinta": "Zambujeira",
@@ -46887,7 +46973,8 @@
         "Horas Outros": 13,
         "Horas Limp/Prep": 4,
         "Tipo": "Grande",
-        "kg/m²": "12,74"
+        "kg/m²": 12.74,
+        "h/ton": 21
     },
     {
         "Quinta": "CCS",
@@ -46899,19 +46986,8 @@
         "Horas Outros": 11,
         "Horas Limp/Prep": 5,
         "Tipo": "Mini",
-        "kg/m²": "26,40"
-    },
-    {
-        "Quinta": "Horticilha",
-        "Cultura": "Parisetto",
-        "Inicio": "16/01/24",
-        "Fim": "04/11/24",
-        "Horas Plantas": 67,
-        "Horas Colheita": 77,
-        "Horas Outros": 11,
-        "Horas Limp/Prep": 11,
-        "Tipo": "Mini",
-        "kg/m²": "25,89"
+        "kg/m²": 26.4,
+        "h/ton": 59
     },
     {
         "Quinta": "Horticilha",
@@ -46923,7 +46999,21 @@
         "Horas Outros": 11,
         "Horas Limp/Prep": 12,
         "Tipo": "Mini",
-        "kg/m²": "20,36"
+        "kg/m²": 20.36,
+        "h/ton": 63
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Parisetto",
+        "Inicio": "16/01/24",
+        "Fim": "04/11/24",
+        "Horas Plantas": 67,
+        "Horas Colheita": 77,
+        "Horas Outros": 11,
+        "Horas Limp/Prep": 11,
+        "Tipo": "Mini",
+        "kg/m²": 25.89,
+        "h/ton": 63
     },
     {
         "Quinta": "Horticilha",
@@ -46935,7 +47025,8 @@
         "Horas Outros": 14,
         "Horas Limp/Prep": 11,
         "Tipo": "Mini",
-        "kg/m²": "20,69"
+        "kg/m²": 20.69,
+        "h/ton": 55
     },
     {
         "Quinta": "Portos Brancos",
@@ -46947,7 +47038,8 @@
         "Horas Outros": 11,
         "Horas Limp/Prep": 10,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Portos Brancos",
@@ -46959,43 +47051,8 @@
         "Horas Outros": 5,
         "Horas Limp/Prep": 8,
         "Tipo": "Grande",
-        "kg/m²": NaN
-    },
-    {
-        "Quinta": "Sobreiro",
-        "Cultura": "Babymunda",
-        "Inicio": "08/02/24",
-        "Fim": "28/10/24",
-        "Horas Plantas": 136,
-        "Horas Colheita": 73,
-        "Horas Outros": 11,
-        "Horas Limp/Prep": 20,
-        "Tipo": "Grande",
-        "kg/m²": "16,21"
-    },
-    {
-        "Quinta": "Sobreiro",
-        "Cultura": "Cauralina",
-        "Inicio": "08/02/24",
-        "Fim": "22/07/24",
-        "Horas Plantas": 81,
-        "Horas Colheita": 68,
-        "Horas Outros": 18,
-        "Horas Limp/Prep": 6,
-        "Tipo": "Grande",
-        "kg/m²": "18,30"
-    },
-    {
-        "Quinta": "Sobreiro",
-        "Cultura": "Runner",
-        "Inicio": "08/02/24",
-        "Fim": "23/07/24",
-        "Horas Plantas": 70,
-        "Horas Colheita": 91,
-        "Horas Outros": 27,
-        "Horas Limp/Prep": 5,
-        "Tipo": "Grande",
-        "kg/m²": "24,06"
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Sobreiro",
@@ -47007,19 +47064,21 @@
         "Horas Outros": 21,
         "Horas Limp/Prep": 6,
         "Tipo": "Grande",
-        "kg/m²": "8,44"
+        "kg/m²": null,
+        "h/ton": null
     },
     {
-        "Quinta": "Campelos",
-        "Cultura": "Yarimaru",
+        "Quinta": "Sobreiro",
+        "Cultura": "Babymunda",
         "Inicio": "08/02/24",
-        "Fim": "06/08/24",
-        "Horas Plantas": 65,
-        "Horas Colheita": 56,
-        "Horas Outros": 22,
-        "Horas Limp/Prep": 22,
+        "Fim": "28/10/24",
+        "Horas Plantas": 136,
+        "Horas Colheita": 73,
+        "Horas Outros": 11,
+        "Horas Limp/Prep": 20,
         "Tipo": "Grande",
-        "kg/m²": "19,17"
+        "kg/m²": 16.21,
+        "h/ton": 70
     },
     {
         "Quinta": "Campelos",
@@ -47031,7 +47090,47 @@
         "Horas Outros": 30,
         "Horas Limp/Prep": 25,
         "Tipo": "Grande",
-        "kg/m²": "17,59"
+        "kg/m²": 17.59,
+        "h/ton": 34
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "Cauralina",
+        "Inicio": "08/02/24",
+        "Fim": "22/07/24",
+        "Horas Plantas": 81,
+        "Horas Colheita": 68,
+        "Horas Outros": 18,
+        "Horas Limp/Prep": 6,
+        "Tipo": "Grande",
+        "kg/m²": 18.3,
+        "h/ton": 30
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "Yarimaru",
+        "Inicio": "08/02/24",
+        "Fim": "06/08/24",
+        "Horas Plantas": 65,
+        "Horas Colheita": 56,
+        "Horas Outros": 22,
+        "Horas Limp/Prep": 22,
+        "Tipo": "Grande",
+        "kg/m²": 22.59,
+        "h/ton": 25
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "Runner",
+        "Inicio": "08/02/24",
+        "Fim": "23/07/24",
+        "Horas Plantas": 70,
+        "Horas Colheita": 91,
+        "Horas Outros": 27,
+        "Horas Limp/Prep": 5,
+        "Tipo": "Grande",
+        "kg/m²": 24.06,
+        "h/ton": 25
     },
     {
         "Quinta": "Portos Brancos",
@@ -47043,7 +47142,8 @@
         "Horas Outros": 13,
         "Horas Limp/Prep": 15,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Zambujeira",
@@ -47055,7 +47155,8 @@
         "Horas Outros": 1,
         "Horas Limp/Prep": 6,
         "Tipo": "Mini",
-        "kg/m²": "15,90"
+        "kg/m²": 15.9,
+        "h/ton": 110
     },
     {
         "Quinta": "Zambujeira",
@@ -47067,7 +47168,8 @@
         "Horas Outros": 9,
         "Horas Limp/Prep": 6,
         "Tipo": "Grande",
-        "kg/m²": "15,27"
+        "kg/m²": 15.27,
+        "h/ton": 26
     },
     {
         "Quinta": "Zambujeira",
@@ -47079,7 +47181,8 @@
         "Horas Outros": 7,
         "Horas Limp/Prep": 5,
         "Tipo": "Grande",
-        "kg/m²": "21,71"
+        "kg/m²": 21.71,
+        "h/ton": 20
     },
     {
         "Quinta": "Pegões",
@@ -47091,19 +47194,8 @@
         "Horas Outros": 6,
         "Horas Limp/Prep": 6,
         "Tipo": "Grande",
-        "kg/m²": "28,07"
-    },
-    {
-        "Quinta": "Zambujeira",
-        "Cultura": "Cauralina",
-        "Inicio": "17/04/24",
-        "Fim": "02/09/24",
-        "Horas Plantas": 66,
-        "Horas Colheita": 74,
-        "Horas Outros": 12,
-        "Horas Limp/Prep": 7,
-        "Tipo": "Grande",
-        "kg/m²": "15,10"
+        "kg/m²": 28.07,
+        "h/ton": 19
     },
     {
         "Quinta": "Zambujeira",
@@ -47115,7 +47207,8 @@
         "Horas Outros": 11,
         "Horas Limp/Prep": 10,
         "Tipo": "Grande",
-        "kg/m²": "13,64"
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Zambujeira",
@@ -47127,7 +47220,8 @@
         "Horas Outros": 5,
         "Horas Limp/Prep": 13,
         "Tipo": "Grande",
-        "kg/m²": "15,42"
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Zambujeira",
@@ -47139,7 +47233,21 @@
         "Horas Outros": 6,
         "Horas Limp/Prep": 8,
         "Tipo": "Grande",
-        "kg/m²": "12,69"
+        "kg/m²": null,
+        "h/ton": null
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Cauralina",
+        "Inicio": "17/04/24",
+        "Fim": "02/09/24",
+        "Horas Plantas": 66,
+        "Horas Colheita": 74,
+        "Horas Outros": 12,
+        "Horas Limp/Prep": 7,
+        "Tipo": "Grande",
+        "kg/m²": 15.1,
+        "h/ton": 28
     },
     {
         "Quinta": "Pegões",
@@ -47151,7 +47259,8 @@
         "Horas Outros": 4,
         "Horas Limp/Prep": 5,
         "Tipo": "Grande",
-        "kg/m²": "23,14"
+        "kg/m²": 23.14,
+        "h/ton": 21
     },
     {
         "Quinta": "Pegões",
@@ -47163,7 +47272,8 @@
         "Horas Outros": 7,
         "Horas Limp/Prep": 12,
         "Tipo": "Grande",
-        "kg/m²": "14,69"
+        "kg/m²": 14.69,
+        "h/ton": 20
     },
     {
         "Quinta": "Horticilha",
@@ -47175,7 +47285,8 @@
         "Horas Outros": 13,
         "Horas Limp/Prep": 12,
         "Tipo": "Grande",
-        "kg/m²": "26,21"
+        "kg/m²": 26.21,
+        "h/ton": 20
     },
     {
         "Quinta": "Horticilha",
@@ -47187,31 +47298,8 @@
         "Horas Outros": 11,
         "Horas Limp/Prep": 12,
         "Tipo": "Grande",
-        "kg/m²": "20,73"
-    },
-    {
-        "Quinta": "CCS",
-        "Cultura": "Parisetto",
-        "Inicio": "22/05/24",
-        "Fim": "26/02/25",
-        "Horas Plantas": 122,
-        "Horas Colheita": 50,
-        "Horas Outros": 5,
-        "Horas Limp/Prep": 12,
-        "Tipo": "Mini",
-        "kg/m²": "13,95"
-    },
-    {
-        "Quinta": "CCS",
-        "Cultura": "DRC564",
-        "Inicio": "22/05/24",
-        "Fim": "26/02/25",
-        "Horas Plantas": 108,
-        "Horas Colheita": 33,
-        "Horas Outros": 6,
-        "Horas Limp/Prep": 12,
-        "Tipo": "Mini",
-        "kg/m²": "14,30"
+        "kg/m²": 22.38,
+        "h/ton": 21
     },
     {
         "Quinta": "CCS",
@@ -47223,7 +47311,34 @@
         "Horas Outros": 6,
         "Horas Limp/Prep": 14,
         "Tipo": "Mini",
-        "kg/m²": "9,73"
+        "kg/m²": 9.73,
+        "h/ton": 125
+    },
+    {
+        "Quinta": "CCS",
+        "Cultura": "Parisetto",
+        "Inicio": "22/05/24",
+        "Fim": "26/02/25",
+        "Horas Plantas": 122,
+        "Horas Colheita": 50,
+        "Horas Outros": 5,
+        "Horas Limp/Prep": 12,
+        "Tipo": "Mini",
+        "kg/m²": 13.95,
+        "h/ton": 91
+    },
+    {
+        "Quinta": "CCS",
+        "Cultura": "DRC564",
+        "Inicio": "22/05/24",
+        "Fim": "26/02/25",
+        "Horas Plantas": 108,
+        "Horas Colheita": 33,
+        "Horas Outros": 6,
+        "Horas Limp/Prep": 12,
+        "Tipo": "Mini",
+        "kg/m²": 14.3,
+        "h/ton": 75
     },
     {
         "Quinta": "Portos Brancos",
@@ -47235,7 +47350,8 @@
         "Horas Outros": 19,
         "Horas Limp/Prep": 19,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Portos Brancos",
@@ -47247,7 +47363,8 @@
         "Horas Outros": 15,
         "Horas Limp/Prep": 18,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Horticilha",
@@ -47259,7 +47376,8 @@
         "Horas Outros": 14,
         "Horas Limp/Prep": 16,
         "Tipo": "Grande",
-        "kg/m²": "13,96"
+        "kg/m²": 13.96,
+        "h/ton": 29
     },
     {
         "Quinta": "Horticilha",
@@ -47271,7 +47389,8 @@
         "Horas Outros": 14,
         "Horas Limp/Prep": 16,
         "Tipo": "Grande",
-        "kg/m²": "16,43"
+        "kg/m²": 18.76,
+        "h/ton": 25
     },
     {
         "Quinta": "Portos Brancos",
@@ -47283,7 +47402,8 @@
         "Horas Outros": 9,
         "Horas Limp/Prep": 18,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Portos Brancos",
@@ -47295,7 +47415,8 @@
         "Horas Outros": 23,
         "Horas Limp/Prep": 18,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Portos Brancos",
@@ -47307,7 +47428,8 @@
         "Horas Outros": 11,
         "Horas Limp/Prep": 21,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Sobreiro",
@@ -47319,7 +47441,8 @@
         "Horas Outros": 39,
         "Horas Limp/Prep": 15,
         "Tipo": "Grande",
-        "kg/m²": "0,00"
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Sobreiro",
@@ -47331,7 +47454,8 @@
         "Horas Outros": 141,
         "Horas Limp/Prep": 131,
         "Tipo": "Grande",
-        "kg/m²": "0,00"
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Sobreiro",
@@ -47343,7 +47467,21 @@
         "Horas Outros": 108,
         "Horas Limp/Prep": 114,
         "Tipo": "Grande",
-        "kg/m²": "0,00"
+        "kg/m²": null,
+        "h/ton": null
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "Mini Kumato",
+        "Inicio": "09/08/24",
+        "Fim": "10/02/25",
+        "Horas Plantas": 79,
+        "Horas Colheita": 58,
+        "Horas Outros": 22,
+        "Horas Limp/Prep": 16,
+        "Tipo": "Mini",
+        "kg/m²": 3.25,
+        "h/ton": 232
     },
     {
         "Quinta": "Campelos",
@@ -47355,19 +47493,8 @@
         "Horas Outros": 40,
         "Horas Limp/Prep": 29,
         "Tipo": "Grande",
-        "kg/m²": "7,30"
-    },
-    {
-        "Quinta": "Campelos",
-        "Cultura": "Mini Kumato",
-        "Inicio": "09/08/24",
-        "Fim": "10/02/25",
-        "Horas Plantas": 79,
-        "Horas Colheita": 58,
-        "Horas Outros": 22,
-        "Horas Limp/Prep": 16,
-        "Tipo": "Grande",
-        "kg/m²": "3,25"
+        "kg/m²": 7.3,
+        "h/ton": 50
     },
     {
         "Quinta": "Sobreiro",
@@ -47379,7 +47506,8 @@
         "Horas Outros": 15,
         "Horas Limp/Prep": 7,
         "Tipo": "Mini",
-        "kg/m²": "4,51"
+        "kg/m²": 4.51,
+        "h/ton": 183
     },
     {
         "Quinta": "Sobreiro",
@@ -47391,31 +47519,8 @@
         "Horas Outros": 81,
         "Horas Limp/Prep": 66,
         "Tipo": "Grande",
-        "kg/m²": "0,00"
-    },
-    {
-        "Quinta": "Campelos",
-        "Cultura": "ISI 52262",
-        "Inicio": "22/08/24",
-        "Fim": "24/02/25",
-        "Horas Plantas": 51,
-        "Horas Colheita": 26,
-        "Horas Outros": 27,
-        "Horas Limp/Prep": 14,
-        "Tipo": "Grande",
-        "kg/m²": "7,10"
-    },
-    {
-        "Quinta": "Campelos",
-        "Cultura": "Faladi",
-        "Inicio": "22/08/24",
-        "Fim": "24/02/25",
-        "Horas Plantas": 40,
-        "Horas Colheita": 18,
-        "Horas Outros": 26,
-        "Horas Limp/Prep": 15,
-        "Tipo": "Grande",
-        "kg/m²": "5,30"
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Campelos",
@@ -47427,7 +47532,34 @@
         "Horas Outros": 19,
         "Horas Limp/Prep": 19,
         "Tipo": "Grande",
-        "kg/m²": "6,80"
+        "kg/m²": 6.8,
+        "h/ton": 58
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "Faladi",
+        "Inicio": "22/08/24",
+        "Fim": "24/02/25",
+        "Horas Plantas": 40,
+        "Horas Colheita": 18,
+        "Horas Outros": 26,
+        "Horas Limp/Prep": 15,
+        "Tipo": "Grande",
+        "kg/m²": 5.3,
+        "h/ton": 50
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "ISI 52262",
+        "Inicio": "22/08/24",
+        "Fim": "24/02/25",
+        "Horas Plantas": 51,
+        "Horas Colheita": 26,
+        "Horas Outros": 27,
+        "Horas Limp/Prep": 14,
+        "Tipo": "Grande",
+        "kg/m²": 7.1,
+        "h/ton": 44
     },
     {
         "Quinta": "Zambujeira",
@@ -47439,7 +47571,8 @@
         "Horas Outros": 4,
         "Horas Limp/Prep": 8,
         "Tipo": "Mini",
-        "kg/m²": "5,00"
+        "kg/m²": 5,
+        "h/ton": 107
     },
     {
         "Quinta": "Portos Brancos",
@@ -47451,7 +47584,8 @@
         "Horas Outros": 10,
         "Horas Limp/Prep": 6,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Portos Brancos",
@@ -47463,7 +47597,8 @@
         "Horas Outros": 10,
         "Horas Limp/Prep": 5,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Portos Brancos",
@@ -47474,8 +47609,9 @@
         "Horas Colheita": 61,
         "Horas Outros": 10,
         "Horas Limp/Prep": 9,
-        "Tipo": "Grande",
-        "kg/m²": NaN
+        "Tipo": "Mini",
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Pegões",
@@ -47487,7 +47623,8 @@
         "Horas Outros": 4,
         "Horas Limp/Prep": 1,
         "Tipo": "Grande",
-        "kg/m²": "5,79"
+        "kg/m²": 5.79,
+        "h/ton": 20
     },
     {
         "Quinta": "Pegões",
@@ -47499,19 +47636,8 @@
         "Horas Outros": 2,
         "Horas Limp/Prep": 2,
         "Tipo": "Grande",
-        "kg/m²": "7,26"
-    },
-    {
-        "Quinta": "Zambujeira",
-        "Cultura": "Cauralina",
-        "Inicio": "20/09/24",
-        "Fim": "03/03/25",
-        "Horas Plantas": 68,
-        "Horas Colheita": 39,
-        "Horas Outros": 11,
-        "Horas Limp/Prep": 29,
-        "Tipo": "Grande",
-        "kg/m²": "6,30"
+        "kg/m²": 7.26,
+        "h/ton": 20
     },
     {
         "Quinta": "Zambujeira",
@@ -47523,7 +47649,21 @@
         "Horas Outros": 14,
         "Horas Limp/Prep": 27,
         "Tipo": "Grande",
-        "kg/m²": "5,00"
+        "kg/m²": 5,
+        "h/ton": 50
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Cauralina",
+        "Inicio": "20/09/24",
+        "Fim": "03/03/25",
+        "Horas Plantas": 68,
+        "Horas Colheita": 39,
+        "Horas Outros": 11,
+        "Horas Limp/Prep": 29,
+        "Tipo": "Grande",
+        "kg/m²": 6.3,
+        "h/ton": 44
     },
     {
         "Quinta": "Horticilha",
@@ -47535,7 +47675,8 @@
         "Horas Outros": 20,
         "Horas Limp/Prep": 9,
         "Tipo": "Mini",
-        "kg/m²": "20,27"
+        "kg/m²": 20.27,
+        "h/ton": 56
     },
     {
         "Quinta": "Horticilha",
@@ -47547,7 +47688,8 @@
         "Horas Outros": 14,
         "Horas Limp/Prep": 9,
         "Tipo": "Mini",
-        "kg/m²": "30,18"
+        "kg/m²": 30.18,
+        "h/ton": 55
     },
     {
         "Quinta": "Horticilha",
@@ -47559,79 +47701,8 @@
         "Horas Outros": 21,
         "Horas Limp/Prep": 10,
         "Tipo": "Grande",
-        "kg/m²": "19,40"
-    },
-    {
-        "Quinta": "Caminhos da Cotovia",
-        "Cultura": "Parisetto",
-        "Inicio": "16/12/24",
-        "Fim": "11/11/25",
-        "Horas Plantas": 60,
-        "Horas Colheita": 45,
-        "Horas Outros": 13,
-        "Horas Limp/Prep": 5,
-        "Tipo": "Mini",
-        "kg/m²": "25,81"
-    },
-    {
-        "Quinta": "Caminhos da Cotovia",
-        "Cultura": "Cygnary",
-        "Inicio": "16/12/24",
-        "Fim": "11/11/25",
-        "Horas Plantas": 55,
-        "Horas Colheita": 51,
-        "Horas Outros": 12,
-        "Horas Limp/Prep": 5,
-        "Tipo": "Mini",
-        "kg/m²": "30,68"
-    },
-    {
-        "Quinta": "Caminhos da Cotovia",
-        "Cultura": "Sanpirlo",
-        "Inicio": "16/12/24",
-        "Fim": "05/11/25",
-        "Horas Plantas": 66,
-        "Horas Colheita": 23,
-        "Horas Outros": 14,
-        "Horas Limp/Prep": 8,
-        "Tipo": "Grande",
-        "kg/m²": "39,04"
-    },
-    {
-        "Quinta": "Caminhos da Cotovia",
-        "Cultura": "Azores",
-        "Inicio": "16/12/24",
-        "Fim": "27/10/25",
-        "Horas Plantas": 57,
-        "Horas Colheita": 19,
-        "Horas Outros": 13,
-        "Horas Limp/Prep": 6,
-        "Tipo": "Grande",
-        "kg/m²": "24,49"
-    },
-    {
-        "Quinta": "Caminhos da Cotovia",
-        "Cultura": "Prospano",
-        "Inicio": "16/12/24",
-        "Fim": "31/10/25",
-        "Horas Plantas": 85,
-        "Horas Colheita": 23,
-        "Horas Outros": 15,
-        "Horas Limp/Prep": 8,
-        "Tipo": "Grande",
-        "kg/m²": "28,05"
-    },
-    {
-        "Quinta": "CCS",
-        "Cultura": "Cygnary",
-        "Inicio": "16/12/24",
-        "Fim": "16/10/25",
-        "Horas Plantas": 65,
-        "Horas Colheita": 58,
-        "Horas Outros": 6,
-        "Horas Limp/Prep": 9,
-        "Tipo": "Mini",
-        "kg/m²": "27,52"
+        "kg/m²": 19.4,
+        "h/ton": 18
     },
     {
         "Quinta": "CCS",
@@ -47643,7 +47714,21 @@
         "Horas Outros": 7,
         "Horas Limp/Prep": 8,
         "Tipo": "Mini",
-        "kg/m²": "16,95"
+        "kg/m²": 16.95,
+        "h/ton": 72
+    },
+    {
+        "Quinta": "Caminhos da Cotovia",
+        "Cultura": "Parisetto",
+        "Inicio": "16/12/24",
+        "Fim": "11/11/25",
+        "Horas Plantas": 60,
+        "Horas Colheita": 45,
+        "Horas Outros": 13,
+        "Horas Limp/Prep": 5,
+        "Tipo": "Mini",
+        "kg/m²": 25.81,
+        "h/ton": 56
     },
     {
         "Quinta": "CCS",
@@ -47655,31 +47740,73 @@
         "Horas Outros": 6,
         "Horas Limp/Prep": 9,
         "Tipo": "Mini",
-        "kg/m²": "24,41"
+        "kg/m²": 24.41,
+        "h/ton": 51
     },
     {
-        "Quinta": "Zambujeira",
-        "Cultura": "Lacio",
-        "Inicio": "17/12/24",
-        "Fim": "23/06/25",
-        "Horas Plantas": 47,
-        "Horas Colheita": 34,
-        "Horas Outros": 3,
-        "Horas Limp/Prep": 18,
-        "Tipo": "Grande",
-        "kg/m²": "19,40"
+        "Quinta": "CCS",
+        "Cultura": "Cygnary",
+        "Inicio": "16/12/24",
+        "Fim": "16/10/25",
+        "Horas Plantas": 65,
+        "Horas Colheita": 58,
+        "Horas Outros": 6,
+        "Horas Limp/Prep": 9,
+        "Tipo": "Mini",
+        "kg/m²": 27.52,
+        "h/ton": 51
     },
     {
-        "Quinta": "Zambujeira",
-        "Cultura": "Clodano",
-        "Inicio": "17/12/24",
-        "Fim": "20/06/25",
-        "Horas Plantas": 47,
-        "Horas Colheita": 31,
-        "Horas Outros": 2,
-        "Horas Limp/Prep": 15,
+        "Quinta": "Caminhos da Cotovia",
+        "Cultura": "Cygnary",
+        "Inicio": "16/12/24",
+        "Fim": "11/11/25",
+        "Horas Plantas": 55,
+        "Horas Colheita": 51,
+        "Horas Outros": 12,
+        "Horas Limp/Prep": 5,
+        "Tipo": "Mini",
+        "kg/m²": 30.68,
+        "h/ton": 47
+    },
+    {
+        "Quinta": "Caminhos da Cotovia",
+        "Cultura": "Prospano",
+        "Inicio": "16/12/24",
+        "Fim": "31/10/25",
+        "Horas Plantas": 85,
+        "Horas Colheita": 23,
+        "Horas Outros": 15,
+        "Horas Limp/Prep": 8,
         "Tipo": "Grande",
-        "kg/m²": "19,48"
+        "kg/m²": 28.05,
+        "h/ton": 33
+    },
+    {
+        "Quinta": "Caminhos da Cotovia",
+        "Cultura": "Azores",
+        "Inicio": "16/12/24",
+        "Fim": "27/10/25",
+        "Horas Plantas": 57,
+        "Horas Colheita": 19,
+        "Horas Outros": 13,
+        "Horas Limp/Prep": 6,
+        "Tipo": "Grande",
+        "kg/m²": 24.49,
+        "h/ton": 28
+    },
+    {
+        "Quinta": "Caminhos da Cotovia",
+        "Cultura": "Sanpirlo",
+        "Inicio": "16/12/24",
+        "Fim": "05/11/25",
+        "Horas Plantas": 66,
+        "Horas Colheita": 23,
+        "Horas Outros": 14,
+        "Horas Limp/Prep": 8,
+        "Tipo": "Grande",
+        "kg/m²": 39.04,
+        "h/ton": 20
     },
     {
         "Quinta": "Portos Brancos",
@@ -47691,7 +47818,34 @@
         "Horas Outros": 9,
         "Horas Limp/Prep": 6,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Lacio",
+        "Inicio": "17/12/24",
+        "Fim": "23/06/25",
+        "Horas Plantas": 47,
+        "Horas Colheita": 34,
+        "Horas Outros": 3,
+        "Horas Limp/Prep": 18,
+        "Tipo": "Grande",
+        "kg/m²": 19.4,
+        "h/ton": 18
+    },
+    {
+        "Quinta": "Zambujeira",
+        "Cultura": "Clodano",
+        "Inicio": "17/12/24",
+        "Fim": "20/06/25",
+        "Horas Plantas": 47,
+        "Horas Colheita": 31,
+        "Horas Outros": 2,
+        "Horas Limp/Prep": 15,
+        "Tipo": "Grande",
+        "kg/m²": 19.48,
+        "h/ton": 17
     },
     {
         "Quinta": "Horticilha",
@@ -47703,7 +47857,8 @@
         "Horas Outros": 15,
         "Horas Limp/Prep": 9,
         "Tipo": "Grande",
-        "kg/m²": "15,82"
+        "kg/m²": 15.82,
+        "h/ton": 19
     },
     {
         "Quinta": "Zambujeira",
@@ -47715,31 +47870,8 @@
         "Horas Outros": 7,
         "Horas Limp/Prep": 12,
         "Tipo": "Grande",
-        "kg/m²": "13,10"
-    },
-    {
-        "Quinta": "Horticilha",
-        "Cultura": "Novero\nSVTH5912",
-        "Inicio": "21/12/24",
-        "Fim": "02/07/25",
-        "Horas Plantas": 40,
-        "Horas Colheita": 39,
-        "Horas Outros": 17,
-        "Horas Limp/Prep": 12,
-        "Tipo": "Grande",
-        "kg/m²": "25,10"
-    },
-    {
-        "Quinta": "Horticilha",
-        "Cultura": "Rosa de Almeria",
-        "Inicio": "21/12/24",
-        "Fim": "26/05/25",
-        "Horas Plantas": 40,
-        "Horas Colheita": 25,
-        "Horas Outros": 20,
-        "Horas Limp/Prep": 20,
-        "Tipo": "Grande",
-        "kg/m²": "15,68"
+        "kg/m²": 13.1,
+        "h/ton": 25
     },
     {
         "Quinta": "Horticilha",
@@ -47751,19 +47883,34 @@
         "Horas Outros": 26,
         "Horas Limp/Prep": 24,
         "Tipo": "Grande",
-        "kg/m²": "11,66"
+        "kg/m²": 11.66,
+        "h/ton": 34
     },
     {
         "Quinta": "Horticilha",
-        "Cultura": "DRTH2913",
-        "Inicio": "23/12/24",
-        "Fim": "02/07/25",
-        "Horas Plantas": 43,
-        "Horas Colheita": 38,
-        "Horas Outros": 22,
-        "Horas Limp/Prep": 15,
+        "Cultura": "Rosa de Almeria",
+        "Inicio": "21/12/24",
+        "Fim": "26/05/25",
+        "Horas Plantas": 40,
+        "Horas Colheita": 25,
+        "Horas Outros": 20,
+        "Horas Limp/Prep": 20,
         "Tipo": "Grande",
-        "kg/m²": "21,92"
+        "kg/m²": 15.68,
+        "h/ton": 21
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Novero\nSVTH5912",
+        "Inicio": "21/12/24",
+        "Fim": "02/07/25",
+        "Horas Plantas": 40,
+        "Horas Colheita": 39,
+        "Horas Outros": 17,
+        "Horas Limp/Prep": 12,
+        "Tipo": "Grande",
+        "kg/m²": 25.1,
+        "h/ton": 17
     },
     {
         "Quinta": "Horticilha",
@@ -47775,7 +47922,21 @@
         "Horas Outros": 25,
         "Horas Limp/Prep": 19,
         "Tipo": "Grande",
-        "kg/m²": "18,93"
+        "kg/m²": 18.93,
+        "h/ton": 22
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "DRTH2913",
+        "Inicio": "23/12/24",
+        "Fim": "02/07/25",
+        "Horas Plantas": 43,
+        "Horas Colheita": 38,
+        "Horas Outros": 22,
+        "Horas Limp/Prep": 15,
+        "Tipo": "Grande",
+        "kg/m²": 21.92,
+        "h/ton": 21
     },
     {
         "Quinta": "Portos Brancos",
@@ -47787,7 +47948,8 @@
         "Horas Outros": 5,
         "Horas Limp/Prep": 8,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Sobreiro",
@@ -47799,7 +47961,8 @@
         "Horas Outros": 28,
         "Horas Limp/Prep": 23,
         "Tipo": "Grande",
-        "kg/m²": "7,78"
+        "kg/m²": 7.78,
+        "h/ton": 57
     },
     {
         "Quinta": "Portos Brancos",
@@ -47811,7 +47974,8 @@
         "Horas Outros": 4,
         "Horas Limp/Prep": 6,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Portos Brancos",
@@ -47823,43 +47987,8 @@
         "Horas Outros": 4,
         "Horas Limp/Prep": 5,
         "Tipo": "Grande",
-        "kg/m²": NaN
-    },
-    {
-        "Quinta": "Sobreiro",
-        "Cultura": "Yarimaru",
-        "Inicio": "10/03/25",
-        "Fim": "25/08/25",
-        "Horas Plantas": 100,
-        "Horas Colheita": 64,
-        "Horas Outros": 44,
-        "Horas Limp/Prep": 16,
-        "Tipo": "Grande",
-        "kg/m²": "17,94"
-    },
-    {
-        "Quinta": "Sobreiro",
-        "Cultura": "Rosa de Almeria",
-        "Inicio": "10/03/25",
-        "Fim": "26/09/25",
-        "Horas Plantas": 98,
-        "Horas Colheita": 54,
-        "Horas Outros": 16,
-        "Horas Limp/Prep": 22,
-        "Tipo": "Grande",
-        "kg/m²": "20,58"
-    },
-    {
-        "Quinta": "Sobreiro",
-        "Cultura": "Sweetloom",
-        "Inicio": "10/03/25",
-        "Fim": "20/10/25",
-        "Horas Plantas": 89,
-        "Horas Colheita": 65,
-        "Horas Outros": 13,
-        "Horas Limp/Prep": 21,
-        "Tipo": "Grande",
-        "kg/m²": "17,87"
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Sobreiro",
@@ -47871,31 +48000,47 @@
         "Horas Outros": 25,
         "Horas Limp/Prep": 17,
         "Tipo": "Grande",
-        "kg/m²": "15,74"
+        "kg/m²": 15.74,
+        "h/ton": 51
     },
     {
-        "Quinta": "Campelos",
-        "Cultura": "Yarimaru",
-        "Inicio": "15/03/25",
-        "Fim": "25/09/25",
-        "Horas Plantas": 104,
-        "Horas Colheita": 48,
-        "Horas Outros": 33,
+        "Quinta": "Sobreiro",
+        "Cultura": "Sweetloom",
+        "Inicio": "10/03/25",
+        "Fim": "20/10/25",
+        "Horas Plantas": 89,
+        "Horas Colheita": 65,
+        "Horas Outros": 13,
         "Horas Limp/Prep": 21,
         "Tipo": "Grande",
-        "kg/m²": "15,71"
+        "kg/m²": 17.87,
+        "h/ton": 44
     },
     {
-        "Quinta": "Campelos",
-        "Cultura": "DRTH",
-        "Inicio": "15/03/25",
-        "Fim": "01/08/25",
-        "Horas Plantas": 69,
-        "Horas Colheita": 44,
-        "Horas Outros": 21,
-        "Horas Limp/Prep": 24,
+        "Quinta": "Sobreiro",
+        "Cultura": "Yarimaru",
+        "Inicio": "10/03/25",
+        "Fim": "25/08/25",
+        "Horas Plantas": 100,
+        "Horas Colheita": 64,
+        "Horas Outros": 44,
+        "Horas Limp/Prep": 16,
         "Tipo": "Grande",
-        "kg/m²": "13,58"
+        "kg/m²": 17.94,
+        "h/ton": 40
+    },
+    {
+        "Quinta": "Sobreiro",
+        "Cultura": "Rosa de Almeria",
+        "Inicio": "10/03/25",
+        "Fim": "26/09/25",
+        "Horas Plantas": 98,
+        "Horas Colheita": 54,
+        "Horas Outros": 16,
+        "Horas Limp/Prep": 22,
+        "Tipo": "Grande",
+        "kg/m²": 20.58,
+        "h/ton": 36
     },
     {
         "Quinta": "Campelos",
@@ -47907,7 +48052,21 @@
         "Horas Outros": 32,
         "Horas Limp/Prep": 16,
         "Tipo": "Grande",
-        "kg/m²": "16,22"
+        "kg/m²": 16.22,
+        "h/ton": 49
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "Yarimaru",
+        "Inicio": "15/03/25",
+        "Fim": "25/09/25",
+        "Horas Plantas": 104,
+        "Horas Colheita": 48,
+        "Horas Outros": 33,
+        "Horas Limp/Prep": 21,
+        "Tipo": "Grande",
+        "kg/m²": 15.71,
+        "h/ton": 49
     },
     {
         "Quinta": "Campelos",
@@ -47919,7 +48078,21 @@
         "Horas Outros": 24,
         "Horas Limp/Prep": 22,
         "Tipo": "Grande",
-        "kg/m²": "13,71"
+        "kg/m²": 13.71,
+        "h/ton": 37
+    },
+    {
+        "Quinta": "Campelos",
+        "Cultura": "DRTH",
+        "Inicio": "15/03/25",
+        "Fim": "01/08/25",
+        "Horas Plantas": 69,
+        "Horas Colheita": 44,
+        "Horas Outros": 21,
+        "Horas Limp/Prep": 24,
+        "Tipo": "Grande",
+        "kg/m²": 13.58,
+        "h/ton": 31
     },
     {
         "Quinta": "Portos Brancos",
@@ -47931,7 +48104,8 @@
         "Horas Outros": 6,
         "Horas Limp/Prep": 12,
         "Tipo": "Mini",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "CCS",
@@ -47943,19 +48117,8 @@
         "Horas Outros": 34,
         "Horas Limp/Prep": 23,
         "Tipo": "Grande",
-        "kg/m²": "19,68"
-    },
-    {
-        "Quinta": "Pegões",
-        "Cultura": "Heredero",
-        "Inicio": "11/04/25",
-        "Fim": "21/01/26",
-        "Horas Plantas": 60,
-        "Horas Colheita": 35,
-        "Horas Outros": 3,
-        "Horas Limp/Prep": 5,
-        "Tipo": "Grande",
-        "kg/m²": "25,60"
+        "kg/m²": 19.68,
+        "h/ton": 30
     },
     {
         "Quinta": "Pegões",
@@ -47967,7 +48130,21 @@
         "Horas Outros": 4,
         "Horas Limp/Prep": 8,
         "Tipo": "Grande",
-        "kg/m²": "19,69"
+        "kg/m²": 19.69,
+        "h/ton": 29
+    },
+    {
+        "Quinta": "Pegões",
+        "Cultura": "Heredero",
+        "Inicio": "11/04/25",
+        "Fim": "21/01/26",
+        "Horas Plantas": 60,
+        "Horas Colheita": 35,
+        "Horas Outros": 3,
+        "Horas Limp/Prep": 5,
+        "Tipo": "Grande",
+        "kg/m²": 25.6,
+        "h/ton": 26
     },
     {
         "Quinta": "Zambujeira",
@@ -47979,7 +48156,8 @@
         "Horas Outros": 5,
         "Horas Limp/Prep": 12,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Pegões",
@@ -47991,7 +48169,8 @@
         "Horas Outros": 4,
         "Horas Limp/Prep": 6,
         "Tipo": "Grande",
-        "kg/m²": "23,43"
+        "kg/m²": 23.43,
+        "h/ton": 25
     },
     {
         "Quinta": "CCS",
@@ -48003,7 +48182,8 @@
         "Horas Outros": 37,
         "Horas Limp/Prep": 24,
         "Tipo": "Grande",
-        "kg/m²": "17,96"
+        "kg/m²": 17.96,
+        "h/ton": 31
     },
     {
         "Quinta": "Horticilha",
@@ -48015,7 +48195,8 @@
         "Horas Outros": 6,
         "Horas Limp/Prep": 12,
         "Tipo": "Grande",
-        "kg/m²": "24,21"
+        "kg/m²": 24.21,
+        "h/ton": 18
     },
     {
         "Quinta": "Zambujeira",
@@ -48027,7 +48208,8 @@
         "Horas Outros": 7,
         "Horas Limp/Prep": 10,
         "Tipo": "Grande",
-        "kg/m²": "10,40"
+        "kg/m²": 10.4,
+        "h/ton": 49
     },
     {
         "Quinta": "Pegões",
@@ -48039,7 +48221,8 @@
         "Horas Outros": 5,
         "Horas Limp/Prep": 6,
         "Tipo": "Grande",
-        "kg/m²": "21,85"
+        "kg/m²": 21.85,
+        "h/ton": 28
     },
     {
         "Quinta": "Horticilha",
@@ -48051,7 +48234,8 @@
         "Horas Outros": 11,
         "Horas Limp/Prep": 15,
         "Tipo": "Grande",
-        "kg/m²": "24,47"
+        "kg/m²": 24.47,
+        "h/ton": 19
     },
     {
         "Quinta": "Horticilha",
@@ -48063,7 +48247,8 @@
         "Horas Outros": 9,
         "Horas Limp/Prep": 15,
         "Tipo": "Grande",
-        "kg/m²": "22,39"
+        "kg/m²": 22.39,
+        "h/ton": 19
     },
     {
         "Quinta": "Horticilha",
@@ -48075,7 +48260,8 @@
         "Horas Outros": 11,
         "Horas Limp/Prep": 17,
         "Tipo": "Grande",
-        "kg/m²": "20,27"
+        "kg/m²": 20.27,
+        "h/ton": 22
     },
     {
         "Quinta": "Zambujeira",
@@ -48087,7 +48273,8 @@
         "Horas Outros": 2,
         "Horas Limp/Prep": 18,
         "Tipo": "Grande",
-        "kg/m²": "12,60"
+        "kg/m²": 12.6,
+        "h/ton": 28
     },
     {
         "Quinta": "Zambujeira",
@@ -48098,8 +48285,9 @@
         "Horas Colheita": 28,
         "Horas Outros": 2,
         "Horas Limp/Prep": 10,
-        "Tipo": "Mini",
-        "kg/m²": "12,00"
+        "Tipo": "Grande",
+        "kg/m²": 12,
+        "h/ton": 30
     },
     {
         "Quinta": "Zambujeira",
@@ -48111,7 +48299,8 @@
         "Horas Outros": 2,
         "Horas Limp/Prep": 21,
         "Tipo": "Grande",
-        "kg/m²": "12,60"
+        "kg/m²": 12.6,
+        "h/ton": 27
     },
     {
         "Quinta": "Campelos",
@@ -48123,7 +48312,8 @@
         "Horas Outros": 85,
         "Horas Limp/Prep": 82,
         "Tipo": "Grande",
-        "kg/m²": "6,35"
+        "kg/m²": 6.35,
+        "h/ton": 75
     },
     {
         "Quinta": "Sobreiro",
@@ -48135,7 +48325,8 @@
         "Horas Outros": 102,
         "Horas Limp/Prep": 22,
         "Tipo": "Grande",
-        "kg/m²": "7,14"
+        "kg/m²": 7.14,
+        "h/ton": 60
     },
     {
         "Quinta": "Campelos",
@@ -48147,7 +48338,8 @@
         "Horas Outros": 97,
         "Horas Limp/Prep": 58,
         "Tipo": "Grande",
-        "kg/m²": "5,87"
+        "kg/m²": 5.87,
+        "h/ton": 81
     },
     {
         "Quinta": "Pegões",
@@ -48159,7 +48351,8 @@
         "Horas Outros": 6,
         "Horas Limp/Prep": 8,
         "Tipo": "Grande",
-        "kg/m²": "3,71"
+        "kg/m²": 3.71,
+        "h/ton": 28
     },
     {
         "Quinta": "Zambujeira",
@@ -48171,7 +48364,8 @@
         "Horas Outros": 16,
         "Horas Limp/Prep": 44,
         "Tipo": "Grande",
-        "kg/m²": "3,50"
+        "kg/m²": 3.5,
+        "h/ton": 57
     },
     {
         "Quinta": "Zambujeira",
@@ -48183,7 +48377,8 @@
         "Horas Outros": 7,
         "Horas Limp/Prep": 28,
         "Tipo": "Grande",
-        "kg/m²": "4,30"
+        "kg/m²": 4.3,
+        "h/ton": 36
     },
     {
         "Quinta": "CCS",
@@ -48195,67 +48390,73 @@
         "Horas Outros": 8,
         "Horas Limp/Prep": 20,
         "Tipo": "Grande",
-        "kg/m²": "7,91"
+        "kg/m²": 7.91,
+        "h/ton": 43
     },
     {
         "Quinta": "Caminhos da Cotovia",
         "Cultura": "Mini Kumato",
         "Inicio": "15/12/25",
-        "Fim": NaN,
-        "Horas Plantas": 71,
+        "Fim": null,
+        "Horas Plantas": 70,
         "Horas Colheita": 32,
         "Horas Outros": 5,
-        "Horas Limp/Prep": 14,
+        "Horas Limp/Prep": 13,
         "Tipo": "Mini",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Caminhos da Cotovia",
         "Cultura": "Cygnary",
         "Inicio": "15/12/25",
-        "Fim": NaN,
+        "Fim": null,
         "Horas Plantas": 60,
         "Horas Colheita": 73,
         "Horas Outros": 7,
         "Horas Limp/Prep": 14,
         "Tipo": "Mini",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Caminhos da Cotovia",
         "Cultura": "Parisetto",
         "Inicio": "15/12/25",
-        "Fim": NaN,
+        "Fim": null,
         "Horas Plantas": 73,
         "Horas Colheita": 69,
         "Horas Outros": 5,
         "Horas Limp/Prep": 13,
         "Tipo": "Mini",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "CCS",
         "Cultura": "Parisetto",
         "Inicio": "16/12/25",
-        "Fim": NaN,
+        "Fim": null,
         "Horas Plantas": 67,
         "Horas Colheita": 54,
         "Horas Outros": 5,
         "Horas Limp/Prep": 5,
         "Tipo": "Mini",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "CCS",
         "Cultura": "Cygnary",
         "Inicio": "17/12/25",
-        "Fim": NaN,
+        "Fim": null,
         "Horas Plantas": 58,
-        "Horas Colheita": 48,
+        "Horas Colheita": 47,
         "Horas Outros": 5,
         "Horas Limp/Prep": 5,
         "Tipo": "Mini",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Zambujeira",
@@ -48267,7 +48468,8 @@
         "Horas Outros": 4,
         "Horas Limp/Prep": 15,
         "Tipo": "Grande",
-        "kg/m²": "14,00"
+        "kg/m²": 14,
+        "h/ton": 26
     },
     {
         "Quinta": "Zambujeira",
@@ -48279,31 +48481,8 @@
         "Horas Outros": 4,
         "Horas Limp/Prep": 13,
         "Tipo": "Grande",
-        "kg/m²": "18,10"
-    },
-    {
-        "Quinta": "Horticilha",
-        "Cultura": "Portobello",
-        "Inicio": "19/12/25",
-        "Fim": "23/05/26",
-        "Horas Plantas": 36,
-        "Horas Colheita": 29,
-        "Horas Outros": 13,
-        "Horas Limp/Prep": 20,
-        "Tipo": "Grande",
-        "kg/m²": "11,62"
-    },
-    {
-        "Quinta": "Horticilha",
-        "Cultura": "RZ 73-CB0901",
-        "Inicio": "19/12/25",
-        "Fim": "21/05/26",
-        "Horas Plantas": 36,
-        "Horas Colheita": 29,
-        "Horas Outros": 11,
-        "Horas Limp/Prep": 15,
-        "Tipo": "Grande",
-        "kg/m²": "11,73"
+        "kg/m²": 18.1,
+        "h/ton": 19
     },
     {
         "Quinta": "Horticilha",
@@ -48315,7 +48494,34 @@
         "Horas Outros": 14,
         "Horas Limp/Prep": 14,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "Portobello",
+        "Inicio": "19/12/25",
+        "Fim": "23/05/26",
+        "Horas Plantas": 36,
+        "Horas Colheita": 29,
+        "Horas Outros": 13,
+        "Horas Limp/Prep": 20,
+        "Tipo": "Grande",
+        "kg/m²": 11.62,
+        "h/ton": 28
+    },
+    {
+        "Quinta": "Horticilha",
+        "Cultura": "RZ 73-CB0901",
+        "Inicio": "19/12/25",
+        "Fim": "21/05/26",
+        "Horas Plantas": 36,
+        "Horas Colheita": 29,
+        "Horas Outros": 11,
+        "Horas Limp/Prep": 15,
+        "Tipo": "Grande",
+        "kg/m²": 11.73,
+        "h/ton": 26
     },
     {
         "Quinta": "Horticilha",
@@ -48327,7 +48533,8 @@
         "Horas Outros": 16,
         "Horas Limp/Prep": 43,
         "Tipo": "Grande",
-        "kg/m²": "13,21"
+        "kg/m²": 13.21,
+        "h/ton": 30
     },
     {
         "Quinta": "Horticilha",
@@ -48339,7 +48546,8 @@
         "Horas Outros": 16,
         "Horas Limp/Prep": 24,
         "Tipo": "Grande",
-        "kg/m²": "24,16"
+        "kg/m²": 24.16,
+        "h/ton": 16
     },
     {
         "Quinta": "Zambujeira",
@@ -48351,331 +48559,359 @@
         "Horas Outros": 6,
         "Horas Limp/Prep": 15,
         "Tipo": "Grande",
-        "kg/m²": "17,70"
+        "kg/m²": 17.7,
+        "h/ton": 21
     },
     {
         "Quinta": "Caminhos da Cotovia",
         "Cultura": "San Blas",
         "Inicio": "05/01/26",
-        "Fim": NaN,
+        "Fim": null,
         "Horas Plantas": 90,
         "Horas Colheita": 31,
         "Horas Outros": 9,
         "Horas Limp/Prep": 22,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Horticilha",
         "Cultura": "Parisetto",
         "Inicio": "13/01/26",
-        "Fim": NaN,
+        "Fim": null,
         "Horas Plantas": 61,
         "Horas Colheita": 89,
         "Horas Outros": 10,
         "Horas Limp/Prep": 5,
         "Tipo": "Mini",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Horticilha",
         "Cultura": "Cygnary",
         "Inicio": "13/01/26",
-        "Fim": NaN,
+        "Fim": null,
         "Horas Plantas": 51,
-        "Horas Colheita": 102,
+        "Horas Colheita": 101,
         "Horas Outros": 13,
         "Horas Limp/Prep": 5,
         "Tipo": "Mini",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Sobreiro",
         "Cultura": "RZ 73-CB0901",
         "Inicio": "11/02/26",
-        "Fim": NaN,
-        "Horas Plantas": 120,
-        "Horas Colheita": 69,
-        "Horas Outros": 25,
-        "Horas Limp/Prep": 19,
+        "Fim": null,
+        "Horas Plantas": 119,
+        "Horas Colheita": 68,
+        "Horas Outros": 24,
+        "Horas Limp/Prep": 18,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Sobreiro",
         "Cultura": "Yarimaru",
         "Inicio": "11/02/26",
-        "Fim": NaN,
-        "Horas Plantas": 100,
-        "Horas Colheita": 44,
+        "Fim": null,
+        "Horas Plantas": 99,
+        "Horas Colheita": 43,
         "Horas Outros": 22,
         "Horas Limp/Prep": 17,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Pegões",
         "Cultura": "Yarimaru",
         "Inicio": "12/02/26",
-        "Fim": NaN,
+        "Fim": null,
         "Horas Plantas": 54,
         "Horas Colheita": 43,
         "Horas Outros": 8,
         "Horas Limp/Prep": 10,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Campelos",
         "Cultura": "Yarimaru",
         "Inicio": "13/02/26",
-        "Fim": NaN,
+        "Fim": null,
         "Horas Plantas": 52,
         "Horas Colheita": 44,
         "Horas Outros": 18,
         "Horas Limp/Prep": 20,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Sobreiro",
         "Cultura": "Yarimaru",
         "Inicio": "12/03/26",
-        "Fim": NaN,
-        "Horas Plantas": 71,
-        "Horas Colheita": 60,
+        "Fim": null,
+        "Horas Plantas": 70,
+        "Horas Colheita": 59,
         "Horas Outros": 12,
-        "Horas Limp/Prep": 14,
+        "Horas Limp/Prep": 13,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Zambujeira",
         "Cultura": "Kumato",
         "Inicio": "15/04/26",
-        "Fim": NaN,
+        "Fim": null,
         "Horas Plantas": 60,
         "Horas Colheita": 56,
         "Horas Outros": 3,
         "Horas Limp/Prep": 7,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Pegões",
         "Cultura": "San Blas",
         "Inicio": "21/04/26",
-        "Fim": NaN,
-        "Horas Plantas": 70,
+        "Fim": null,
+        "Horas Plantas": 69,
         "Horas Colheita": 23,
         "Horas Outros": 7,
         "Horas Limp/Prep": 12,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Pegões",
         "Cultura": "Bronski",
         "Inicio": "22/04/26",
-        "Fim": NaN,
-        "Horas Plantas": 77,
+        "Fim": null,
+        "Horas Plantas": 76,
         "Horas Colheita": 24,
         "Horas Outros": 6,
         "Horas Limp/Prep": 2,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Pegões",
         "Cultura": "Tiac",
         "Inicio": "22/04/26",
-        "Fim": NaN,
-        "Horas Plantas": 74,
+        "Fim": null,
+        "Horas Plantas": 73,
         "Horas Colheita": 26,
         "Horas Outros": 6,
         "Horas Limp/Prep": 2,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Horticilha",
         "Cultura": "Pinkmaru",
         "Inicio": "26/04/26",
-        "Fim": NaN,
-        "Horas Plantas": 51,
+        "Fim": null,
+        "Horas Plantas": 50,
         "Horas Colheita": 36,
         "Horas Outros": 15,
         "Horas Limp/Prep": 2,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Horticilha",
         "Cultura": "Yarimaru",
         "Inicio": "05/05/26",
-        "Fim": NaN,
-        "Horas Plantas": 49,
-        "Horas Colheita": 30,
-        "Horas Outros": 12,
-        "Horas Limp/Prep": 2,
+        "Fim": null,
+        "Horas Plantas": 45,
+        "Horas Colheita": 0,
+        "Horas Outros": 4,
+        "Horas Limp/Prep": 4,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "CCS",
         "Cultura": "Bronski",
         "Inicio": "14/05/26",
-        "Fim": NaN,
-        "Horas Plantas": 102,
-        "Horas Colheita": 22,
+        "Fim": null,
+        "Horas Plantas": 101,
+        "Horas Colheita": 21,
         "Horas Outros": 7,
         "Horas Limp/Prep": 5,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "CCS",
         "Cultura": "San Blas",
         "Inicio": "15/05/26",
-        "Fim": NaN,
-        "Horas Plantas": 89,
-        "Horas Colheita": 24,
+        "Fim": null,
+        "Horas Plantas": 88,
+        "Horas Colheita": 23,
         "Horas Outros": 7,
         "Horas Limp/Prep": 5,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Zambujeira",
         "Cultura": "Lacio",
         "Inicio": "03/06/26",
-        "Fim": NaN,
+        "Fim": null,
         "Horas Plantas": 62,
-        "Horas Colheita": 9,
+        "Horas Colheita": 0,
         "Horas Outros": 2,
         "Horas Limp/Prep": 7,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Sobreiro",
         "Cultura": "Komakai",
         "Inicio": "03/06/26",
-        "Fim": NaN,
+        "Fim": null,
         "Horas Plantas": 45,
-        "Horas Colheita": 6,
+        "Horas Colheita": 0,
         "Horas Outros": 33,
-        "Horas Limp/Prep": 13,
+        "Horas Limp/Prep": 12,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Horticilha",
         "Cultura": "Yarimaru",
         "Inicio": "05/06/26",
-        "Fim": NaN,
-        "Horas Plantas": 45,
-        "Horas Colheita": 9,
-        "Horas Outros": 4,
-        "Horas Limp/Prep": 4,
+        "Fim": null,
+        "Horas Plantas": 70,
+        "Horas Colheita": 43,
+        "Horas Outros": 18,
+        "Horas Limp/Prep": 3,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Zambujeira",
         "Cultura": "Kumato",
         "Inicio": "06/06/26",
-        "Fim": NaN,
-        "Horas Plantas": 53,
-        "Horas Colheita": 14,
+        "Fim": null,
+        "Horas Plantas": 52,
+        "Horas Colheita": 0,
         "Horas Outros": 5,
         "Horas Limp/Prep": 10,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Zambujeira",
         "Cultura": "San Blas",
         "Inicio": "07/06/26",
-        "Fim": NaN,
-        "Horas Plantas": 74,
-        "Horas Colheita": 8,
+        "Fim": null,
+        "Horas Plantas": 73,
+        "Horas Colheita": 0,
         "Horas Outros": 3,
         "Horas Limp/Prep": 6,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Horticilha",
         "Cultura": "Keisha",
         "Inicio": "09/06/26",
-        "Fim": NaN,
-        "Horas Plantas": 71,
-        "Horas Colheita": 7,
+        "Fim": null,
+        "Horas Plantas": 70,
+        "Horas Colheita": 0,
         "Horas Outros": 14,
         "Horas Limp/Prep": 8,
         "Tipo": "Mini",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Zambujeira",
         "Cultura": "Tiac",
         "Inicio": "10/06/26",
-        "Fim": NaN,
-        "Horas Plantas": 60,
-        "Horas Colheita": 3,
+        "Fim": null,
+        "Horas Plantas": 59,
+        "Horas Colheita": 0,
         "Horas Outros": 1,
-        "Horas Limp/Prep": 6,
+        "Horas Limp/Prep": 5,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Campelos",
         "Cultura": "Komakai",
         "Inicio": "12/06/26",
-        "Fim": NaN,
-        "Horas Plantas": 86,
+        "Fim": null,
+        "Horas Plantas": 85,
         "Horas Colheita": 0,
-        "Horas Outros": 25,
-        "Horas Limp/Prep": 22,
+        "Horas Outros": 24,
+        "Horas Limp/Prep": 21,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Campelos",
         "Cultura": "Yarimaru",
         "Inicio": "22/06/26",
-        "Fim": NaN,
-        "Horas Plantas": 85,
+        "Fim": null,
+        "Horas Plantas": 83,
         "Horas Colheita": 0,
         "Horas Outros": 21,
-        "Horas Limp/Prep": 34,
+        "Horas Limp/Prep": 33,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Sobreiro",
         "Cultura": "RZ 73-CB0901",
         "Inicio": "08/07/26",
-        "Fim": NaN,
-        "Horas Plantas": 37,
+        "Fim": null,
+        "Horas Plantas": 36,
         "Horas Colheita": 0,
         "Horas Outros": 1,
         "Horas Limp/Prep": 12,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     },
     {
         "Quinta": "Sobreiro",
         "Cultura": "Yarimaru",
         "Inicio": "16/07/26",
-        "Fim": NaN,
-        "Horas Plantas": 41,
+        "Fim": null,
+        "Horas Plantas": 40,
         "Horas Colheita": 0,
         "Horas Outros": 2,
-        "Horas Limp/Prep": 17,
+        "Horas Limp/Prep": 16,
         "Tipo": "Grande",
-        "kg/m²": NaN
+        "kg/m²": null,
+        "h/ton": null
     }
 ];
 
@@ -48768,6 +49004,7 @@
         let lineChartInstance = null;
         let barChartInstance = null;
         let cultureChartInstance = null;
+        let cultureHTonChartInstance = null;
 
         function getActivityUnit(act) { return activityUnits[act] || ''; }
         function isLowerBetter(act) { return act === 'h/ha/semana'; }
@@ -49583,7 +49820,7 @@
             return { year: date.getFullYear(), week: weekNo };
         }
 
-        function getFilteredCultureData() {
+        function getFilteredCultureData(ignoreStatusFilter = false) {
             let activeWeeks = [];
             weekRanges.forEach(wr => {
                 if (selectedWeekRanges.includes(wr.label)) {
@@ -49605,97 +49842,147 @@
                 if (selectedCultureSize !== 'Todas' && item.Tipo !== selectedCultureSize) return false;
                 if (textFilter && !item.Cultura.toLowerCase().includes(textFilter)) return false;
 
-                const isAcabada = (item.Fim && item.Fim.trim() !== "");
-                if (isAcabada && !showFinalizadas) return false;
-                if (!isAcabada && !showEmCurso) return false;
+                if (!ignoreStatusFilter) {
+                    const isAcabada = (item.Fim && item.Fim.trim() !== "");
+                    if (isAcabada && !showFinalizadas) return false;
+                    if (!isAcabada && !showEmCurso) return false;
+                }
 
                 return true;
             });
         }
 
-        function renderCultureFarmCards() {
-            const grid = document.getElementById('culture-farms-cards-grid');
-            if (!grid) return;
-            grid.innerHTML = '';
+function renderCultureFarmCards() {
+    const grid = document.getElementById('culture-farms-cards-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
 
-            let filtered = getFilteredCultureData();
-            const orderedFarmsToRender = farmOrder.filter(farm => selectedFarms.includes(farm));
-            const unitHtml = `<span style="font-size: 0.6rem; font-weight: 600; color: #888888; font-family: 'Inter', sans-serif;">h</span>`;
+    // Dados filtrados respeitando as checkboxes Finalizadas/Em curso (para as horas)
+    let filtered = getFilteredCultureData(false);
+    
+    // Dados para h/ton (ignorando o filtro de Finalizadas/Em curso)
+    let filteredAllStatus = getFilteredCultureData(true);
 
-            orderedFarmsToRender.forEach(farm => {
-                let farmItems = filtered.filter(item => item.Quinta === farm);
-                const farmColor = farmColors[farm] || '#e2d9cc';
+    const orderedFarmsToRender = farmOrder.filter(farm => selectedFarms.includes(farm));
+    const unitHtml = `<span style="font-size: 0.6rem; font-weight: 600; color: #888888; font-family: 'Inter', sans-serif;">h</span>`;
+    const unitHTonHtml = `<span style="font-size: 0.6rem; font-weight: 600; color: #888888; font-family: 'Inter', sans-serif;">h</span>`;
 
-                const card = document.createElement('div');
-                card.className = 'farm-card';
-                card.style.borderColor = farmColor;
-                card.style.borderTopColor = farmColor;
+    orderedFarmsToRender.forEach(farm => {
+        let farmItems = filtered.filter(item => item.Quinta === farm);
+        let farmItemsAllStatus = filteredAllStatus.filter(item => item.Quinta === farm);
+        const farmColor = farmColors[farm] || '#e2d9cc';
 
-                if (farmItems.length === 0) {
-                    card.innerHTML = `
-                        <div class="farm-card-header-container">
-                            <span class="farm-card-header" title="${farm}">${farm}</span>
+        const card = document.createElement('div');
+        card.className = 'farm-card';
+        card.style.borderColor = farmColor;
+        card.style.borderTopColor = farmColor;
+
+        // Cálculo da média de h/ton independente do filtro de Finalizadas/Em curso
+        let sumHTon = 0, countHTon = 0;
+        farmItemsAllStatus.forEach(item => {
+            if (item['h/ton'] !== null && item['h/ton'] !== undefined && !isNaN(item['h/ton'])) {
+                sumHTon += Number(item['h/ton']);
+                countHTon++;
+            }
+        });
+
+        const avgHTon = countHTon > 0 ? (sumHTon / countHTon) : null;
+        const displayHTon = avgHTon !== null ? `${Math.round(avgHTon)} ${unitHTonHtml}` : null;
+
+        // Se a quinta não tiver dados de horas NEM dados de h/ton, exibe apenas "Sem dados"
+        if (farmItems.length === 0 && avgHTon === null) {
+            card.innerHTML = `
+                <div class="farm-card-header-container">
+                    <span class="farm-card-header" title="${farm}">${farm}</span>
+                </div>
+                <div style="font-size: 0.65rem; color: #999; padding: 4px 0;">Sem dados</div>
+            `;
+        } else if (farmItems.length === 0) {
+            // Se tiver h/ton mas não tiver horas filtradas
+            card.innerHTML = `
+                <div class="farm-card-header-container">
+                    <span class="farm-card-header" title="${farm}">${farm}</span>
+                </div>
+                <div style="font-size: 0.65rem; color: #999; padding: 4px 0;">Sem dados de horas</div>
+                <div style="border-top: 1px solid #e2d9cc; margin: 4px 0; padding-top: 4px;">
+                    <div class="metric-row">
+                        <span class="metric-label" style="font-weight: 700;">H/TON</span>
+                        <div class="metric-value-box">
+                            <div class="metric-val">${displayHTon}</div>
                         </div>
-                        <div style="font-size: 0.65rem; color: #999; padding: 4px 0;">Sem dados</div>
-                    `;
-                } else {
-                    let sumPlantas = 0, sumColheita = 0, sumOutros = 0, sumTotalLimpPrep = 0;
-                    farmItems.forEach(item => {
-                        sumPlantas += item['Horas Plantas'] || 0;
-                        sumColheita += item['Horas Colheita'] || 0;
-                        sumOutros += item['Horas Outros'] || 0;
-                        
-                        const startDateStr = item.Inicio || item.Início;
-                        const weeks = (item.Fim && item.Fim.trim() !== "") ? getCultureWeeksDuration(startDateStr, item.Fim) : 1;
-                        const weeklyLimpPrep = item['Horas Limp/Prep'] || 0;
-                        sumTotalLimpPrep += (weeklyLimpPrep * weeks);
-                    });
-                    const count = farmItems.length;
-                    const avgPlantas = sumPlantas / count;
-                    const avgColheita = sumColheita / count;
-                    const avgOutros = sumOutros / count;
-                    const avgTotalLimpPrep = sumTotalLimpPrep / count;
+                    </div>
+                </div>
+            `;
+        } else {
+            let sumPlantas = 0, sumColheita = 0, sumOutros = 0, sumTotalLimpPrep = 0;
 
-                    card.innerHTML = `
-                        <div class="farm-card-header-container" style="border-bottom: 1px solid #e2d9cc; padding-bottom: 2px; margin-bottom: 4px;">
-                            <span class="farm-card-header" title="${farm}">${farm}</span>
-                        </div>
-                        <div class="farm-card-sub" style="font-size: 0.6rem; margin-bottom: 4px;">(h/20k pl/sem)</div>
-                        <div class="farm-card-metrics">
-                            <div class="metric-row">
-                                <span class="metric-label">PLANTAS</span>
-                                <div class="metric-value-box">
-                                    <div class="metric-val">${Math.round(avgPlantas)} ${unitHtml}</div>
-                                </div>
-                            </div>
-                            <div class="metric-row">
-                                <span class="metric-label">COLHEITA</span>
-                                <div class="metric-value-box">
-                                    <div class="metric-val">${Math.round(avgColheita)} ${unitHtml}</div>
-                                </div>
-                            </div>
-                            <div class="metric-row">
-                                <span class="metric-label">OUTROS</span>
-                                <div class="metric-value-box">
-                                    <div class="metric-val">${Math.round(avgOutros)} ${unitHtml}</div>
-                                </div>
-                            </div>
-                            <div style="border-top: 1px solid #e2d9cc; margin: 4px 0; padding-top: 2px;">
-                                <div class="farm-card-sub" style="font-size: 0.6rem; margin-bottom: 2px;">Horas totais</div>
-                                <div class="metric-row">
-                                    <span class="metric-label" style="font-weight: 700;">LIMP/PREP</span>
-                                    <div class="metric-value-box">
-                                        <div class="metric-val">${Math.round(avgTotalLimpPrep)} ${unitHtml}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }
-
-                grid.appendChild(card);
+            farmItems.forEach(item => {
+                sumPlantas += item['Horas Plantas'] || 0;
+                sumColheita += item['Horas Colheita'] || 0;
+                sumOutros += item['Horas Outros'] || 0;
+                
+                const startDateStr = item.Inicio || item.Início;
+                const weeks = (item.Fim && item.Fim.trim() !== "") ? getCultureWeeksDuration(startDateStr, item.Fim) : 1;
+                const weeklyLimpPrep = item['Horas Limp/Prep'] || 0;
+                sumTotalLimpPrep += (weeklyLimpPrep * weeks);
             });
+
+            const count = farmItems.length;
+            const avgPlantas = sumPlantas / count;
+            const avgColheita = sumColheita / count;
+            const avgOutros = sumOutros / count;
+            const avgTotalLimpPrep = sumTotalLimpPrep / count;
+
+            const hTonText = displayHTon !== null ? displayHTon : '<span style="font-size: 0.65rem; color: #999;">-</span>';
+
+            card.innerHTML = `
+                <div class="farm-card-header-container" style="border-bottom: 1px solid #e2d9cc; padding-bottom: 2px; margin-bottom: 4px;">
+                    <span class="farm-card-header" title="${farm}">${farm}</span>
+                </div>
+                <div class="farm-card-sub" style="font-size: 0.6rem; margin-bottom: 4px;">h/sem (2pl/m²)</div>
+                <div class="farm-card-metrics">
+                    <div class="metric-row">
+                        <span class="metric-label">PLANTAS</span>
+                        <div class="metric-value-box">
+                            <div class="metric-val">${Math.round(avgPlantas)} ${unitHtml}</div>
+                        </div>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">COLHEITA</span>
+                        <div class="metric-value-box">
+                            <div class="metric-val">${Math.round(avgColheita)} ${unitHtml}</div>
+                        </div>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">OUTROS</span>
+                        <div class="metric-value-box">
+                            <div class="metric-val">${Math.round(avgOutros)} ${unitHtml}</div>
+                        </div>
+                    </div>
+                    <div style="border-top: 1px solid #e2d9cc; margin: 4px 0; padding-top: 2px;">
+                        <div class="farm-card-sub" style="font-size: 0.6rem; margin-bottom: 2px;">Horas totais</div>
+                        <div class="metric-row">
+                            <span class="metric-label" style="font-weight: 700;">LIMP/PREP</span>
+                            <div class="metric-value-box">
+                                <div class="metric-val">${Math.round(avgTotalLimpPrep)} ${unitHtml}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="border-top: 1px solid #e2d9cc; margin: 4px 0; padding-top: 4px;">
+                        <div class="metric-row">
+                            <span class="metric-label" style="font-weight: 700;">H/TON</span>
+                            <div class="metric-value-box">
+                                <div class="metric-val">${hTonText}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
+
+        grid.appendChild(card);
+    });
+}
 
         function updateCultureChart() {
             renderCultureFarmCards();
@@ -49703,7 +49990,7 @@
             const ctx = document.getElementById('cultureChart').getContext('2d');
             if (cultureChartInstance) cultureChartInstance.destroy();
 
-            let filtered = getFilteredCultureData();
+            let filtered = getFilteredCultureData(false);
 
             filtered.sort((a, b) => {
                 const totalA = (a['Horas Plantas'] || 0) + (a['Horas Colheita'] || 0) + (a['Horas Outros'] || 0) + (a['Horas Limp/Prep'] || 0);
@@ -49785,7 +50072,7 @@
                                     let label = context.dataset.label || '';
                                     if (label) label += ': ';
                                     if (context.parsed.y !== null) {
-                                        label += context.parsed.y + ' h';
+                                        label += Math.round(context.parsed.y) + ' h';
                                     }
                                     return label;
                                 },
@@ -49805,12 +50092,17 @@
                                         total += item.parsed.y;
                                     });
 
+                                    const hTonVal = (d["h/ton"] !== null && d["h/ton"] !== undefined && !isNaN(d["h/ton"])) 
+                                                    ? `${Math.round(d["h/ton"])}` 
+                                                    : "Sem dados";
+
                                     return [
-                                        `Total: ${total} h`,
+                                        `Total: ${Math.round(total)} h`,
                                         `Início: ${startDateStr}`,
                                         `Fim: ${dataFim}`,
                                         `Nº Semanas: ${semanas}`,
-                                        `kg/m²: ${kgVal}`
+                                        `kg/m²: ${kgVal}`,
+                                        `h/ton: ${hTonVal}`
                                     ];
                                 }
                             }
@@ -49829,13 +50121,117 @@
                                 const idx = context.dataIndex;
                                 const total = totals[idx];
                                 const varInfo = variations[idx];
-                                return `${total} h\n${varInfo ? varInfo.text : ''}`;
+                                return `${Math.round(total)} h\n${varInfo ? varInfo.text : ''}`;
                             }
                         }
                     },
                     scales: {
                         x: { stacked: true, grid: { display: false } },
                         y: { stacked: true, grid: { color: '#f0ebd9' }, beginAtZero: true, grace: '15%' }
+                    }
+                }
+            });
+
+            updateCultureHTonChart();
+        }
+
+        function updateCultureHTonChart() {
+            const ctx = document.getElementById('cultureHTonChart').getContext('2d');
+            if (cultureHTonChartInstance) cultureHTonChartInstance.destroy();
+
+            // Passa true para ignorar o filtro de Finalizadas/Em curso
+            let filtered = getFilteredCultureData(true).filter(d => d['h/ton'] !== null && d['h/ton'] !== undefined && !isNaN(d['h/ton']));
+
+            // Ordena da menor barra (melhor) para a maior
+            filtered.sort((a, b) => Number(a['h/ton']) - Number(b['h/ton']));
+
+            const labels = filtered.map(d => {
+                const abbr = farmAbbreviations[d.Quinta] || d.Quinta;
+                const startDateStr = d.Inicio || d.Início;
+                const { year } = getCultureWeekAndYear(startDateStr);
+                const yy = year.toString().slice(-2);
+                return `${abbr}-${d.Cultura} (${yy})`;
+            });
+
+            const dataVals = filtered.map(d => Number(d['h/ton']));
+            const bgColors = filtered.map(d => farmColors[d.Quinta] || '#cccccc');
+            const borderColors = filtered.map(d => farmBorderColors[d.Quinta] || '#666666');
+
+            const bestVal = dataVals.length > 0 ? Math.min(...dataVals) : 0;
+            const variations = dataVals.map((val) => {
+                if (val === bestVal) {
+                    return { text: '(Melhor)', isBest: true };
+                } else {
+                    const diffPct = ((val - bestVal) / bestVal) * 100;
+                    const sign = diffPct > 0 ? '+' : '';
+                    return { text: `${sign}${diffPct.toFixed(0)}%`, isBest: false };
+                }
+            });
+
+            cultureHTonChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'h/ton',
+                        data: dataVals,
+                        backgroundColor: bgColors,
+                        borderColor: borderColors,
+                        borderWidth: 1.5,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: { duration: 1000 },
+                    layout: { padding: { top: 35 } },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `h/ton: ${Math.round(context.parsed.y)} h/ton`;
+                                },
+                                footer: function(tooltipItems) {
+                                    const dataIndex = tooltipItems[0].dataIndex;
+                                    const d = filtered[dataIndex];
+                                    const startDateStr = d.Inicio || d.Início;
+                                    const hasFim = (d.Fim && d.Fim.trim() !== "");
+                                    const semanas = hasFim ? Math.round(getCultureWeeksDuration(startDateStr, d.Fim)) : "Em curso";
+                                    const dataFim = hasFim ? d.Fim : "Em curso";
+                                    const kgVal = (d["kg/m²"] && d["kg/m²"].toString().trim() !== "") ? d["kg/m²"] : "Sem dados";
+
+                                    const totalH = (d['Horas Plantas'] || 0) + (d['Horas Colheita'] || 0) + (d['Horas Outros'] || 0) + (d['Horas Limp/Prep'] || 0);
+
+                                    return [
+                                        `Total: ${Math.round(totalH)} h/sem (2pl/m²)`,
+                                        `Início: ${startDateStr}`,
+                                        `Fim: ${dataFim}`,
+                                        `Nº Semanas: ${semanas}`,
+                                        `kg/m²: ${kgVal}`
+                                    ];
+                                }
+                            }
+                        },
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'top',
+                            offset: 2,
+                            font: { weight: 'bold', size: 10 },
+                            textAlign: 'center',
+                            color: '#555555',
+                            formatter: function(value, context) {
+                                const idx = context.dataIndex;
+                                const varInfo = variations[idx];
+                                const formattedVal = Math.round(value);
+                                return `${formattedVal} h/ton\n${varInfo ? varInfo.text : ''}`;
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+                        y: { grid: { color: '#f0ebd9' }, beginAtZero: true, grace: '15%' }
                     }
                 }
             });

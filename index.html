@@ -142,8 +142,8 @@
         }
 
         .sidebar-header svg {
-            width: 32px;
-            height: 32px;
+            width: 50px;
+            height: 40px;
             fill: #85c469;
         }
 
@@ -588,7 +588,42 @@
 
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <svg viewBox="0 0 24 24"><path d="M17,8C15.5,8 14.15,8.5 13.06,9.35C11.6,7.56 9.38,6.38 6.84,6.07C7.54,4.27 9.17,2.88 11.23,2.33C11.83,2.17 12.2,1.55 12.04,0.95C11.88,0.35 11.26,-0.02 10.66,0.14C7.88,0.88 5.67,2.81 4.7,5.34C4.38,5.3 4.05,5.27 3.71,5.27C2.22,5.27 0.8,5.77 -0.34,6.72C-0.81,7.11 -0.87,7.81 -0.48,8.28C-0.09,8.75 0.61,8.81 1.08,8.42C1.84,7.79 2.87,7.42 4,7.42C7.03,7.42 9.68,9.22 10.87,11.83C9.07,12.56 7.6,13.97 6.77,15.77C5.35,14.73 3.5,14.15 1.5,14.28C0.89,14.32 0.43,14.85 0.47,15.46C0.51,16.07 1.04,16.53 1.65,16.49C3.21,16.39 4.69,16.85 5.83,17.72C4.69,19.34 4.07,21.32 4.14,23.36C4.16,23.97 4.67,24.44 5.28,24.42C5.89,24.4 6.36,23.89 6.34,23.28C6.28,21.6 6.78,19.95 7.74,18.61C9.28,20.08 11.39,20.95 13.65,20.95C18.07,20.95 21.65,17.37 21.65,12.95C21.65,10.22 19.8,7.92 17,8Z"/></svg>
+            <svg viewBox="0 0 520 340" width="100%" height="100%" class="logo-hortipor-fiel">
+    <!-- 1. CORPO DO TOMATE -->
+    <!-- Círculo vermelho principal -->
+    <circle cx="260" cy="180" r="145" fill="#be0032" />
+    
+    <!-- Linha branca circular interna -->
+    <circle cx="260" cy="180" r="122" fill="none" stroke="#ffffff" stroke-width="4" />
+
+    <!-- 2. HASTE E FOLHAS DA PARTE SUPERIOR -->
+    <!-- Hastes e folhas em verde escuro com bordo branco -->
+    <g fill="#185627" stroke="#ffffff" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+        <!-- Pêndulo central no topo -->
+        <path d="M 248,15 L 272,15 L 272,38 L 248,38 Z" />
+        
+        <!-- Folha Central (Gota pontiaguda para baixo) -->
+        <path d="M 260,38 C 235,50 230,95 260,115 C 290,95 285,50 260,38 Z" />
+        
+        <!-- Folha Esquerda -->
+        <path d="M 242,42 C 190,20 135,55 135,108 C 195,108 238,80 248,50 Z" />
+        
+        <!-- Folha Direita -->
+        <path d="M 278,42 C 330,20 385,55 385,108 C 325,108 282,80 272,50 Z" />
+    </g>
+
+    <!-- 3. TEXTO "Hortipor" EM CAMADAS PARA O EFEITO DE BORDO DUPLO -->
+    <g font-family="'Arial Rounded MT Bold', 'Fredoka', 'Comfortaa', sans-serif" font-weight="900" text-anchor="middle">
+        <!-- Camada 1: Contorno exterior Verde Claro -->
+        <text x="260" y="235" font-size="110" fill="none" stroke="#7ec268" stroke-width="36" stroke-linejoin="round" stroke-linecap="round">Hortipor</text>
+        
+        <!-- Camada 2: Contorno interior Verde Escuro -->
+        <text x="260" y="235" font-size="110" fill="none" stroke="#185627" stroke-width="20" stroke-linejoin="round" stroke-linecap="round">Hortipor</text>
+        
+        <!-- Camada 3: Preenchimento Amarelo Vivo -->
+        <text x="260" y="235" font-size="110" fill="#fbe851">Hortipor</text>
+    </g>
+</svg>
             <div>
                 <h1>Dashboard Hortipor</h1>
                 <p>Horas e Produtividades</p>

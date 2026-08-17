@@ -50126,7 +50126,7 @@ function renderCultureFarmCards() {
                                     let label = context.dataset.label || '';
                                     if (label) label += ': ';
                                     if (context.parsed.y !== null) {
-                                        label += Math.round(context.parsed.y) + ' h';
+                                        label += Math.round(context.parsed.y) + ' h/sem';
                                     }
                                     return label;
                                 },
@@ -50151,7 +50151,7 @@ function renderCultureFarmCards() {
                                                     : "Sem dados";
 
                                     return [
-                                        `Total: ${Math.round(total)} h`,
+                                        `Total: ${Math.round(total)} h/sem`,
                                         `Início: ${startDateStr}`,
                                         `Fim: ${dataFim}`,
                                         `Nº Semanas: ${semanas}`,
@@ -50279,7 +50279,7 @@ function renderCultureFarmCards() {
                                 const idx = context.dataIndex;
                                 const varInfo = variations[idx];
                                 const formattedVal = Math.round(value);
-                                return `${formattedVal} h/ton\n${varInfo ? varInfo.text : ''}`;
+                                return `${formattedVal} h\n${varInfo ? varInfo.text : ''}`;
                             }
                         }
                     },

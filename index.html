@@ -49236,22 +49236,32 @@ if (tabNum === 2) {
             );
         }
 
-        function updateDashboard() {
-            const data = getFilteredData();
-            
-            document.getElementById('line-chart-title').innerText = `Produtividade ao Longo do Tempo - ${selectedActivity}`;
-            document.getElementById('bar-chart-title').innerText = `Comparação entre Quintas - ${selectedActivity}`;
-            
-            if (homologComparison) {
-                document.getElementById('bar-chart-subtitle').innerText = 'Agrupado por Quinta e ordenado por Ano';
-            } else {
-                document.getElementById('bar-chart-subtitle').innerText = 'Média de produtividade por quinta';
-            }
+function updateDashboard() {
+    const data = getFilteredData();
+    
+    // 1. Obtém a unidade correspondente à atividade selecionada
+    const unit = getActivityUnit(selectedActivity);
+    
+    // 2. Adiciona a unidade APENAS se ela existir e for diferente do nome da atividade
+    let unitText = '';
+    if (unit && selectedActivity !== 'h/ha/semana' && unit !== selectedActivity) {
+        unitText = ` (${unit})`;
+    }
+    
+    // 3. Atualiza os títulos dos gráficos
+    document.getElementById('line-chart-title').innerText = `Produtividade ao Longo do Tempo - ${selectedActivity}${unitText}`;
+    document.getElementById('bar-chart-title').innerText = `Comparação entre Quintas - ${selectedActivity}`;
+    
+    if (homologComparison) {
+        document.getElementById('bar-chart-subtitle').innerText = 'Agrupado por Quinta e ordenado por Ano';
+    } else {
+        document.getElementById('bar-chart-subtitle').innerText = 'Média de produtividade por quinta';
+    }
 
-            renderFarmCards(data);
-            updateLineChart(data);
-            updateBarChart(data);
-        }
+    renderFarmCards(data);
+    updateLineChart(data);
+    updateBarChart(data);
+}
 
         function renderFarmCards(data) {
             const grid = document.getElementById('farms-cards-grid');

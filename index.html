@@ -119,12 +119,15 @@
             .toggle-sidebar-btn { display: none; }
             .sidebar-overlay { display: none !important; }
 
-            .sidebar {
-                position: static;
-                transform: none !important;
-                height: auto;
-                box-shadow: 4px 0 10px rgba(0,0,0,0.1);
-            }
+.sidebar {
+    position: sticky;
+    top: 0px; /* Distância do topo da página onde a barra vai fixar */
+    min-height: 100vh;
+    background-color: #2d4a22;
+    transform: none !important;
+    height: fit-content; /* Em vez de auto, garante que o elemento ajusta à altura do seu conteúdo */
+    box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+}
         }
 
         .sidebar-header {
@@ -282,86 +285,85 @@
             color: var(--sidebar-bg);
             font-weight: 700;
             margin: 0px;
-            padding-bottom: 1px;             /* CONTROLA A ALTURA DA LINHA: diminua para SUBIR a linha em direção ao texto */
-            margin-bottom: 1px;             /* CONTROLA O ESPAÇAMENTO: diminua para aproximar o conteúdo de baixo */
+            padding-bottom: 1px;
+            margin-bottom: 1px;
         }
 
-.main-tabs {
-    display: flex;
-    gap: 12px;
-    margin-top: 4px;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-    border-bottom: 2px solid #f0ebd9;
-}
+        .main-tabs {
+            display: flex;
+            gap: 12px;
+            margin-top: 4px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            border-bottom: 2px solid #f0ebd9;
+        }
 
-.tab-btn {
-    background: none;
-    color: var(--text-muted, #70757a);
-    border: none;
-    border-bottom: 3px solid transparent;
-    border-radius: 0;
-    padding: 8px 16px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-}
+        .tab-btn {
+            background: none;
+            color: var(--text-muted, #70757a);
+            border: none;
+            border-bottom: 3px solid transparent;
+            border-radius: 0;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
 
-.tab-btn:hover {
-    color: var(--sidebar-bg);
-    background: none;
-}
+        .tab-btn:hover {
+            color: var(--sidebar-bg);
+            background: none;
+        }
 
-.tab-btn.active {
-    background: none;
-    color: var(--sidebar-bg);
-    border-bottom-color: var(--sidebar-bg);
-    box-shadow: none;
-}
+        .tab-btn.active {
+            background: none;
+            color: var(--sidebar-bg);
+            border-bottom-color: var(--sidebar-bg);
+            box-shadow: none;
+        }
 
-.tab-content {
-    display: none;
-    flex-direction: column;
-    gap: 20px;
-}
+        .tab-content {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+        }
 
-.tab-content.active {
-    display: flex;
-}
+        .tab-content.active {
+            display: flex;
+        }
 
-/* Sub-abas minimalistas */
-.sub-tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 12px;
-    flex-wrap: wrap;
-}
+        .sub-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
 
-.sub-tab-btn {
-    background: transparent;
-    color: #666;
-    border: 1px solid #d5cebf;
-    padding: 5px 14px;
-    border-radius: 20px;
-    font-size: 0.78rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
-}
+        .sub-tab-btn {
+            background: transparent;
+            color: #666;
+            border: 1px solid #d5cebf;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
 
-.sub-tab-btn:hover {
-    border-color: var(--sidebar-bg);
-    color: var(--sidebar-bg);
-    background: transparent;
-}
+        .sub-tab-btn:hover {
+            border-color: var(--sidebar-bg);
+            color: var(--sidebar-bg);
+            background: transparent;
+        }
 
-.sub-tab-btn.active {
-    background-color: var(--sidebar-bg);
-    color: #ffffff;
-    border-color: var(--sidebar-bg);
-}
+        .sub-tab-btn.active {
+            background-color: var(--sidebar-bg);
+            color: #ffffff;
+            border-color: var(--sidebar-bg);
+        }
 
         .activity-selector {
             background: var(--card-bg);
@@ -546,7 +548,7 @@
             flex-direction: column;
         }
 
-        .chart-header { margin-bottom: 15px; }
+        .chart-header { margin-bottom: 10px; }
 
         .chart-title {
             font-size: 1.05rem;
@@ -583,6 +585,39 @@
             height: 280px;
             width: 100%;
         }
+
+        /* Estilos simplificados para o resumo de médias (apenas texto) */
+.summary-pills-container {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.summary-pill {
+    background-color: transparent; /* Remove o fundo */
+    border: none;                  /* Remove a borda/caixa */
+    border-radius: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;         /* Alinha o texto à direita */
+    gap: 1px;
+    min-width: auto;
+}
+
+.summary-pill .lbl {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.3px;
+}
+
+.summary-pill .val {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--sidebar-bg);
+}
     </style>
 </head>
 <body>
@@ -597,41 +632,20 @@
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <svg viewBox="0 0 520 340" width="100%" height="100%" class="logo-hortipor-fiel">
-    <!-- 1. CORPO DO TOMATE -->
-    <!-- Círculo vermelho principal -->
-    <circle cx="260" cy="180" r="145" fill="#be0032" />
-    
-    <!-- Linha branca circular interna -->
-    <circle cx="260" cy="180" r="122" fill="none" stroke="#ffffff" stroke-width="4" />
-
-    <!-- 2. HASTE E FOLHAS DA PARTE SUPERIOR -->
-    <!-- Hastes e folhas em verde escuro com bordo branco -->
-    <g fill="#185627" stroke="#ffffff" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
-        <!-- Pêndulo central no topo -->
-        <path d="M 248,15 L 272,15 L 272,38 L 248,38 Z" />
-        
-        <!-- Folha Central (Gota pontiaguda para baixo) -->
-        <path d="M 260,38 C 235,50 230,95 260,115 C 290,95 285,50 260,38 Z" />
-        
-        <!-- Folha Esquerda -->
-        <path d="M 242,42 C 190,20 135,55 135,108 C 195,108 238,80 248,50 Z" />
-        
-        <!-- Folha Direita -->
-        <path d="M 278,42 C 330,20 385,55 385,108 C 325,108 282,80 272,50 Z" />
-    </g>
-
-    <!-- 3. TEXTO "Hortipor" EM CAMADAS PARA O EFEITO DE BORDO DUPLO -->
-    <g font-family="'Arial Rounded MT Bold', 'Fredoka', 'Comfortaa', sans-serif" font-weight="900" text-anchor="middle">
-        <!-- Camada 1: Contorno exterior Verde Claro -->
-        <text x="260" y="235" font-size="110" fill="none" stroke="#7ec268" stroke-width="36" stroke-linejoin="round" stroke-linecap="round">Hortipor</text>
-        
-        <!-- Camada 2: Contorno interior Verde Escuro -->
-        <text x="260" y="235" font-size="110" fill="none" stroke="#185627" stroke-width="20" stroke-linejoin="round" stroke-linecap="round">Hortipor</text>
-        
-        <!-- Camada 3: Preenchimento Amarelo Vivo -->
-        <text x="260" y="235" font-size="110" fill="#fbe851">Hortipor</text>
-    </g>
-</svg>
+                <circle cx="260" cy="180" r="145" fill="#be0032" />
+                <circle cx="260" cy="180" r="122" fill="none" stroke="#ffffff" stroke-width="4" />
+                <g fill="#185627" stroke="#ffffff" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+                    <path d="M 248,15 L 272,15 L 272,38 L 248,38 Z" />
+                    <path d="M 260,38 C 235,50 230,95 260,115 C 290,95 285,50 260,38 Z" />
+                    <path d="M 242,42 C 190,20 135,55 135,108 C 195,108 238,80 248,50 Z" />
+                    <path d="M 278,42 C 330,20 385,55 385,108 C 325,108 282,80 272,50 Z" />
+                </g>
+                <g font-family="'Arial Rounded MT Bold', 'Fredoka', 'Comfortaa', sans-serif" font-weight="900" text-anchor="middle">
+                    <text x="260" y="235" font-size="110" fill="none" stroke="#7ec268" stroke-width="36" stroke-linejoin="round" stroke-linecap="round">Hortipor</text>
+                    <text x="260" y="235" font-size="110" fill="none" stroke="#185627" stroke-width="20" stroke-linejoin="round" stroke-linecap="round">Hortipor</text>
+                    <text x="260" y="235" font-size="110" fill="#fbe851">Hortipor</text>
+                </g>
+            </svg>
             <div>
                 <h1>Dashboard Hortipor</h1>
                 <p>Horas e Produtividades</p>
@@ -639,7 +653,7 @@
         </div>
 
         <div class="filter-section" id="sidebar-filter-years">
-            <div class="filter-title">Anos</div>
+            <div class="filter-title">Ano de plantação</div>
             <div class="btn-grid" id="years-grid"></div>
         </div>
 
@@ -734,15 +748,20 @@
                         <div class="chart-title">Horas/semana (2pl/m²)</div>
                         <div class="chart-subtitle" style="margin-bottom: 0;">Horas gastas em plantas, colheita, outros e limp/prep (ajustado a 2 pl/m²)</div>
                     </div>
-                    <div style="display: flex; gap: 15px; align-items: center; font-size: 0.85rem; font-weight: 600; color: var(--sidebar-bg); padding: 4px 0;">
-                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
-                            <input type="checkbox" id="chk-finalizadas" onchange="updateCultureChart()" style="accent-var: var(--sidebar-bg); width: 15px; height: 15px; cursor: pointer;"> Finalizadas
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
-                            <input type="checkbox" id="chk-emcurso" checked onchange="updateCultureChart()" style="accent-var: var(--sidebar-bg); width: 15px; height: 15px; cursor: pointer;"> Em curso
-                        </label>
+                    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+                        <div style="display: flex; gap: 15px; align-items: center; font-size: 0.85rem; font-weight: 600; color: var(--sidebar-bg); padding: 4px 0;">
+                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                <input type="checkbox" id="chk-finalizadas" onchange="updateCultureChart()" style="accent-var: var(--sidebar-bg); width: 15px; height: 15px; cursor: pointer;"> Finalizadas
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                <input type="checkbox" id="chk-emcurso" checked onchange="updateCultureChart()" style="accent-var: var(--sidebar-bg); width: 15px; height: 15px; cursor: pointer;"> Em curso
+                            </label>
+                        </div>
+                        <!-- Resumo das Médias Horas/Semana (Posicionado na direita, abaixo das checkboxes) -->
+                        <div id="culture-summary-container" class="summary-pills-container" style="justify-content: flex-end;"></div>
                     </div>
                 </div>
+
                 <div class="chart-container" style="min-height: 420px; margin-top: 10px;">
                     <canvas id="cultureChart"></canvas>
                 </div>
@@ -750,10 +769,17 @@
 
             <!-- GRÁFICO: h/ton -->
             <div class="chart-card">
-                <div class="chart-header">
-                    <div class="chart-title">Horas/tonelada</div>
-                    <div class="chart-subtitle">Horas trabalhadas por tonelada produzida</div>
+                <div class="chart-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <div class="chart-title">Horas/tonelada</div>
+                        <div class="chart-subtitle">Horas trabalhadas por tonelada produzida</div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+                        <!-- Resumo das Médias Horas/Tonelada (Posicionado na direita) -->
+                        <div id="culture-hton-summary-container" class="summary-pills-container" style="justify-content: flex-end;"></div>
+                    </div>
                 </div>
+
                 <div class="chart-container" style="min-height: 380px; margin-top: 10px;">
                     <canvas id="cultureHTonChart"></canvas>
                 </div>
@@ -49081,11 +49107,11 @@
                 weeksFilterTitle.innerText = (tabNum === 3) ? 'Semanas de plantação' : 'Semanas';
             }
 
-const farmsFilterSection = document.getElementById('sidebar-filter-farms');
-farmsFilterSection.classList.remove('sidebar-disabled');
-if (tabNum === 2) {
-    renderPeriodCharts(currentSubTab);
-} else {
+            const farmsFilterSection = document.getElementById('sidebar-filter-farms');
+            farmsFilterSection.classList.remove('sidebar-disabled');
+            if (tabNum === 2) {
+                renderPeriodCharts(currentSubTab);
+            } else {
                 farmsFilterSection.classList.remove('sidebar-disabled');
             }
 
@@ -49193,19 +49219,19 @@ if (tabNum === 2) {
             if (currentTab === 3) updateCultureChart();
         }
 
- function toggleFarm(farm) {
-    if (selectedFarms.includes(farm)) {
-        if (selectedFarms.length > 1) {
-            selectedFarms = selectedFarms.filter(f => f !== farm);
+        function toggleFarm(farm) {
+            if (selectedFarms.includes(farm)) {
+                if (selectedFarms.length > 1) {
+                    selectedFarms = selectedFarms.filter(f => f !== farm);
+                }
+            } else {
+                selectedFarms.push(farm);
+            }
+            renderFarmButtons();
+            updateDashboard();
+            if (currentTab === 2) renderPeriodCharts(currentSubTab);
+            if (currentTab === 3) updateCultureChart();
         }
-    } else {
-        selectedFarms.push(farm);
-    }
-    renderFarmButtons();
-    updateDashboard();
-    if (currentTab === 2) renderPeriodCharts(currentSubTab);
-    if (currentTab === 3) updateCultureChart();
-}
 
         function selectActivity(act) {
             selectedActivity = act;
@@ -49236,32 +49262,28 @@ if (tabNum === 2) {
             );
         }
 
-function updateDashboard() {
-    const data = getFilteredData();
-    
-    // 1. Obtém a unidade correspondente à atividade selecionada
-    const unit = getActivityUnit(selectedActivity);
-    
-    // 2. Adiciona a unidade APENAS se ela existir e for diferente do nome da atividade
-    let unitText = '';
-    if (unit && selectedActivity !== 'h/ha/semana' && unit !== selectedActivity) {
-        unitText = ` (${unit})`;
-    }
-    
-    // 3. Atualiza os títulos dos gráficos
-    document.getElementById('line-chart-title').innerText = `Produtividade ao Longo do Tempo - ${selectedActivity}${unitText}`;
-    document.getElementById('bar-chart-title').innerText = `Comparação entre Quintas - ${selectedActivity}`;
-    
-    if (homologComparison) {
-        document.getElementById('bar-chart-subtitle').innerText = 'Agrupado por Quinta e ordenado por Ano';
-    } else {
-        document.getElementById('bar-chart-subtitle').innerText = 'Média de produtividade por quinta';
-    }
+        function updateDashboard() {
+            const data = getFilteredData();
+            
+            const unit = getActivityUnit(selectedActivity);
+            let unitText = '';
+            if (unit && selectedActivity !== 'h/ha/semana' && unit !== selectedActivity) {
+                unitText = ` (${unit})`;
+            }
+            
+            document.getElementById('line-chart-title').innerText = `Produtividade ao Longo do Tempo - ${selectedActivity}${unitText}`;
+            document.getElementById('bar-chart-title').innerText = `Comparação entre Quintas - ${selectedActivity}`;
+            
+            if (homologComparison) {
+                document.getElementById('bar-chart-subtitle').innerText = 'Agrupado por Quinta e ordenado por Ano';
+            } else {
+                document.getElementById('bar-chart-subtitle').innerText = 'Média de produtividade por quinta';
+            }
 
-    renderFarmCards(data);
-    updateLineChart(data);
-    updateBarChart(data);
-}
+            renderFarmCards(data);
+            updateLineChart(data);
+            updateBarChart(data);
+        }
 
         function renderFarmCards(data) {
             const grid = document.getElementById('farms-cards-grid');
@@ -49906,137 +49928,159 @@ function updateDashboard() {
             });
         }
 
-function renderCultureFarmCards() {
-    const grid = document.getElementById('culture-farms-cards-grid');
-    if (!grid) return;
-    grid.innerHTML = '';
+        function getOverallCultureAvg(size, metric) {
+            const chkFin = document.getElementById('chk-finalizadas');
+            const chkCur = document.getElementById('chk-emcurso');
+            const showFinalizadas = chkFin ? chkFin.checked : true;
+            const showEmCurso = chkCur ? chkCur.checked : true;
 
-    // Dados filtrados respeitando as checkboxes Finalizadas/Em curso (para as horas)
-    let filtered = getFilteredCultureData(false);
-    
-    // Dados para h/ton (ignorando o filtro de Finalizadas/Em curso)
-    let filteredAllStatus = getFilteredCultureData(true);
-
-    const orderedFarmsToRender = farmOrder.filter(farm => selectedFarms.includes(farm));
-    const unitHtml = `<span style="font-size: 0.6rem; font-weight: 600; color: #888888; font-family: 'Inter', sans-serif;">h</span>`;
-    const unitHTonHtml = `<span style="font-size: 0.6rem; font-weight: 600; color: #888888; font-family: 'Inter', sans-serif;">h</span>`;
-
-    orderedFarmsToRender.forEach(farm => {
-        let farmItems = filtered.filter(item => item.Quinta === farm);
-        let farmItemsAllStatus = filteredAllStatus.filter(item => item.Quinta === farm);
-        const farmColor = farmColors[farm] || '#e2d9cc';
-
-        const card = document.createElement('div');
-        card.className = 'farm-card';
-        card.style.borderColor = farmColor;
-        card.style.borderTopColor = farmColor;
-
-        // Cálculo da média de h/ton independente do filtro de Finalizadas/Em curso
-        let sumHTon = 0, countHTon = 0;
-        farmItemsAllStatus.forEach(item => {
-            if (item['h/ton'] !== null && item['h/ton'] !== undefined && !isNaN(item['h/ton'])) {
-                sumHTon += Number(item['h/ton']);
-                countHTon++;
-            }
-        });
-
-        const avgHTon = countHTon > 0 ? (sumHTon / countHTon) : null;
-        const displayHTon = avgHTon !== null ? `${Math.round(avgHTon)} ${unitHTonHtml}` : null;
-
-        // Se a quinta não tiver dados de horas NEM dados de h/ton, exibe apenas "Sem dados"
-        if (farmItems.length === 0 && avgHTon === null) {
-            card.innerHTML = `
-                <div class="farm-card-header-container">
-                    <span class="farm-card-header" title="${farm}">${farm}</span>
-                </div>
-                <div style="font-size: 0.65rem; color: #999; padding: 4px 0;">Sem dados</div>
-            `;
-        } else if (farmItems.length === 0) {
-            // Se tiver h/ton mas não tiver horas filtradas
-            card.innerHTML = `
-                <div class="farm-card-header-container">
-                    <span class="farm-card-header" title="${farm}">${farm}</span>
-                </div>
-                <div style="font-size: 0.65rem; color: #999; padding: 4px 0;">Sem dados de horas</div>
-                <div style="border-top: 1px solid #e2d9cc; margin: 4px 0; padding-top: 4px;">
-                    <div class="metric-row">
-                        <span class="metric-label" style="font-weight: 700;">H/TON</span>
-                        <div class="metric-value-box">
-                            <div class="metric-val">${displayHTon}</div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        } else {
-            let sumPlantas = 0, sumColheita = 0, sumOutros = 0, sumTotalLimpPrep = 0;
-
-            farmItems.forEach(item => {
-                sumPlantas += item['Horas Plantas'] || 0;
-                sumColheita += item['Horas Colheita'] || 0;
-                sumOutros += item['Horas Outros'] || 0;
-                
-                const startDateStr = item.Inicio || item.Início;
-                const weeks = (item.Fim && item.Fim.trim() !== "") ? getCultureWeeksDuration(startDateStr, item.Fim) : 1;
-                const weeklyLimpPrep = item['Horas Limp/Prep'] || 0;
-                sumTotalLimpPrep += (weeklyLimpPrep * weeks);
+            let items = cultureData.filter(d => {
+                if (size && size !== 'Todas' && d.Tipo !== size) return false;
+                if (metric === 'h/ton') {
+                    return d['h/ton'] !== null && d['h/ton'] !== undefined && !isNaN(d['h/ton']);
+                }
+                const isAcabada = (d.Fim && d.Fim.trim() !== "");
+                if (isAcabada && !showFinalizadas) return false;
+                if (!isAcabada && !showEmCurso) return false;
+                return true;
             });
 
-            const count = farmItems.length;
-            const avgPlantas = sumPlantas / count;
-            const avgColheita = sumColheita / count;
-            const avgOutros = sumOutros / count;
-            const avgTotalLimpPrep = sumTotalLimpPrep / count;
+            if (items.length === 0) return null;
 
-            const hTonText = displayHTon !== null ? displayHTon : '<span style="font-size: 0.65rem; color: #999;">-</span>';
-
-            card.innerHTML = `
-                <div class="farm-card-header-container" style="border-bottom: 1px solid #e2d9cc; padding-bottom: 2px; margin-bottom: 4px;">
-                    <span class="farm-card-header" title="${farm}">${farm}</span>
-                </div>
-                <div class="farm-card-sub" style="font-size: 0.6rem; margin-bottom: 4px;">h/sem (2pl/m²)</div>
-                <div class="farm-card-metrics">
-                    <div class="metric-row">
-                        <span class="metric-label">PLANTAS</span>
-                        <div class="metric-value-box">
-                            <div class="metric-val">${Math.round(avgPlantas)} ${unitHtml}</div>
-                        </div>
-                    </div>
-                    <div class="metric-row">
-                        <span class="metric-label">COLHEITA</span>
-                        <div class="metric-value-box">
-                            <div class="metric-val">${Math.round(avgColheita)} ${unitHtml}</div>
-                        </div>
-                    </div>
-                    <div class="metric-row">
-                        <span class="metric-label">OUTROS</span>
-                        <div class="metric-value-box">
-                            <div class="metric-val">${Math.round(avgOutros)} ${unitHtml}</div>
-                        </div>
-                    </div>
-                    <div style="border-top: 1px solid #e2d9cc; margin: 4px 0; padding-top: 2px;">
-                        <div class="farm-card-sub" style="font-size: 0.6rem; margin-bottom: 2px;">Horas totais</div>
-                        <div class="metric-row">
-                            <span class="metric-label" style="font-weight: 700;">LIMP/PREP</span>
-                            <div class="metric-value-box">
-                                <div class="metric-val">${Math.round(avgTotalLimpPrep)} ${unitHtml}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div style="border-top: 1px solid #e2d9cc; margin: 4px 0; padding-top: 4px;">
-                        <div class="metric-row">
-                            <span class="metric-label" style="font-weight: 700;">H/TON</span>
-                            <div class="metric-value-box">
-                                <div class="metric-val">${hTonText}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
+            if (metric === 'h/ton') {
+                const sum = items.reduce((acc, d) => acc + Number(d['h/ton']), 0);
+                return sum / items.length;
+            } else {
+                const sum = items.reduce((acc, d) => acc + (d['Horas Plantas'] || 0) + (d['Horas Colheita'] || 0) + (d['Horas Outros'] || 0) + (d['Horas Limp/Prep'] || 0), 0);
+                return sum / items.length;
+            }
         }
 
-        grid.appendChild(card);
-    });
-}
+        function renderCultureFarmCards() {
+            const grid = document.getElementById('culture-farms-cards-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            let filtered = getFilteredCultureData(false);
+            let filteredAllStatus = getFilteredCultureData(true);
+
+            const orderedFarmsToRender = farmOrder.filter(farm => selectedFarms.includes(farm));
+            const unitHtml = `<span style="font-size: 0.6rem; font-weight: 600; color: #888888; font-family: 'Inter', sans-serif;">h</span>`;
+            const unitHTonHtml = `<span style="font-size: 0.6rem; font-weight: 600; color: #888888; font-family: 'Inter', sans-serif;">h</span>`;
+
+            orderedFarmsToRender.forEach(farm => {
+                let farmItems = filtered.filter(item => item.Quinta === farm);
+                let farmItemsAllStatus = filteredAllStatus.filter(item => item.Quinta === farm);
+                const farmColor = farmColors[farm] || '#e2d9cc';
+
+                const card = document.createElement('div');
+                card.className = 'farm-card';
+                card.style.borderColor = farmColor;
+                card.style.borderTopColor = farmColor;
+
+                let sumHTon = 0, countHTon = 0;
+                farmItemsAllStatus.forEach(item => {
+                    if (item['h/ton'] !== null && item['h/ton'] !== undefined && !isNaN(item['h/ton'])) {
+                        sumHTon += Number(item['h/ton']);
+                        countHTon++;
+                    }
+                });
+
+                const avgHTon = countHTon > 0 ? (sumHTon / countHTon) : null;
+                const displayHTon = avgHTon !== null ? `${Math.round(avgHTon)} ${unitHTonHtml}` : null;
+
+                if (farmItems.length === 0 && avgHTon === null) {
+                    card.innerHTML = `
+                        <div class="farm-card-header-container">
+                            <span class="farm-card-header" title="${farm}">${farm}</span>
+                        </div>
+                        <div style="font-size: 0.65rem; color: #999; padding: 4px 0;">Sem dados</div>
+                    `;
+                } else if (farmItems.length === 0) {
+                    card.innerHTML = `
+                        <div class="farm-card-header-container">
+                            <span class="farm-card-header" title="${farm}">${farm}</span>
+                        </div>
+                        <div style="font-size: 0.65rem; color: #999; padding: 4px 0;">Sem dados de horas</div>
+                        <div style="border-top: 1px solid #e2d9cc; margin: 4px 0; padding-top: 4px;">
+                            <div class="metric-row">
+                                <span class="metric-label" style="font-weight: 700;">H/TON</span>
+                                <div class="metric-value-box">
+                                    <div class="metric-val">${displayHTon}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    let sumPlantas = 0, sumColheita = 0, sumOutros = 0, sumTotalLimpPrep = 0;
+
+                    farmItems.forEach(item => {
+                        sumPlantas += item['Horas Plantas'] || 0;
+                        sumColheita += item['Horas Colheita'] || 0;
+                        sumOutros += item['Horas Outros'] || 0;
+                        
+                        const startDateStr = item.Inicio || item.Início;
+                        const weeks = (item.Fim && item.Fim.trim() !== "") ? getCultureWeeksDuration(startDateStr, item.Fim) : 1;
+                        const weeklyLimpPrep = item['Horas Limp/Prep'] || 0;
+                        sumTotalLimpPrep += (weeklyLimpPrep * weeks);
+                    });
+
+                    const count = farmItems.length;
+                    const avgPlantas = sumPlantas / count;
+                    const avgColheita = sumColheita / count;
+                    const avgOutros = sumOutros / count;
+                    const avgTotalLimpPrep = sumTotalLimpPrep / count;
+
+                    const hTonText = displayHTon !== null ? displayHTon : '<span style="font-size: 0.65rem; color: #999;">-</span>';
+
+                    card.innerHTML = `
+                        <div class="farm-card-header-container" style="border-bottom: 1px solid #e2d9cc; padding-bottom: 2px; margin-bottom: 4px;">
+                            <span class="farm-card-header" title="${farm}">${farm}</span>
+                        </div>
+                        <div class="farm-card-sub" style="font-size: 0.6rem; margin-bottom: 4px;">h/sem (2pl/m²)</div>
+                        <div class="farm-card-metrics">
+                            <div class="metric-row">
+                                <span class="metric-label">PLANTAS</span>
+                                <div class="metric-value-box">
+                                    <div class="metric-val">${Math.round(avgPlantas)} ${unitHtml}</div>
+                                </div>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">COLHEITA</span>
+                                <div class="metric-value-box">
+                                    <div class="metric-val">${Math.round(avgColheita)} ${unitHtml}</div>
+                                </div>
+                            </div>
+                            <div class="metric-row">
+                                <span class="metric-label">OUTROS</span>
+                                <div class="metric-value-box">
+                                    <div class="metric-val">${Math.round(avgOutros)} ${unitHtml}</div>
+                                </div>
+                            </div>
+                            <div style="border-top: 1px solid #e2d9cc; margin: 4px 0; padding-top: 2px;">
+                                <div class="farm-card-sub" style="font-size: 0.6rem; margin-bottom: 2px;">Horas totais</div>
+                                <div class="metric-row">
+                                    <span class="metric-label" style="font-weight: 700;">LIMP/PREP</span>
+                                    <div class="metric-value-box">
+                                        <div class="metric-val">${Math.round(avgTotalLimpPrep)} ${unitHtml}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="border-top: 1px solid #e2d9cc; margin: 4px 0; padding-top: 4px;">
+                                <div class="metric-row">
+                                    <span class="metric-label" style="font-weight: 700;">H/TON</span>
+                                    <div class="metric-value-box">
+                                        <div class="metric-val">${hTonText}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                grid.appendChild(card);
+            });
+        }
 
         function updateCultureChart() {
             renderCultureFarmCards();
@@ -50072,6 +50116,18 @@ function renderCultureFarmCards() {
                     return { text: `${sign}${diffPct.toFixed(0)}%`, isBest: false };
                 }
             });
+
+            // Atualização dos Cards de Resumo de Médias de Horas/Semana
+            const summaryContainer = document.getElementById('culture-summary-container');
+            if (summaryContainer) {
+                let html = '';
+                const avgSelecao = totals.length > 0 ? (totals.reduce((a, b) => a + b, 0) / totals.length) : null;
+                const valSelecao = avgSelecao !== null ? `${Math.round(avgSelecao)} h/sem` : 'N/A';
+
+                html += `<div class="summary-pill"><span class="lbl">Média</span><span class="val">${valSelecao}</span></div>`;
+
+                summaryContainer.innerHTML = html;
+            }
 
             cultureChartInstance = new Chart(ctx, {
                 type: 'bar',
@@ -50193,10 +50249,8 @@ function renderCultureFarmCards() {
             const ctx = document.getElementById('cultureHTonChart').getContext('2d');
             if (cultureHTonChartInstance) cultureHTonChartInstance.destroy();
 
-            // Passa true para ignorar o filtro de Finalizadas/Em curso
             let filtered = getFilteredCultureData(true).filter(d => d['h/ton'] !== null && d['h/ton'] !== undefined && !isNaN(d['h/ton']));
 
-            // Ordena da menor barra (melhor) para a maior
             filtered.sort((a, b) => Number(a['h/ton']) - Number(b['h/ton']));
 
             const labels = filtered.map(d => {
@@ -50221,6 +50275,18 @@ function renderCultureFarmCards() {
                     return { text: `${sign}${diffPct.toFixed(0)}%`, isBest: false };
                 }
             });
+
+            // Atualização dos Cards de Resumo de Médias de Horas/Tonelada
+            const summaryHTonContainer = document.getElementById('culture-hton-summary-container');
+            if (summaryHTonContainer) {
+                let html = '';
+                const avgSelecao = dataVals.length > 0 ? (dataVals.reduce((a, b) => a + b, 0) / dataVals.length) : null;
+                const valSelecao = avgSelecao !== null ? `${Math.round(avgSelecao)} h/ton` : 'N/A';
+
+                html += `<div class="summary-pill"><span class="lbl">Média</span><span class="val">${valSelecao}</span></div>`;
+
+                summaryHTonContainer.innerHTML = html;
+            }
 
             cultureHTonChartInstance = new Chart(ctx, {
                 type: 'bar',

@@ -484,6 +484,13 @@
             width: 100%;
         }
 
+        .farm-card-section-title {
+            font-size: 0.58rem;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+            white-space: nowrap;
+        }
+
         .farm-card-sub {
             font-size: 0.55rem;
             color: var(--text-muted);
@@ -618,6 +625,21 @@
     font-weight: 700;
     color: var(--sidebar-bg);
 }
+/* Redução do espaçamento vertical dos cards na aba Culturas */
+        #tab-content-3 .farm-card {
+            padding: 3px 6px;
+            gap: 2px;
+        }
+
+        #tab-content-3 .farm-card-metrics {
+            gap: 1px;
+        }
+
+        #tab-content-3 .farm-card-section-title {
+            margin-top: 2px;
+            margin-bottom: 0px;
+        }
+    </style>
     </style>
 </head>
 <body>
@@ -48999,27 +49021,27 @@
             'Colheita tomate grande cacho': 'kg/h'
         };
 
-        const farmColors = {
-            'Horticilha': '#E2EFDA',
-            'CCS': '#FCE4D6',
-            'Portos Brancos': '#FFF2CC',
-            'Zambujeira': '#D9D9D9',
-            'Pegões': '#DDEBF7',
-            'Sobreiro': '#FFCCFF',
-            'Campelos': '#CC99FF',
-            'Caminhos da Cotovia': '#F8CBAD'
-        };
+const farmColors = {
+    'Horticilha': '#A9DFBF',          // Verde Hortelã/Menta (mais vivo que o pastel desbotado)
+    'CCS': '#FFD2B8',
+    'Portos Brancos': '#FFDF4D',
+    'Zambujeira': '#B2BABB',          // Cinza Prata/Mineral (com mais corpo e densidade)
+    'Pegões': '#85C1E9',              // Azul Céu/Piscina (ganha identidade e afasta-se do cinza)
+    'Sobreiro': '#E882B4',
+    'Campelos': '#CC99FF',
+    'Caminhos da Cotovia': '#D97036'
+};
 
-        const farmBorderColors = {
-            'Horticilha': '#70AD47',
-            'CCS': '#ED7D31',
-            'Portos Brancos': '#FFC000',
-            'Zambujeira': '#7F7F7F',
-            'Pegões': '#5B9BD5',
-            'Sobreiro': '#E36C09',
-            'Campelos': '#7030A0',
-            'Caminhos da Cotovia': '#C65911'
-        };
+const farmBorderColors = {
+    'Horticilha': '#27AE60',          // Verde Escuro Vibrante
+    'CCS': '#E06B20',
+    'Portos Brancos': '#D4A000',
+    'Zambujeira': '#5D6D7E',          // Cinza Grafite Escuro
+    'Pegões': '#2980B9',              // Azul Forte/Cobalto
+    'Sobreiro': '#B84D80',
+    'Campelos': '#7030A0',
+    'Caminhos da Cotovia': '#A04515'
+};
 
         const farmAbbreviations = {
             'Horticilha': 'HAI',
@@ -49088,37 +49110,37 @@
             updateCultureChart();
         }
 
-        function switchTab(tabNum) {
-            currentTab = tabNum;
-            document.getElementById('tab-btn-1').classList.toggle('active', tabNum === 1);
-            document.getElementById('tab-btn-2').classList.toggle('active', tabNum === 2);
-            document.getElementById('tab-btn-3').classList.toggle('active', tabNum === 3);
+function switchTab(tabNum) {
+    currentTab = tabNum;
+    document.getElementById('tab-btn-1').classList.toggle('active', tabNum === 1);
+    document.getElementById('tab-btn-2').classList.toggle('active', tabNum === 2);
+    document.getElementById('tab-btn-3').classList.toggle('active', tabNum === 3);
 
-            document.getElementById('tab-content-1').classList.toggle('active', tabNum === 1);
-            document.getElementById('tab-content-2').classList.toggle('active', tabNum === 2);
-            document.getElementById('tab-content-3').classList.toggle('active', tabNum === 3);
+    document.getElementById('tab-content-1').classList.toggle('active', tabNum === 1);
+    document.getElementById('tab-content-2').classList.toggle('active', tabNum === 2);
+    document.getElementById('tab-content-3').classList.toggle('active', tabNum === 3);
 
-            document.getElementById('sidebar-filter-years').style.display = (tabNum === 1 || tabNum === 3) ? 'flex' : 'none';
-            document.getElementById('sidebar-filter-weeks').style.display = (tabNum === 1 || tabNum === 3) ? 'flex' : 'none';
-            document.getElementById('sidebar-filter-homolog').style.display = tabNum === 1 ? 'flex' : 'none';
+    document.getElementById('sidebar-filter-years').style.display = (tabNum === 1 || tabNum === 3) ? 'flex' : 'none';
+    document.getElementById('sidebar-filter-weeks').style.display = (tabNum === 1 || tabNum === 3) ? 'flex' : 'none';
+    document.getElementById('sidebar-filter-homolog').style.display = tabNum === 1 ? 'flex' : 'none';
 
-            const weeksFilterTitle = document.getElementById('weeks-filter-title');
-            if (weeksFilterTitle) {
-                weeksFilterTitle.innerText = (tabNum === 3) ? 'Semanas de plantação' : 'Semanas';
-            }
+    const weeksFilterTitle = document.getElementById('weeks-filter-title');
+    if (weeksFilterTitle) {
+        weeksFilterTitle.innerText = (tabNum === 3) ? 'Semanas de plantação' : 'Semanas';
+    }
 
-            const farmsFilterSection = document.getElementById('sidebar-filter-farms');
-            farmsFilterSection.classList.remove('sidebar-disabled');
-            if (tabNum === 2) {
-                renderPeriodCharts(currentSubTab);
-            } else {
-                farmsFilterSection.classList.remove('sidebar-disabled');
-            }
+    const farmsFilterSection = document.getElementById('sidebar-filter-farms');
+    farmsFilterSection.classList.remove('sidebar-disabled');
 
-            if (tabNum === 3) {
-                updateCultureChart();
-            }
-        }
+    // --- ALTERAÇÃO AQUI ---
+    if (tabNum === 1) {
+        updateDashboard(); // Redesenha e força a animação nos gráficos da Tab 1
+    } else if (tabNum === 2) {
+        renderPeriodCharts(currentSubTab);
+    } else if (tabNum === 3) {
+        updateCultureChart();
+    }
+}
 
         function switchSubTab(subTabVal) {
             currentSubTab = subTabVal;
@@ -49356,6 +49378,18 @@
             });
         }
 
+        // Função para aclarar (percentagem positiva) ou escurecer (percentagem negativa) uma cor Hex
+function adjustColor(color, percent) {
+    if (!color || !color.startsWith('#')) return color || '#333';
+    let num = parseInt(color.replace('#', ''), 16);
+    if (isNaN(num)) return color;
+    let amt = Math.round(2.55 * percent);
+    let R = Math.min(255, Math.max(0, (num >> 16) + amt));
+    let G = Math.min(255, Math.max(0, (num >> 8 & 0x00FF) + amt));
+    let B = Math.min(255, Math.max(0, (num & 0x0000FF) + amt));
+    return '#' + (1 << 24 | R << 16 | G << 8 | B).toString(16).slice(1);
+}
+
         function updateLineChart(data) {
             const ctx = document.getElementById('lineChart').getContext('2d');
             if (lineChartInstance) lineChartInstance.destroy();
@@ -49394,18 +49428,33 @@
                 });
             } else {
                 const sortedYears = [...selectedYears].sort();
+                const yearPointStyles = ['circle', 'triangle', 'rectRot', 'star', 'rect'];
+
+                // Variação de cor por ano: 1º ano (original), 2º ano (+35% mais claro), 3º ano (-30% mais escuro), etc.
+                const colorShifts = [0, 35, -30, 55, -50];
+
                 orderedFarmsToRender.forEach(farm => {
+                    const baseColor = farmBorderColors[farm] || '#333333';
+
                     sortedYears.forEach((yr, idx) => {
                         let weekData = activeWeeks.map(w => {
                             let row = data.find(d => d.Ano === yr && d.Semana === w);
                             return (row && row[farm] !== null && row[farm] !== undefined && row[farm] !== 0) ? row[farm] : null;
                         });
 
+                        // Calcula a cor ajustada para o ano correspondente
+                        const shift = colorShifts[idx % colorShifts.length];
+                        const yearColor = adjustColor(baseColor, shift);
+
                         datasets.push({
                             label: `${farm} (${yr})`,
                             data: weekData,
-                            borderColor: farmBorderColors[farm] || '#333',
+                            borderColor: yearColor,
+                            backgroundColor: yearColor,
                             borderDash: idx % 2 === 1 ? [4, 4] : [],
+                            pointStyle: yearPointStyles[idx % yearPointStyles.length],
+                            pointRadius: 0,
+                            pointHoverRadius: 7,
                             borderWidth: 2,
                             fill: false,
                             tension: 0.2,
@@ -49600,7 +49649,7 @@
                         }
                     },
                     scales: {
-                        x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+                        x: { grid: { display: false }, ticks: { font: { size: 12 } } },
                         y: { grid: { color: '#f0ebd9' }, beginAtZero: true, grace: '15%' }
                     }
                 }
@@ -49856,7 +49905,7 @@
                             }
                         },
                         scales: {
-                            x: { grid: { display: false }, ticks: { font: { size: 9 } } },
+                            x: { grid: { display: false }, ticks: { font: { size: 12 } } },
                             y: { grid: { color: '#f0ebd9' }, beginAtZero: false, grace: '15%' }
                         }
                     }
@@ -49956,145 +50005,220 @@
             }
         }
 
-        function renderCultureFarmCards() {
-            const grid = document.getElementById('culture-farms-cards-grid');
-            if (!grid) return;
-            grid.innerHTML = '';
+function renderCultureFarmCards() {
+    const grid = document.getElementById('culture-farms-cards-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
 
-            let filtered = getFilteredCultureData(false);
-            let filteredAllStatus = getFilteredCultureData(true);
+    let filtered = getFilteredCultureData(false);
+    let filteredAllStatus = getFilteredCultureData(true);
 
-            const orderedFarmsToRender = farmOrder.filter(farm => selectedFarms.includes(farm));
-            const unitHtml = `<span style="font-size: 0.6rem; font-weight: 600; color: #888888; font-family: 'Inter', sans-serif;">h</span>`;
-            const unitHTonHtml = `<span style="font-size: 0.6rem; font-weight: 600; color: #888888; font-family: 'Inter', sans-serif;">h</span>`;
+    const orderedFarmsToRender = farmOrder.filter(farm => selectedFarms.includes(farm));
+    const unitHtml = `<span style="font-size: 0.6rem; font-weight: 600; color: #888888; font-family: 'Inter', sans-serif;">h</span>`;
 
-            orderedFarmsToRender.forEach(farm => {
-                let farmItems = filtered.filter(item => item.Quinta === farm);
-                let farmItemsAllStatus = filteredAllStatus.filter(item => item.Quinta === farm);
-                const farmColor = farmColors[farm] || '#e2d9cc';
+    orderedFarmsToRender.forEach(farm => {
+        let farmItems = filtered.filter(item => item.Quinta === farm);
+        let farmItemsAllStatus = filteredAllStatus.filter(item => item.Quinta === farm);
+        const farmColor = farmColors[farm] || '#e2d9cc';
 
-                const card = document.createElement('div');
-                card.className = 'farm-card';
-                card.style.borderColor = farmColor;
-                card.style.borderTopColor = farmColor;
+        const card = document.createElement('div');
+        card.className = 'farm-card';
+        card.style.borderColor = farmColor;
+        card.style.borderTopColor = farmColor;
 
-                let sumHTon = 0, countHTon = 0;
-                farmItemsAllStatus.forEach(item => {
-                    if (item['h/ton'] !== null && item['h/ton'] !== undefined && !isNaN(item['h/ton'])) {
-                        sumHTon += Number(item['h/ton']);
-                        countHTon++;
-                    }
-                });
+        // Cálculo de H/TON
+        let sumHTon = 0, countHTon = 0;
+        farmItemsAllStatus.forEach(item => {
+            if (item['h/ton'] !== null && item['h/ton'] !== undefined && !isNaN(item['h/ton'])) {
+                sumHTon += Number(item['h/ton']);
+                countHTon++;
+            }
+        });
 
-                const avgHTon = countHTon > 0 ? (sumHTon / countHTon) : null;
-                const displayHTon = avgHTon !== null ? `${Math.round(avgHTon)} ${unitHTonHtml}` : null;
+        const avgHTon = countHTon > 0 ? (sumHTon / countHTon) : null;
+        const displayHTon = avgHTon !== null ? `${Math.round(avgHTon)} ${unitHtml}` : '<span style="font-size: 0.65rem; color: #999;">-</span>';
 
-                if (farmItems.length === 0 && avgHTon === null) {
-                    card.innerHTML = `
-                        <div class="farm-card-header-container">
-                            <span class="farm-card-header" title="${farm}">${farm}</span>
-                        </div>
-                        <div style="font-size: 0.65rem; color: #999; padding: 4px 0;">Sem dados</div>
-                    `;
-                } else if (farmItems.length === 0) {
-                    card.innerHTML = `
-                        <div class="farm-card-header-container">
-                            <span class="farm-card-header" title="${farm}">${farm}</span>
-                        </div>
-                        <div style="font-size: 0.65rem; color: #999; padding: 4px 0;">Sem dados de horas</div>
-                        <div style="border-top: 1px solid #e2d9cc; margin: 4px 0; padding-top: 4px;">
-                            <div class="metric-row">
-                                <span class="metric-label" style="font-weight: 700;">H/TON</span>
-                                <div class="metric-value-box">
-                                    <div class="metric-val">${displayHTon}</div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    let sumPlantas = 0, sumColheita = 0, sumOutros = 0, sumTotalLimpPrep = 0;
+        if (farmItems.length === 0 && avgHTon === null) {
+            card.innerHTML = `
+                <div class="farm-card-header-container">
+                    <span class="farm-card-header" title="${farm}">${farm}</span>
+                </div>
+                <div style="font-size: 0.65rem; color: #999; padding: 4px 0;">Sem dados</div>
+            `;
+        } else {
+            // Métricas em h/sem (médias)
+            let sumPlantas = 0, sumColheita = 0, sumOutros = 0, sumLimpPrepSem = 0;
+            let sumLimpPrepTotais = 0;
 
-                    farmItems.forEach(item => {
-                        sumPlantas += item['Horas Plantas'] || 0;
-                        sumColheita += item['Horas Colheita'] || 0;
-                        sumOutros += item['Horas Outros'] || 0;
-                        
-                        const startDateStr = item.Inicio || item.Início;
-                        const weeks = (item.Fim && item.Fim.trim() !== "") ? getCultureWeeksDuration(startDateStr, item.Fim) : 1;
-                        const weeklyLimpPrep = item['Horas Limp/Prep'] || 0;
-                        sumTotalLimpPrep += (weeklyLimpPrep * weeks);
-                    });
-
-                    const count = farmItems.length;
-                    const avgPlantas = sumPlantas / count;
-                    const avgColheita = sumColheita / count;
-                    const avgOutros = sumOutros / count;
-                    const avgTotalLimpPrep = sumTotalLimpPrep / count;
-
-                    const hTonText = displayHTon !== null ? displayHTon : '<span style="font-size: 0.65rem; color: #999;">-</span>';
-
-                    card.innerHTML = `
-                        <div class="farm-card-header-container" style="border-bottom: 1px solid #e2d9cc; padding-bottom: 2px; margin-bottom: 4px;">
-                            <span class="farm-card-header" title="${farm}">${farm}</span>
-                        </div>
-                        <div class="farm-card-sub" style="font-size: 0.6rem; margin-bottom: 4px;">h/sem (2pl/m²)</div>
-                        <div class="farm-card-metrics">
-                            <div class="metric-row">
-                                <span class="metric-label">PLANTAS</span>
-                                <div class="metric-value-box">
-                                    <div class="metric-val">${Math.round(avgPlantas)} ${unitHtml}</div>
-                                </div>
-                            </div>
-                            <div class="metric-row">
-                                <span class="metric-label">COLHEITA</span>
-                                <div class="metric-value-box">
-                                    <div class="metric-val">${Math.round(avgColheita)} ${unitHtml}</div>
-                                </div>
-                            </div>
-                            <div class="metric-row">
-                                <span class="metric-label">OUTROS</span>
-                                <div class="metric-value-box">
-                                    <div class="metric-val">${Math.round(avgOutros)} ${unitHtml}</div>
-                                </div>
-                            </div>
-                            <div style="border-top: 1px solid #e2d9cc; margin: 4px 0; padding-top: 2px;">
-                                <div class="farm-card-sub" style="font-size: 0.6rem; margin-bottom: 2px;">Horas totais</div>
-                                <div class="metric-row">
-                                    <span class="metric-label" style="font-weight: 700;">LIMP/PREP</span>
-                                    <div class="metric-value-box">
-                                        <div class="metric-val">${Math.round(avgTotalLimpPrep)} ${unitHtml}</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div style="border-top: 1px solid #e2d9cc; margin: 4px 0; padding-top: 4px;">
-                                <div class="metric-row">
-                                    <span class="metric-label" style="font-weight: 700;">H/TON</span>
-                                    <div class="metric-value-box">
-                                        <div class="metric-val">${hTonText}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }
-
-                grid.appendChild(card);
+            farmItems.forEach(item => {
+                sumPlantas += item['Horas Plantas'] || 0;
+                sumColheita += item['Horas Colheita'] || 0;
+                sumOutros += item['Horas Outros'] || 0;
+                sumLimpPrepSem += item['Horas Limp/Prep'] || 0;
+                
+                sumLimpPrepTotais += item['Horas Totais Limp/Prep'] || item['Horas Limp/Prep'] || 0;
             });
+
+            const count = farmItems.length || 1;
+            const avgPlantas = sumPlantas / count;
+            const avgColheita = sumColheita / count;
+            const avgOutros = sumOutros / count;
+            const avgLimpPrepSem = sumLimpPrepSem / count;
+
+            const totalSem = avgPlantas + avgColheita + avgOutros + avgLimpPrepSem;
+
+            card.innerHTML = `
+                <div class="farm-card-header-container">
+                    <span class="farm-card-header" title="${farm}">${farm}</span>
+                </div>
+
+                <!-- Bloco 1: h/sem (2pl/m²) -->
+                <div class="farm-card-section-title">h/sem (2pl/m²)</div>
+                <div class="farm-card-metrics">
+                    <div class="metric-row">
+                        <span class="metric-label">PLANTAS</span>
+                        <div class="metric-value-box">
+                            <div class="metric-val">${Math.round(avgPlantas)} ${unitHtml}</div>
+                        </div>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">COLHEITA</span>
+                        <div class="metric-value-box">
+                            <div class="metric-val">${Math.round(avgColheita)} ${unitHtml}</div>
+                        </div>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">OUTROS</span>
+                        <div class="metric-value-box">
+                            <div class="metric-val">${Math.round(avgOutros)} ${unitHtml}</div>
+                        </div>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">LIMP/PREP</span>
+                        <div class="metric-value-box">
+                            <div class="metric-val">${Math.round(avgLimpPrepSem)} ${unitHtml}</div>
+                        </div>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">TOTAL</span>
+                        <div class="metric-value-box">
+                            <div class="metric-val">${Math.round(totalSem)} ${unitHtml}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="border-top: 1px solid #f0ebe1; margin: 1px 0;"></div>
+
+                <!-- Bloco 2: Horas totais -->
+                <div class="farm-card-section-title">Horas totais</div>
+                <div class="farm-card-metrics">
+                    <div class="metric-row">
+                        <span class="metric-label">LIMP/PREP</span>
+                        <div class="metric-value-box">
+                            <div class="metric-val">${Math.round(sumLimpPrepTotais)} ${unitHtml}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="border-top: 1px solid #f0ebe1; margin: 1px 0;"></div>
+
+                <!-- Bloco 3: H/TON -->
+                <div class="farm-card-metrics">
+                    <div class="metric-row">
+                        <span class="metric-label">H/TON</span>
+                        <div class="metric-value-box">
+                            <div class="metric-val">${displayHTon}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
 
-        function updateCultureChart() {
-            renderCultureFarmCards();
+        grid.appendChild(card);
+    });
+}
 
-            const ctx = document.getElementById('cultureChart').getContext('2d');
-            if (cultureChartInstance) cultureChartInstance.destroy();
+const stackedBarOutlinePlugin = {
+    id: 'stackedBarOutline',
+    afterDatasetsDraw(chart) {
+        const { ctx } = chart;
+        
+        if (chart.canvas.id !== 'cultureChart') return;
 
-            let filtered = getFilteredCultureData(false);
+        const meta0 = chart.getDatasetMeta(0);
+        const metaLast = chart.getDatasetMeta(chart.data.datasets.length - 1);
 
-            filtered.sort((a, b) => {
-                const totalA = (a['Horas Plantas'] || 0) + (a['Horas Colheita'] || 0) + (a['Horas Outros'] || 0) + (a['Horas Limp/Prep'] || 0);
-                const totalB = (b['Horas Plantas'] || 0) + (b['Horas Colheita'] || 0) + (b['Horas Outros'] || 0) + (b['Horas Limp/Prep'] || 0);
-                return totalA - totalB;
-            });
+        meta0.data.forEach((bar, index) => {
+            const cultureItem = chart._filteredCultureData ? chart._filteredCultureData[index] : null;
+            if (!cultureItem) return;
+
+            // Cores da quinta
+            const farmColor = farmColors[cultureItem.Quinta] || '#cccccc';
+            const farmBorder = farmBorderColors[cultureItem.Quinta] || '#666666';
+
+            // Posições da coluna
+            const topY = metaLast.data[index].y;
+            const bottomY = bar.base; 
+            const width = bar.width;
+            const xPos = bar.x - width / 2;
+            const height = bottomY - topY;
+
+            if (height <= 0) return;
+
+            ctx.save();
+
+            const radius = Math.min(6, width / 4);
+
+            // Função para desenhar o caminho sem a linha da base (baixo)
+            const drawTopAndSidesPath = () => {
+                ctx.beginPath();
+                // Começa no canto inferior esquerdo (sem desenhar a base)
+                ctx.moveTo(xPos, bottomY);
+                // Sobe até ao início do arredondamento superior esquerdo
+                ctx.lineTo(xPos, topY + radius);
+                // Arredondamento superior esquerdo
+                ctx.quadraticCurveTo(xPos, topY, xPos + radius, topY);
+                // Linha do topo até ao arredondamento superior direito
+                ctx.lineTo(xPos + width - radius, topY);
+                // Arredondamento superior direito
+                ctx.quadraticCurveTo(xPos + width, topY, xPos + width, topY + radius);
+                // Desce até ao canto inferior direito
+                ctx.lineTo(xPos + width, bottomY);
+                // Não fazemos ctx.closePath() para não fechar a linha na base!
+            };
+
+            // 1. Borda EXTERIOR (com farmBorderColor)
+            ctx.strokeStyle = farmBorder;
+            ctx.lineWidth = 3;
+            drawTopAndSidesPath();
+            ctx.stroke();
+
+            // 2. Borda INTERIOR (com farmColor)
+            ctx.strokeStyle = farmColor;
+            ctx.lineWidth = 2;
+            drawTopAndSidesPath();
+            ctx.stroke();
+
+            
+
+            ctx.restore();
+        });
+    }
+};
+
+function updateCultureChart() {
+    renderCultureFarmCards();
+
+    const ctx = document.getElementById('cultureChart').getContext('2d');
+    if (cultureChartInstance) cultureChartInstance.destroy();
+
+    let filtered = getFilteredCultureData(false);
+
+    filtered.sort((a, b) => {
+        const totalA = (a['Horas Plantas'] || 0) + (a['Horas Colheita'] || 0) + (a['Horas Outros'] || 0) + (a['Horas Limp/Prep'] || 0);
+        const totalB = (b['Horas Plantas'] || 0) + (b['Horas Colheita'] || 0) + (b['Horas Outros'] || 0) + (b['Horas Limp/Prep'] || 0);
+        return totalA - totalB;
+    });
 
             const labels = filtered.map(d => {
                 const abbr = farmAbbreviations[d.Quinta] || d.Quinta;
@@ -50130,41 +50254,42 @@
             }
 
             cultureChartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        { 
-                            label: 'Plantas', 
-                            data: filtered.map(d => d['Horas Plantas'] || 0), 
-                            backgroundColor: '#c6e0b4', 
-                            borderRadius: 0,
-                            borderSkipped: false 
-                        },
-                        { 
-                            label: 'Colheita', 
-                            data: filtered.map(d => d['Horas Colheita'] || 0), 
-                            backgroundColor: '#ff7575', 
-                            borderRadius: 0,
-                            borderSkipped: false 
-                        },
-                        { 
-                            label: 'Outros', 
-                            data: filtered.map(d => d['Horas Outros'] || 0), 
-                            backgroundColor: '#fff2cc', 
-                            borderRadius: 0,
-                            borderSkipped: false 
-                        },
-                        { 
-                            label: 'Limp/Prep', 
-                            data: filtered.map(d => d['Horas Limp/Prep'] || 0), 
-                            backgroundColor: '#f8cbad', 
-                            borderRadius: { topLeft: 6, topRight: 6, bottomLeft: 0, bottomRight: 0 },
-                            borderSkipped: false 
-                        }
-                    ]
+        type: 'bar',
+        plugins: [stackedBarOutlinePlugin], // <--- ADICIONADO AQUI
+        data: {
+            labels: labels,
+            datasets: [
+                { 
+                    label: 'Plantas', 
+                    data: filtered.map(d => d['Horas Plantas'] || 0), 
+                    backgroundColor: '#c6e0b4', 
+                    borderRadius: 0,
+                    borderSkipped: false 
                 },
-                options: {
+                { 
+                    label: 'Colheita', 
+                    data: filtered.map(d => d['Horas Colheita'] || 0), 
+                    backgroundColor: '#ff7575', 
+                    borderRadius: 0,
+                    borderSkipped: false 
+                },
+                { 
+                    label: 'Outros', 
+                    data: filtered.map(d => d['Horas Outros'] || 0), 
+                    backgroundColor: '#fff2cc', 
+                    borderRadius: 0,
+                    borderSkipped: false 
+                },
+                { 
+                    label: 'Limp/Prep', 
+                    data: filtered.map(d => d['Horas Limp/Prep'] || 0), 
+                    backgroundColor: '#f8cbad', 
+                    borderRadius: { topLeft: 6, topRight: 6, bottomLeft: 0, bottomRight: 0 },
+                    borderSkipped: false 
+                }
+            ]
+        },
+        options: {
                     responsive: true,
                     maintainAspectRatio: false,
                     animation: { duration: 1000 },
@@ -50242,8 +50367,12 @@
                 }
             });
 
-            updateCultureHTonChart();
-        }
+            cultureChartInstance._filteredCultureData = filtered; // <--- ADICIONADO AQUI
+
+    updateCultureHTonChart();
+}
+
+
 
         function updateCultureHTonChart() {
             const ctx = document.getElementById('cultureHTonChart').getContext('2d');
@@ -50350,7 +50479,7 @@
                         }
                     },
                     scales: {
-                        x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+                        x: { grid: { display: false }, ticks: { font: { size: 12 } } },
                         y: { grid: { color: '#f0ebd9' }, beginAtZero: true, grace: '15%' }
                     }
                 }

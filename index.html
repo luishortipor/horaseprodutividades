@@ -49431,7 +49431,7 @@ function adjustColor(color, percent) {
                 const yearPointStyles = ['circle', 'triangle', 'rectRot', 'star', 'rect'];
 
                 // Variação de cor por ano: 1º ano (original), 2º ano (+35% mais claro), 3º ano (-30% mais escuro), etc.
-                const colorShifts = [0, 35, -30, 55, -50];
+                const colorShifts = [0, 20, -20, 40, -40, 60, -60];
 
                 orderedFarmsToRender.forEach(farm => {
                     const baseColor = farmBorderColors[farm] || '#333333';
@@ -49447,19 +49447,21 @@ function adjustColor(color, percent) {
                         const yearColor = adjustColor(baseColor, shift);
 
                         datasets.push({
-                            label: `${farm} (${yr})`,
-                            data: weekData,
-                            borderColor: yearColor,
-                            backgroundColor: yearColor,
-                            borderDash: idx % 2 === 1 ? [4, 4] : [],
-                            pointStyle: yearPointStyles[idx % yearPointStyles.length],
-                            pointRadius: 0,
-                            pointHoverRadius: 7,
-                            borderWidth: 2,
-                            fill: false,
-                            tension: 0.2,
-                            spanGaps: true
-                        });
+    label: `${farm} (${yr})`,
+    data: weekData,
+    borderColor: yearColor,
+    backgroundColor: yearColor,
+    pointBackgroundColor: yearColor, // Define a cor interior do círculo na legenda
+    pointBorderColor: yearColor,     // Define a cor do contorno do círculo na legenda
+    borderDash: [],
+    pointStyle: 'circle',            // Força todos os pontos/legenda a serem círculos
+    pointRadius: 0,                  // Esconde os pontos na linha (mantém limpo)
+    pointHoverRadius: 7,
+    borderWidth: 2,
+    fill: false,
+    tension: 0.2,
+    spanGaps: true
+});
                     });
                 });
             }
@@ -49477,6 +49479,12 @@ function adjustColor(color, percent) {
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    elements: {
+            point: {
+                radius: 0,           // Esconde os marcadores por padrão
+                
+            }
+        },
                     animation: {
                         x: {
                             type: 'number',

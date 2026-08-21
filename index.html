@@ -49390,6 +49390,9 @@ function adjustColor(color, percent) {
     return '#' + (1 << 24 | R << 16 | G << 8 | B).toString(16).slice(1);
 }
 
+
+
+////////////////GRÁFICO DE LINHAS DA ABA "ATIVIDADES" //////////////////
         function updateLineChart(data) {
             const ctx = document.getElementById('lineChart').getContext('2d');
             if (lineChartInstance) lineChartInstance.destroy();
@@ -49527,142 +49530,161 @@ function adjustColor(color, percent) {
             });
         }
 
+        ////////////////GRÁFICO DE BARRAS DA ABA "ATIVIDADES" //////////////////
+
         function updateBarChart(data) {
-            const ctx = document.getElementById('barChart').getContext('2d');
-            if (barChartInstance) barChartInstance.destroy();
+    const ctx = document.getElementById('barChart').getContext('2d');
+    if (barChartInstance) barChartInstance.destroy();
 
-            const lowerIsBetter = isLowerBetter(selectedActivity);
-            let unit = getActivityUnit(selectedActivity);
-            const displayUnit = unit === 'h/ha/semana' ? 'h' : unit;
+    const lowerIsBetter = isLowerBetter(selectedActivity);
+    let unit = getActivityUnit(selectedActivity);
+    const displayUnit = unit === 'h/ha/semana' ? 'h' : unit;
 
-            const sortedYears = [...selectedYears].sort((a,b) => a - b);
-            const orderedFarmsToRender = farmOrder.filter(farm => selectedFarms.includes(farm));
+    const sortedYears = [...selectedYears].sort((a,b) => a - b);
+    const orderedFarmsToRender = farmOrder.filter(farm => selectedFarms.includes(farm));
 
-            let labels = [];
-            let chartData = [];
-            let bgColors = [];
-            let borderColors = [];
-            let variations = [];
+    let labels = [];
+    let chartData = [];
+    let bgColors = [];
+    let borderColors = [];
+    let variations = [];
 
-            if (!homologComparison) {
-                let farmStats = [];
-                orderedFarmsToRender.forEach(farm => {
-                    let vals = [];
-                    data.forEach(d => {
-                        if (d[farm] !== null && d[farm] !== undefined && !isNaN(d[farm]) && d[farm] !== 0) {
-                            vals.push(d[farm]);
-                        }
-                    });
-                    if (vals.length > 0) {
-                        let avg = vals.reduce((a, b) => a + b, 0) / vals.length;
-                        farmStats.push({ farm, avg });
-                    }
-                });
-
-                farmStats.sort((a, b) => lowerIsBetter ? a.avg - b.avg : b.avg - a.avg);
-                let bestVal = farmStats.length > 0 ? farmStats[0].avg : 0;
-
-                farmStats.forEach(s => {
-                    const labelAbbr = farmAbbreviations[s.farm] || s.farm;
-                    labels.push(labelAbbr);
-                    chartData.push(s.avg);
-                    bgColors.push(farmColors[s.farm] || '#cccccc');
-                    borderColors.push(farmBorderColors[s.farm] || '#666666');
-
-                    if (s.avg === bestVal) {
-                        variations.push({ text: '(Melhor)', isBest: true });
-                    } else {
-                        const diffPct = ((s.avg - bestVal) / bestVal) * 100;
-                        const sign = diffPct > 0 ? '+' : '';
-                        variations.push({ text: `${sign}${diffPct.toFixed(0)}%`, isBest: false });
-                    }
-                });
-            } else {
-                let allItemsToSort = [];
-                orderedFarmsToRender.forEach(farm => {
-                    const labelAbbr = farmAbbreviations[farm] || farm;
-                    sortedYears.forEach(yr => {
-                        let vals = data.filter(d => d.Ano === yr && d[farm] !== null && d[farm] !== undefined && d[farm] !== 0).map(d => d[farm]);
-                        if (vals.length > 0) {
-                            let avg = vals.reduce((a,b)=>a+b,0)/vals.length;
-                            allItemsToSort.push({ farm, year: yr, labelAbbr, avg });
-                        }
-                    });
-                });
-
-                allItemsToSort.sort((a, b) => lowerIsBetter ? a.avg - b.avg : b.avg - a.avg);
-                let bestVal = allItemsToSort.length > 0 ? allItemsToSort[0].avg : 0;
-
-                allItemsToSort.forEach(item => {
-                    labels.push(`${item.labelAbbr}\n(${item.year})`);
-                    chartData.push(item.avg);
-                    bgColors.push(farmColors[item.farm] || '#cccccc');
-                    borderColors.push(farmBorderColors[item.farm] || '#666666');
-
-                    if (item.avg === bestVal) {
-                        variations.push({ text: '(Melhor)', isBest: true });
-                    } else {
-                        const diffPct = ((item.avg - bestVal) / bestVal) * 100;
-                        const sign = diffPct > 0 ? '+' : '';
-                        variations.push({ text: `${sign}${diffPct.toFixed(0)}%`, isBest: false });
-                    }
-                });
-            }
-
-            barChartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Média de Produtividade',
-                        data: chartData,
-                        backgroundColor: bgColors,
-                        borderColor: borderColors,
-                        borderWidth: 1.5,
-                        borderRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    animation: { duration: 1000 },
-                    layout: { padding: { top: 35 } },
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.dataset.label || '';
-                                    if (label) label += ': ';
-                                    if (context.parsed.y !== null) {
-                                        label += Math.round(context.parsed.y) + ' ' + displayUnit;
-                                    }
-                                    return label;
-                                }
-                            }
-                        },
-                        datalabels: {
-                            anchor: 'end',
-                            align: 'top',
-                            offset: 2,
-                            font: { weight: 'bold', size: 10 },
-                            textAlign: 'center',
-                            color: '#555555',
-                            formatter: function(value, context) {
-                                const idx = context.dataIndex;
-                                const varInfo = variations[idx];
-                                const roundedVal = Math.round(value);
-                                return `${roundedVal} ${displayUnit}\n${varInfo ? varInfo.text : ''}`;
-                            }
-                        }
-                    },
-                    scales: {
-                        x: { grid: { display: false }, ticks: { font: { size: 12 } } },
-                        y: { grid: { color: '#f0ebd9' }, beginAtZero: true, grace: '15%' }
-                    }
+    if (!homologComparison) {
+        let farmStats = [];
+        orderedFarmsToRender.forEach(farm => {
+            let vals = [];
+            data.forEach(d => {
+                if (d[farm] !== null && d[farm] !== undefined && !isNaN(d[farm]) && d[farm] !== 0) {
+                    vals.push(d[farm]);
                 }
             });
+            if (vals.length > 0) {
+                let avg = vals.reduce((a, b) => a + b, 0) / vals.length;
+                farmStats.push({ farm, avg });
+            }
+        });
+
+        farmStats.sort((a, b) => lowerIsBetter ? a.avg - b.avg : b.avg - a.avg);
+        let bestVal = farmStats.length > 0 ? farmStats[0].avg : 0;
+
+        // Verifica se existem 2 ou mais barras
+        const hasMultipleBars = farmStats.length > 1;
+
+        farmStats.forEach(s => {
+            const labelAbbr = farmAbbreviations[s.farm] || s.farm;
+            labels.push(labelAbbr);
+            chartData.push(s.avg);
+            bgColors.push(farmColors[s.farm] || '#cccccc');
+            borderColors.push(farmBorderColors[s.farm] || '#666666');
+
+            // Só atribui "(Melhor)" se houver mais de uma barra
+            const isBestBar = hasMultipleBars && s.avg === bestVal;
+
+            if (isBestBar) {
+                variations.push({ text: '(Melhor)', isBest: true });
+            } else if (hasMultipleBars) {
+                const diffPct = ((s.avg - bestVal) / bestVal) * 100;
+                const sign = diffPct > 0 ? '+' : '';
+                variations.push({ text: `${sign}${diffPct.toFixed(0)}%`, isBest: false });
+            } else {
+                variations.push({ text: '', isBest: false });
+            }
+        });
+    } else {
+        let allItemsToSort = [];
+        orderedFarmsToRender.forEach(farm => {
+            const labelAbbr = farmAbbreviations[farm] || farm;
+            sortedYears.forEach(yr => {
+                let vals = data.filter(d => d.Ano === yr && d[farm] !== null && d[farm] !== undefined && d[farm] !== 0).map(d => d[farm]);
+                if (vals.length > 0) {
+                    let avg = vals.reduce((a,b)=>a+b,0)/vals.length;
+                    allItemsToSort.push({ farm, year: yr, labelAbbr, avg });
+                }
+            });
+        });
+
+        allItemsToSort.sort((a, b) => lowerIsBetter ? a.avg - b.avg : b.avg - a.avg);
+        let bestVal = allItemsToSort.length > 0 ? allItemsToSort[0].avg : 0;
+
+        // Verifica se existem 2 ou mais barras
+        const hasMultipleBars = allItemsToSort.length > 1;
+
+        allItemsToSort.forEach(item => {
+            labels.push(`${item.labelAbbr}\n(${item.year})`);
+            chartData.push(item.avg);
+            bgColors.push(farmColors[item.farm] || '#cccccc');
+            borderColors.push(farmBorderColors[item.farm] || '#666666');
+
+            // Só atribui "(Melhor)" se houver mais de uma barra
+            const isBestBar = hasMultipleBars && item.avg === bestVal;
+
+            if (isBestBar) {
+                variations.push({ text: '(Melhor)', isBest: true });
+            } else if (hasMultipleBars) {
+                const diffPct = ((item.avg - bestVal) / bestVal) * 100;
+                const sign = diffPct > 0 ? '+' : '';
+                variations.push({ text: `${sign}${diffPct.toFixed(0)}%`, isBest: false });
+            } else {
+                variations.push({ text: '', isBest: false });
+            }
+        });
+    }
+
+    barChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Média de Produtividade',
+                data: chartData,
+                backgroundColor: bgColors,
+                borderColor: borderColors,
+                borderWidth: 1.5,
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { duration: 1000 },
+            layout: { padding: { top: 35 } },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) label += ': ';
+                            if (context.parsed.y !== null) {
+                                label += Math.round(context.parsed.y) + ' ' + displayUnit;
+                            }
+                            return label;
+                        }
+                    }
+                },
+                datalabels: {
+                    anchor: 'end',
+                    align: 'top',
+                    offset: 2,
+                    font: { weight: 'bold', size: 10 },
+                    textAlign: 'center',
+                    color: '#555555',
+                    formatter: function(value, context) {
+                        const idx = context.dataIndex;
+                        const varInfo = variations[idx];
+                        const roundedVal = Math.round(value);
+                        const varText = (varInfo && varInfo.text) ? `\n${varInfo.text}` : '';
+                        return `${roundedVal} ${displayUnit}${varText}`;
+                    }
+                }
+            },
+            scales: {
+                x: { grid: { display: false }, ticks: { font: { size: 12 } } },
+                y: { grid: { color: '#f0ebd9' }, beginAtZero: true, grace: '15%' }
+            }
         }
+    });
+}
 
         const targetActivities52w = [
             { label: "Reb/Arg", keys: ["Reb/Arg"] },
@@ -49752,174 +49774,196 @@ function adjustColor(color, percent) {
             return { avg, isValid };
         }
 
+
+        ////////////////GRÁFICO DE BARRAS DA ABA "ATIVIDADES NAS ÚLTIMAS SEMANAS" //////////////////
+
         function renderPeriodCharts(periodType) {
-            const container = document.getElementById('charts-52w');
-            if (!container) return;
-            container.innerHTML = '';
+    const container = document.getElementById('charts-52w');
+    if (!container) return;
+    container.innerHTML = '';
 
-            let allWeeksSet = new Map();
-            rawData.forEach(d => {
-                const key = d.Ano * 100 + d.Semana;
-                if (!allWeeksSet.has(key)) {
-                    allWeeksSet.set(key, { Ano: d.Ano, Semana: d.Semana });
-                }
-            });
-            let sortedWeeks = Array.from(allWeeksSet.values()).sort((a, b) => (a.Ano * 100 + a.Semana) - (b.Ano * 100 + b.Semana));
+    let allWeeksSet = new Map();
+    rawData.forEach(d => {
+        const key = d.Ano * 100 + d.Semana;
+        if (!allWeeksSet.has(key)) {
+            allWeeksSet.set(key, { Ano: d.Ano, Semana: d.Semana });
+        }
+    });
+    let sortedWeeks = Array.from(allWeeksSet.values()).sort((a, b) => (a.Ano * 100 + a.Semana) - (b.Ano * 100 + b.Semana));
 
-            let slicedWeeks52, slicedWeeks208, slicedWeeks;
-            const isVarMode = (periodType === 'var_52_208');
+    let slicedWeeks52, slicedWeeks208, slicedWeeks;
+    const isVarMode = (periodType === 'var_52_208');
+
+    if (isVarMode) {
+        slicedWeeks52 = sortedWeeks.slice(-52);
+        slicedWeeks208 = sortedWeeks.slice(-208);
+    } else {
+        if (periodType === 5) {
+            slicedWeeks = sortedWeeks.slice(-5);
+        } else if (periodType === 52) {
+            slicedWeeks = sortedWeeks.slice(-52);
+        }
+    }
+
+    targetActivities52w.forEach(act => {
+        const unit = activityUnits[act.keys[0]] || '';
+        const displayUnit = isVarMode ? '%' : (unit === 'h/ha/semana' ? 'h' : unit);
+        const lowerIsBetter = isLowerBetter(act.keys[0]);
+
+        let farmStats = [];
+        farmOrder.forEach(farm => {
+            if (!selectedFarms.includes(farm)) return;
+            let avg = 0;
+            let isValid = false;
 
             if (isVarMode) {
-                slicedWeeks52 = sortedWeeks.slice(-52);
-                slicedWeeks208 = sortedWeeks.slice(-208);
-            } else {
-                if (periodType === 5) {
-                    slicedWeeks = sortedWeeks.slice(-5);
-                } else if (periodType === 52) {
-                    slicedWeeks = sortedWeeks.slice(-52);
+                let res52 = getAverageForWeeks(act, farm, slicedWeeks52);
+                let res208 = getAverageForWeeks(act, farm, slicedWeeks208);
+                isValid = res52.isValid && res208.isValid && res208.avg !== 0;
+                if (isValid) {
+                    avg = ((res52.avg - res208.avg) / res208.avg) * 100;
                 }
+            } else {
+                let res = getAverageForWeeks(act, farm, slicedWeeks);
+                avg = res.avg;
+                isValid = res.isValid;
             }
 
-            targetActivities52w.forEach(act => {
-                const unit = activityUnits[act.keys[0]] || '';
-                const displayUnit = isVarMode ? '%' : (unit === 'h/ha/semana' ? 'h' : unit);
-                const lowerIsBetter = isLowerBetter(act.keys[0]);
+            farmStats.push({ farm, avg, isValid });
+        });
 
-                let farmStats = [];
-                farmOrder.forEach(farm => {
-                    if (!selectedFarms.includes(farm)) return;
-                    let avg = 0;
-                    let isValid = false;
+        farmStats = farmStats.filter(s => s.isValid);
+        if (farmStats.length === 0) return;
 
-                    if (isVarMode) {
-                        let res52 = getAverageForWeeks(act, farm, slicedWeeks52);
-                        let res208 = getAverageForWeeks(act, farm, slicedWeeks208);
-                        isValid = res52.isValid && res208.isValid && res208.avg !== 0;
-                        if (isValid) {
-                            avg = ((res52.avg - res208.avg) / res208.avg) * 100;
-                        }
-                    } else {
-                        let res = getAverageForWeeks(act, farm, slicedWeeks);
-                        avg = res.avg;
-                        isValid = res.isValid;
-                    }
+        farmStats.sort((a, b) => lowerIsBetter ? a.avg - b.avg : b.avg - a.avg);
+        let bestVal = farmStats.length > 0 ? farmStats[0].avg : 0;
 
-                    farmStats.push({ farm, avg, isValid });
-                });
+        let labels = [];
+        let chartData = [];
+        let bgColors = [];
+        let borderColors = [];
+        let variations = [];
 
-                farmStats = farmStats.filter(s => s.isValid);
-                if (farmStats.length === 0) return;
+        // Verifica se há mais de 1 barra para permitir o destaque de "Melhor"
+        const hasMultipleBars = farmStats.length > 1;
 
-                farmStats.sort((a, b) => lowerIsBetter ? a.avg - b.avg : b.avg - a.avg);
-                let bestVal = farmStats.length > 0 ? farmStats[0].avg : 0;
+        farmStats.forEach(s => {
+            const labelAbbr = farmAbbreviations[s.farm] || s.farm;
+            labels.push(labelAbbr);
+            chartData.push(s.avg);
+            bgColors.push(farmColors[s.farm] || '#cccccc');
+            borderColors.push(farmBorderColors[s.farm] || '#666666');
 
-                let labels = [];
-                let chartData = [];
-                let bgColors = [];
-                let borderColors = [];
-                let variations = [];
+            // Só atribui "(Melhor)" se houver mais de uma barra
+            const isBestBar = hasMultipleBars && (s.avg === bestVal || bestVal === 0);
 
-                farmStats.forEach(s => {
-                    const labelAbbr = farmAbbreviations[s.farm] || s.farm;
-                    labels.push(labelAbbr);
-                    chartData.push(s.avg);
-                    bgColors.push(farmColors[s.farm] || '#cccccc');
-                    borderColors.push(farmBorderColors[s.farm] || '#666666');
-
-                    if (s.avg === bestVal || bestVal === 0) {
-                        variations.push({ text: '(Melhor)', isBest: true });
-                    } else {
-                        const diffPct = ((s.avg - bestVal) / bestVal) * 100;
-                        const sign = diffPct > 0 ? '+' : '';
-                        variations.push({ text: `${sign}${diffPct.toFixed(0)}%`, isBest: false });
-                    }
-                });
-
-                let periodSubtitleText = '';
-                if (periodType === 5) {
-                    periodSubtitleText = 'Últimas 5 semanas';
-                } else if (periodType === 52) {
-                    periodSubtitleText = 'Últimas 52 semanas';
-                } else if (isVarMode) {
-                    periodSubtitleText = 'Último ano vs 4 anos';
+            if (isVarMode) {
+                // Na evolução da quinta, guarda apenas se é a melhor barra
+                variations.push({ text: isBestBar ? '(Melhor)' : '', isBest: isBestBar });
+            } else {
+                // Nos modos normais (5 e 52 sem), guarda "(Melhor)" ou a variação relativa entre quintas
+                if (isBestBar) {
+                    variations.push({ text: '(Melhor)', isBest: true });
+                } else if (hasMultipleBars) {
+                    const diffPct = ((s.avg - bestVal) / bestVal) * 100;
+                    const sign = diffPct > 0 ? '+' : '';
+                    variations.push({ text: `${sign}${diffPct.toFixed(0)}%`, isBest: false });
+                } else {
+                    variations.push({ text: '', isBest: false });
                 }
+            }
+        });
 
-                const div = document.createElement('div');
-                div.className = 'chart-card';
-                div.innerHTML = `
-                    <div class="chart-header" style="margin-bottom: 10px;">
-                        <div class="chart-title" style="font-size: 0.95rem;">${act.label}</div>
-                        <div class="chart-subtitle" style="font-size: 0.72rem; color: var(--text-muted); margin-top: 1px;">${periodSubtitleText}</div>
-                    </div>
-                    <div class="chart-container-52w">
-                        <canvas id="chart-period-${act.label.replace(/[\/\s]+/g, '-')}"></canvas>
-                    </div>
-                `;
-                container.appendChild(div);
+        let periodSubtitleText = '';
+        if (periodType === 5) {
+            periodSubtitleText = 'Últimas 5 semanas';
+        } else if (periodType === 52) {
+            periodSubtitleText = 'Últimas 52 semanas';
+        } else if (isVarMode) {
+            periodSubtitleText = 'Último ano vs 4 anos';
+        }
 
-                new Chart(document.getElementById(`chart-period-${act.label.replace(/[\/\s]+/g, '-')}`), {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: act.label,
-                            data: chartData,
-                            backgroundColor: bgColors,
-                            borderColor: borderColors,
-                            borderWidth: 1.5,
-                            borderRadius: 6
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        layout: { padding: { top: 30 } },
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        let label = context.dataset.label || '';
-                                        if (label) label += ': ';
-                                        if (context.parsed.y !== null) {
-                                            const val = context.parsed.y;
-                                            const sign = val > 0 ? '+' : '';
-                                            label += (isVarMode ? (sign + val.toFixed(1) + '%') : (Math.round(val) + ' ' + displayUnit));
-                                        }
-                                        return label;
-                                    }
+        const div = document.createElement('div');
+        div.className = 'chart-card';
+        div.innerHTML = `
+            <div class="chart-header" style="margin-bottom: 10px;">
+                <div class="chart-title" style="font-size: 0.95rem;">${act.label}</div>
+                <div class="chart-subtitle" style="font-size: 0.72rem; color: var(--text-muted); margin-top: 1px;">${periodSubtitleText}</div>
+            </div>
+            <div class="chart-container-52w">
+                <canvas id="chart-period-${act.label.replace(/[\/\s]+/g, '-')}"></canvas>
+            </div>
+        `;
+        container.appendChild(div);
+
+        new Chart(document.getElementById(`chart-period-${act.label.replace(/[\/\s]+/g, '-')}`), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: act.label,
+                    data: chartData,
+                    backgroundColor: bgColors,
+                    borderColor: borderColors,
+                    borderWidth: 1.5,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: { padding: { top: 30 } },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) label += ': ';
+                                if (context.parsed.y !== null) {
+                                    const val = context.parsed.y;
+                                    const sign = val > 0 ? '+' : '';
+                                    label += (isVarMode ? (sign + val.toFixed(1) + '%') : (Math.round(val) + ' ' + displayUnit));
                                 }
-                            },
-                            datalabels: {
-                                display: true,
-                                anchor: 'end',
-                                align: 'top',
-                                offset: 2,
-                                font: { weight: 'bold', size: 9 },
-                                textAlign: 'center',
-                                color: '#555555',
-                                formatter: function(value, context) {
-                                    const sign = value > 0 ? '+' : '';
-                                    const idx = context.dataIndex;
-                                    const varInfo = variations[idx];
-                                    if (isVarMode) {
-                                        const valStr = `${sign}${value.toFixed(1)}%`;
-                                        return varInfo && varInfo.text ? `${valStr}\n${varInfo.text}` : valStr;
-                                    } else {
-                                        const roundedVal = Math.round(value);
-                                        return `${roundedVal} ${displayUnit}\n${varInfo ? varInfo.text : ''}`;
-                                    }
-                                }
+                                return label;
                             }
+                        }
+                    },
+                    datalabels: {
+                        display: true,
+                        anchor: function(context) {
+                            return context.dataset.data[context.dataIndex] < 0 ? 'start' : 'end';
                         },
-                        scales: {
-                            x: { grid: { display: false }, ticks: { font: { size: 12 } } },
-                            y: { grid: { color: '#f0ebd9' }, beginAtZero: false, grace: '15%' }
+                        align: function(context) {
+                            return context.dataset.data[context.dataIndex] < 0 ? 'bottom' : 'top';
+                        },
+                        offset: 2,
+                        font: { weight: 'bold', size: 9 },
+                        textAlign: 'center',
+                        color: '#555555',
+                        formatter: function(value, context) {
+                            const sign = value > 0 ? '+' : '';
+                            const idx = context.dataIndex;
+                            const varInfo = variations[idx];
+
+                            if (isVarMode) {
+                                const valStr = `${sign}${value.toFixed(1)}%`;
+                                return varInfo && varInfo.text ? `${valStr}\n${varInfo.text}` : valStr;
+                            } else {
+                                const roundedVal = Math.round(value);
+                                return `${roundedVal} ${displayUnit}\n${varInfo && varInfo.text ? varInfo.text : ''}`;
+                            }
                         }
                     }
-                });
-            });
-        }
+                },
+                scales: {
+                    x: { grid: { display: false }, ticks: { font: { size: 12 } } },
+                    y: { grid: { color: '#f0ebd9' }, beginAtZero: false, grace: '15%' }
+                }
+            }
+        });
+    });
+}
 
         function parseDate(dateStr) {
             if (!dateStr) return null;
@@ -50012,6 +50056,8 @@ function adjustColor(color, percent) {
                 return sum / items.length;
             }
         }
+
+
 
 function renderCultureFarmCards() {
     const grid = document.getElementById('culture-farms-cards-grid');
@@ -50214,6 +50260,9 @@ const stackedBarOutlinePlugin = {
     }
 };
 
+////////////////GRÁFICO DE BARRAS DE H/HA DA ABA "CULTURAS" //////////////////
+
+
 function updateCultureChart() {
     renderCultureFarmCards();
 
@@ -50228,42 +50277,50 @@ function updateCultureChart() {
         return totalA - totalB;
     });
 
-            const labels = filtered.map(d => {
-                const abbr = farmAbbreviations[d.Quinta] || d.Quinta;
-                const startDateStr = d.Inicio || d.Início;
-                const { year } = getCultureWeekAndYear(startDateStr);
-                const yy = year.toString().slice(-2);
-                return `${abbr}-${d.Cultura} (${yy})`;
-            });
+    const labels = filtered.map(d => {
+        const abbr = farmAbbreviations[d.Quinta] || d.Quinta;
+        const startDateStr = d.Inicio || d.Início;
+        const { year } = getCultureWeekAndYear(startDateStr);
+        const yy = year.toString().slice(-2);
+        return `${abbr}-${d.Cultura} (${yy})`;
+    });
 
-            const totals = filtered.map(d => (d['Horas Plantas'] || 0) + (d['Horas Colheita'] || 0) + (d['Horas Outros'] || 0) + (d['Horas Limp/Prep'] || 0));
-            const bestTotal = totals.length > 0 ? Math.min(...totals) : 0;
+    const totals = filtered.map(d => (d['Horas Plantas'] || 0) + (d['Horas Colheita'] || 0) + (d['Horas Outros'] || 0) + (d['Horas Limp/Prep'] || 0));
+    const bestTotal = totals.length > 0 ? Math.min(...totals) : 0;
 
-            const variations = totals.map((total, idx) => {
-                if (idx === 0 || total === bestTotal) {
-                    return { text: '(Melhor)', isBest: true };
-                } else {
-                    const diffPct = ((total - bestTotal) / bestTotal) * 100;
-                    const sign = diffPct > 0 ? '+' : '';
-                    return { text: `${sign}${diffPct.toFixed(0)}%`, isBest: false };
-                }
-            });
+    // Verifica se há mais de 1 barra
+    const hasMultipleBars = totals.length > 1;
 
-            // Atualização dos Cards de Resumo de Médias de Horas/Semana
-            const summaryContainer = document.getElementById('culture-summary-container');
-            if (summaryContainer) {
-                let html = '';
-                const avgSelecao = totals.length > 0 ? (totals.reduce((a, b) => a + b, 0) / totals.length) : null;
-                const valSelecao = avgSelecao !== null ? `${Math.round(avgSelecao)} h/sem` : 'N/A';
+    const variations = totals.map((total, idx) => {
+        // Se houver apenas 1 barra, ignora o cálculo e não mostra "(Melhor)"
+        if (!hasMultipleBars) {
+            return { text: '', isBest: false };
+        }
 
-                html += `<div class="summary-pill"><span class="lbl">Média</span><span class="val">${valSelecao}</span></div>`;
+        if (idx === 0 || total === bestTotal) {
+            return { text: '(Melhor)', isBest: true };
+        } else {
+            const diffPct = ((total - bestTotal) / bestTotal) * 100;
+            const sign = diffPct > 0 ? '+' : '';
+            return { text: `${sign}${diffPct.toFixed(0)}%`, isBest: false };
+        }
+    });
 
-                summaryContainer.innerHTML = html;
-            }
+    // Atualização dos Cards de Resumo de Médias de Horas/Semana
+    const summaryContainer = document.getElementById('culture-summary-container');
+    if (summaryContainer) {
+        let html = '';
+        const avgSelecao = totals.length > 0 ? (totals.reduce((a, b) => a + b, 0) / totals.length) : null;
+        const valSelecao = avgSelecao !== null ? `${Math.round(avgSelecao)} h/sem` : 'N/A';
 
-            cultureChartInstance = new Chart(ctx, {
+        html += `<div class="summary-pill"><span class="lbl">Média</span><span class="val">${valSelecao}</span></div>`;
+
+        summaryContainer.innerHTML = html;
+    }
+
+    cultureChartInstance = new Chart(ctx, {
         type: 'bar',
-        plugins: [stackedBarOutlinePlugin], // <--- ADICIONADO AQUI
+        plugins: [stackedBarOutlinePlugin],
         data: {
             labels: labels,
             datasets: [
@@ -50298,201 +50355,212 @@ function updateCultureChart() {
             ]
         },
         options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    animation: { duration: 1000 },
-                    layout: { padding: { top: 35 } },
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: { usePointStyle: true, boxWidth: 8, font: { size: 11 } }
-                        },
-                        tooltip: {
-                            mode: 'index',
-                            intersect: false,
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.dataset.label || '';
-                                    if (label) label += ': ';
-                                    if (context.parsed.y !== null) {
-                                        label += Math.round(context.parsed.y) + ' h/sem';
-                                    }
-                                    return label;
-                                },
-                                footer: function(tooltipItems) {
-                                    const dataIndex = tooltipItems[0].dataIndex;
-                                    const d = filtered[dataIndex];
-                                    const startDateStr = d.Inicio || d.Início;
-                                    
-                                    const hasFim = (d.Fim && d.Fim.trim() !== "");
-                                    const semanas = hasFim ? Math.round(getCultureWeeksDuration(startDateStr, d.Fim)) : "Em curso";
-                                    const dataFim = hasFim ? d.Fim : "Em curso";
-                                    
-                                    const kgVal = (d["kg/m²"] && d["kg/m²"].toString().trim() !== "") ? d["kg/m²"] : "Sem dados";
-
-                                    let total = 0;
-                                    tooltipItems.forEach(item => {
-                                        total += item.parsed.y;
-                                    });
-
-                                    const hTonVal = (d["h/ton"] !== null && d["h/ton"] !== undefined && !isNaN(d["h/ton"])) 
-                                                    ? `${Math.round(d["h/ton"])}` 
-                                                    : "Sem dados";
-
-                                    return [
-                                        `Total: ${Math.round(total)} h/sem`,
-                                        `Início: ${startDateStr}`,
-                                        `Fim: ${dataFim}`,
-                                        `Nº Semanas: ${semanas}`,
-                                        `kg/m²: ${kgVal}`,
-                                        `h/ton: ${hTonVal}`
-                                    ];
-                                }
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { duration: 1000 },
+            layout: { padding: { top: 35 } },
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { usePointStyle: true, boxWidth: 8, font: { size: 11 } }
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) label += ': ';
+                            if (context.parsed.y !== null) {
+                                label += Math.round(context.parsed.y) + ' h/sem';
                             }
+                            return label;
                         },
-                        datalabels: {
-                            display: function(context) {
-                                return context.datasetIndex === context.chart.data.datasets.length - 1;
-                            },
-                            anchor: 'end',
-                            align: 'top',
-                            offset: 2,
-                            font: { weight: 'bold', size: 10 },
-                            textAlign: 'center',
-                            color: '#555555',
-                            formatter: function(value, context) {
-                                const idx = context.dataIndex;
-                                const total = totals[idx];
-                                const varInfo = variations[idx];
-                                return `${Math.round(total)} h\n${varInfo ? varInfo.text : ''}`;
-                            }
+                        footer: function(tooltipItems) {
+                            const dataIndex = tooltipItems[0].dataIndex;
+                            const d = filtered[dataIndex];
+                            const startDateStr = d.Inicio || d.Início;
+                            
+                            const hasFim = (d.Fim && d.Fim.trim() !== "");
+                            const semanas = hasFim ? Math.round(getCultureWeeksDuration(startDateStr, d.Fim)) : "Em curso";
+                            const dataFim = hasFim ? d.Fim : "Em curso";
+                            
+                            const kgVal = (d["kg/m²"] && d["kg/m²"].toString().trim() !== "") ? d["kg/m²"] : "Sem dados";
+
+                            let total = 0;
+                            tooltipItems.forEach(item => {
+                                total += item.parsed.y;
+                            });
+
+                            const hTonVal = (d["h/ton"] !== null && d["h/ton"] !== undefined && !isNaN(d["h/ton"])) 
+                                            ? `${Math.round(d["h/ton"])}` 
+                                            : "Sem dados";
+
+                            return [
+                                `Total: ${Math.round(total)} h/sem`,
+                                `Início: ${startDateStr}`,
+                                `Fim: ${dataFim}`,
+                                `Nº Semanas: ${semanas}`,
+                                `kg/m²: ${kgVal}`,
+                                `h/ton: ${hTonVal}`
+                            ];
                         }
+                    }
+                },
+                datalabels: {
+                    display: function(context) {
+                        return context.datasetIndex === context.chart.data.datasets.length - 1;
                     },
-                    scales: {
-                        x: { stacked: true, grid: { display: false }, ticks: { font: { size: 9 } } },
-                        y: { stacked: true, grid: { color: '#f0ebd9' }, beginAtZero: true, grace: '15%' }
+                    anchor: 'end',
+                    align: 'top',
+                    offset: 2,
+                    font: { weight: 'bold', size: 10 },
+                    textAlign: 'center',
+                    color: '#555555',
+                    formatter: function(value, context) {
+                        const idx = context.dataIndex;
+                        const total = totals[idx];
+                        const varInfo = variations[idx];
+                        const varText = (varInfo && varInfo.text) ? `\n${varInfo.text}` : '';
+                        return `${Math.round(total)} h${varText}`;
                     }
                 }
-            });
+            },
+            scales: {
+                x: { stacked: true, grid: { display: false }, ticks: { font: { size: 9 } } },
+                y: { stacked: true, grid: { color: '#f0ebd9' }, beginAtZero: true, grace: '15%' }
+            }
+        }
+    });
 
-            cultureChartInstance._filteredCultureData = filtered; // <--- ADICIONADO AQUI
+    cultureChartInstance._filteredCultureData = filtered;
 
     updateCultureHTonChart();
 }
 
+////////////////GRÁFICO DE BARRAS DE H/TON DA ABA "ATIVIDADES" //////////////////
 
+function updateCultureHTonChart() {
+    const ctx = document.getElementById('cultureHTonChart').getContext('2d');
+    if (cultureHTonChartInstance) cultureHTonChartInstance.destroy();
 
-        function updateCultureHTonChart() {
-            const ctx = document.getElementById('cultureHTonChart').getContext('2d');
-            if (cultureHTonChartInstance) cultureHTonChartInstance.destroy();
+    let filtered = getFilteredCultureData(true).filter(d => d['h/ton'] !== null && d['h/ton'] !== undefined && !isNaN(d['h/ton']));
 
-            let filtered = getFilteredCultureData(true).filter(d => d['h/ton'] !== null && d['h/ton'] !== undefined && !isNaN(d['h/ton']));
+    filtered.sort((a, b) => Number(a['h/ton']) - Number(b['h/ton']));
 
-            filtered.sort((a, b) => Number(a['h/ton']) - Number(b['h/ton']));
+    const labels = filtered.map(d => {
+        const abbr = farmAbbreviations[d.Quinta] || d.Quinta;
+        const startDateStr = d.Inicio || d.Início;
+        const { year } = getCultureWeekAndYear(startDateStr);
+        const yy = year.toString().slice(-2);
+        return `${abbr}-${d.Cultura} (${yy})`;
+    });
 
-            const labels = filtered.map(d => {
-                const abbr = farmAbbreviations[d.Quinta] || d.Quinta;
-                const startDateStr = d.Inicio || d.Início;
-                const { year } = getCultureWeekAndYear(startDateStr);
-                const yy = year.toString().slice(-2);
-                return `${abbr}-${d.Cultura} (${yy})`;
-            });
+    const dataVals = filtered.map(d => Number(d['h/ton']));
+    const bgColors = filtered.map(d => farmColors[d.Quinta] || '#cccccc');
+    const borderColors = filtered.map(d => farmBorderColors[d.Quinta] || '#666666');
 
-            const dataVals = filtered.map(d => Number(d['h/ton']));
-            const bgColors = filtered.map(d => farmColors[d.Quinta] || '#cccccc');
-            const borderColors = filtered.map(d => farmBorderColors[d.Quinta] || '#666666');
+    const bestVal = dataVals.length > 0 ? Math.min(...dataVals) : 0;
+    
+    // Verifica se há mais de 1 barra
+    const hasMultipleBars = dataVals.length > 1;
 
-            const bestVal = dataVals.length > 0 ? Math.min(...dataVals) : 0;
-            const variations = dataVals.map((val) => {
-                if (val === bestVal) {
-                    return { text: '(Melhor)', isBest: true };
-                } else {
-                    const diffPct = ((val - bestVal) / bestVal) * 100;
-                    const sign = diffPct > 0 ? '+' : '';
-                    return { text: `${sign}${diffPct.toFixed(0)}%`, isBest: false };
-                }
-            });
+    const variations = dataVals.map((val) => {
+        // Se houver apenas 1 barra, ignora o cálculo e não mostra "(Melhor)"
+        if (!hasMultipleBars) {
+            return { text: '', isBest: false };
+        }
 
-            // Atualização dos Cards de Resumo de Médias de Horas/Tonelada
-            const summaryHTonContainer = document.getElementById('culture-hton-summary-container');
-            if (summaryHTonContainer) {
-                let html = '';
-                const avgSelecao = dataVals.length > 0 ? (dataVals.reduce((a, b) => a + b, 0) / dataVals.length) : null;
-                const valSelecao = avgSelecao !== null ? `${Math.round(avgSelecao)} h/ton` : 'N/A';
+        if (val === bestVal) {
+            return { text: '(Melhor)', isBest: true };
+        } else {
+            const diffPct = ((val - bestVal) / bestVal) * 100;
+            const sign = diffPct > 0 ? '+' : '';
+            return { text: `${sign}${diffPct.toFixed(0)}%`, isBest: false };
+        }
+    });
 
-                html += `<div class="summary-pill"><span class="lbl">Média</span><span class="val">${valSelecao}</span></div>`;
+    // Atualização dos Cards de Resumo de Médias de Horas/Tonelada
+    const summaryHTonContainer = document.getElementById('culture-hton-summary-container');
+    if (summaryHTonContainer) {
+        let html = '';
+        const avgSelecao = dataVals.length > 0 ? (dataVals.reduce((a, b) => a + b, 0) / dataVals.length) : null;
+        const valSelecao = avgSelecao !== null ? `${Math.round(avgSelecao)} h/ton` : 'N/A';
 
-                summaryHTonContainer.innerHTML = html;
-            }
+        html += `<div class="summary-pill"><span class="lbl">Média</span><span class="val">${valSelecao}</span></div>`;
 
-            cultureHTonChartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'h/ton',
-                        data: dataVals,
-                        backgroundColor: bgColors,
-                        borderColor: borderColors,
-                        borderWidth: 1.5,
-                        borderRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    animation: { duration: 1000 },
-                    layout: { padding: { top: 35 } },
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `h/ton: ${Math.round(context.parsed.y)} h/ton`;
-                                },
-                                footer: function(tooltipItems) {
-                                    const dataIndex = tooltipItems[0].dataIndex;
-                                    const d = filtered[dataIndex];
-                                    const startDateStr = d.Inicio || d.Início;
-                                    const hasFim = (d.Fim && d.Fim.trim() !== "");
-                                    const semanas = hasFim ? Math.round(getCultureWeeksDuration(startDateStr, d.Fim)) : "Em curso";
-                                    const dataFim = hasFim ? d.Fim : "Em curso";
-                                    const kgVal = (d["kg/m²"] && d["kg/m²"].toString().trim() !== "") ? d["kg/m²"] : "Sem dados";
+        summaryHTonContainer.innerHTML = html;
+    }
 
-                                    const totalH = (d['Horas Plantas'] || 0) + (d['Horas Colheita'] || 0) + (d['Horas Outros'] || 0) + (d['Horas Limp/Prep'] || 0);
-
-                                    return [
-                                        `Total: ${Math.round(totalH)} h/sem (2pl/m²)`,
-                                        `Início: ${startDateStr}`,
-                                        `Fim: ${dataFim}`,
-                                        `Nº Semanas: ${semanas}`,
-                                        `kg/m²: ${kgVal}`
-                                    ];
-                                }
-                            }
+    cultureHTonChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'h/ton',
+                data: dataVals,
+                backgroundColor: bgColors,
+                borderColor: borderColors,
+                borderWidth: 1.5,
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { duration: 1000 },
+            layout: { padding: { top: 35 } },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `h/ton: ${Math.round(context.parsed.y)} h/ton`;
                         },
-                        datalabels: {
-                            anchor: 'end',
-                            align: 'top',
-                            offset: 2,
-                            font: { weight: 'bold', size: 10 },
-                            textAlign: 'center',
-                            color: '#555555',
-                            formatter: function(value, context) {
-                                const idx = context.dataIndex;
-                                const varInfo = variations[idx];
-                                const formattedVal = Math.round(value);
-                                return `${formattedVal} h\n${varInfo ? varInfo.text : ''}`;
-                            }
+                        footer: function(tooltipItems) {
+                            const dataIndex = tooltipItems[0].dataIndex;
+                            const d = filtered[dataIndex];
+                            const startDateStr = d.Inicio || d.Início;
+                            const hasFim = (d.Fim && d.Fim.trim() !== "");
+                            const semanas = hasFim ? Math.round(getCultureWeeksDuration(startDateStr, d.Fim)) : "Em curso";
+                            const dataFim = hasFim ? d.Fim : "Em curso";
+                            const kgVal = (d["kg/m²"] && d["kg/m²"].toString().trim() !== "") ? d["kg/m²"] : "Sem dados";
+
+                            const totalH = (d['Horas Plantas'] || 0) + (d['Horas Colheita'] || 0) + (d['Horas Outros'] || 0) + (d['Horas Limp/Prep'] || 0);
+
+                            return [
+                                `Total: ${Math.round(totalH)} h/sem (2pl/m²)`,
+                                `Início: ${startDateStr}`,
+                                `Fim: ${dataFim}`,
+                                `Nº Semanas: ${semanas}`,
+                                `kg/m²: ${kgVal}`
+                            ];
                         }
-                    },
-                    scales: {
-                        x: { grid: { display: false }, ticks: { font: { size: 9 } } },
-                        y: { grid: { color: '#f0ebd9' }, beginAtZero: true, grace: '15%' }
+                    }
+                },
+                datalabels: {
+                    anchor: 'end',
+                    align: 'top',
+                    offset: 2,
+                    font: { weight: 'bold', size: 10 },
+                    textAlign: 'center',
+                    color: '#555555',
+                    formatter: function(value, context) {
+                        const idx = context.dataIndex;
+                        const varInfo = variations[idx];
+                        const formattedVal = Math.round(value);
+                        const varText = (varInfo && varInfo.text) ? `\n${varInfo.text}` : '';
+                        return `${formattedVal} h${varText}`;
                     }
                 }
-            });
+            },
+            scales: {
+                x: { grid: { display: false }, ticks: { font: { size: 9 } } },
+                y: { grid: { color: '#f0ebd9' }, beginAtZero: true, grace: '15%' }
+            }
         }
+    });
+}
 
         window.onload = initUI;
     </script>

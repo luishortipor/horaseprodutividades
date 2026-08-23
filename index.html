@@ -50195,7 +50195,7 @@ function renderCultureFarmCards() {
 const stackedBarOutlinePlugin = {
     id: 'stackedBarOutline',
     afterDatasetsDraw(chart) {
-        if (chart.canvas.id !== 'cultureChart') return;
+        if (chart.canvas.id !== 'cultureChart' && chart.canvas.id !== 'cultureHTonChart') return;
 
         const { ctx } = chart;
         const meta0 = chart.getDatasetMeta(0);
@@ -50220,40 +50220,33 @@ const stackedBarOutlinePlugin = {
 
             ctx.save();
 
-            // Espessuras
-            const innerBorderWidth = 4.5;  // Largura da borda clara interior (ajusta como quiseres)
-            const outerBorderWidth = 1.5; // Espessura da linha fina exterior escura
+            // Raio idêntico ao padrão dos restantes gráficos do dashboard
+            const radius = Math.min(6, width / 4);
 
-            const radius = Math.min(4, width / 4);
-
-            const drawPath = (x, y, w, r) => {
-                const safeR = Math.max(0, Math.min(r, w / 2));
+            const drawTopAndSidesPath = () => {
                 ctx.beginPath();
-                ctx.moveTo(x, bottomY);
-                ctx.lineTo(x, y + safeR);
-                ctx.quadraticCurveTo(x, y, x + safeR, y);
-                ctx.lineTo(x + w - safeR, y);
-                ctx.quadraticCurveTo(x + w, y, x + w, y + safeR);
-                ctx.lineTo(x + w, bottomY);
+                ctx.moveTo(xPos, bottomY);
+                ctx.lineTo(xPos, topY + radius);
+                ctx.arcTo(xPos, topY, xPos + radius, topY, radius);
+                ctx.lineTo(xPos + width - radius, topY);
+                ctx.arcTo(xPos + width, topY, xPos + width, topY + radius, radius);
+                ctx.lineTo(xPos + width, bottomY);
             };
 
-            // 1. Desenhar a Borda Interior
-            ctx.strokeStyle = farmColor;
-            ctx.lineWidth = innerBorderWidth;
-            drawPath(xPos, topY, width, radius);
+            // 1. Borda EXTERIOR (espessa - linha base)
+            ctx.strokeStyle = farmBorder;
+            ctx.lineWidth = 6;
+            ctx.lineCap = 'butt';
+            ctx.lineJoin = 'round';
+            drawTopAndSidesPath();
             ctx.stroke();
 
-            // 2. Desenhar a Borda Exterior (calcula o offset exacto para encostar no bordo exterior)
-            const offset = (innerBorderWidth / 2) + (outerBorderWidth / 2);
-            
-            const outerX = xPos - offset;
-            const outerY = topY - offset;
-            const outerWidth = width + (offset * 2);
-            const outerRadius = radius + offset;
-
-            ctx.strokeStyle = farmBorder;
-            ctx.lineWidth = outerBorderWidth;
-            drawPath(outerX, outerY, outerWidth, outerRadius);
+            // 2. Borda INTERIOR (preenche por cima e deixa 1px de contorno exterior visível)
+            ctx.strokeStyle = farmColor;
+            ctx.lineWidth = 4;
+            ctx.lineCap = 'butt';
+            ctx.lineJoin = 'round';
+            drawTopAndSidesPath();
             ctx.stroke();
 
             ctx.restore();

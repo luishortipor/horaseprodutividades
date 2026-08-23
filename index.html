@@ -50195,65 +50195,66 @@ function renderCultureFarmCards() {
 const stackedBarOutlinePlugin = {
     id: 'stackedBarOutline',
     afterDatasetsDraw(chart) {
-        const { ctx } = chart;
-        
         if (chart.canvas.id !== 'cultureChart') return;
 
+        const { ctx } = chart;
         const meta0 = chart.getDatasetMeta(0);
         const metaLast = chart.getDatasetMeta(chart.data.datasets.length - 1);
+
+        if (!meta0 || !metaLast) return;
 
         meta0.data.forEach((bar, index) => {
             const cultureItem = chart._filteredCultureData ? chart._filteredCultureData[index] : null;
             if (!cultureItem) return;
 
-            // Cores da quinta
-            const farmColor = farmColors[cultureItem.Quinta] || '#cccccc';
-            const farmBorder = farmBorderColors[cultureItem.Quinta] || '#666666';
+            const farmColor = (typeof farmColors !== 'undefined' && farmColors[cultureItem.Quinta]) || '#cccccc';
+            const farmBorder = (typeof farmBorderColors !== 'undefined' && farmBorderColors[cultureItem.Quinta]) || '#666666';
 
-            // Posições da coluna
-            const topY = metaLast.data[index].y;
-            const bottomY = bar.base; 
+            const topY = metaLast.data[index] ? metaLast.data[index].y : bar.y;
+            const bottomY = bar.base;
             const width = bar.width;
-            const xPos = bar.x - width / 2;
+            const xPos = bar.x - (width / 2);
             const height = bottomY - topY;
 
             if (height <= 0) return;
 
             ctx.save();
 
-            const radius = Math.min(6, width / 4);
+            // Espessuras
+            const innerBorderWidth = 4;  // Largura da borda clara interior (ajusta como quiseres)
+            const outerBorderWidth = 1; // Espessura da linha fina exterior escura
 
-            // Função para desenhar o caminho sem a linha da base (baixo)
-            const drawTopAndSidesPath = () => {
+            const radius = Math.min(4, width / 4);
+
+            const drawPath = (x, y, w, r) => {
+                const safeR = Math.max(0, Math.min(r, w / 2));
                 ctx.beginPath();
-                // Começa no canto inferior esquerdo (sem desenhar a base)
-                ctx.moveTo(xPos, bottomY);
-                // Sobe até ao início do arredondamento superior esquerdo
-                ctx.lineTo(xPos, topY + radius);
-                // Arredondamento superior esquerdo
-                ctx.quadraticCurveTo(xPos, topY, xPos + radius, topY);
-                // Linha do topo até ao arredondamento superior direito
-                ctx.lineTo(xPos + width - radius, topY);
-                // Arredondamento superior direito
-                ctx.quadraticCurveTo(xPos + width, topY, xPos + width, topY + radius);
-                // Desce até ao canto inferior direito
-                ctx.lineTo(xPos + width, bottomY);
-                // Não fazemos ctx.closePath() para não fechar a linha na base!
+                ctx.moveTo(x, bottomY);
+                ctx.lineTo(x, y + safeR);
+                ctx.quadraticCurveTo(x, y, x + safeR, y);
+                ctx.lineTo(x + w - safeR, y);
+                ctx.quadraticCurveTo(x + w, y, x + w, y + safeR);
+                ctx.lineTo(x + w, bottomY);
             };
 
-            // 1. Borda EXTERIOR (com farmBorderColor)
-            ctx.strokeStyle = farmBorder;
-            ctx.lineWidth = 3;
-            drawTopAndSidesPath();
-            ctx.stroke();
-
-            // 2. Borda INTERIOR (com farmColor)
+            // 1. Desenhar a Borda Interior
             ctx.strokeStyle = farmColor;
-            ctx.lineWidth = 2;
-            drawTopAndSidesPath();
+            ctx.lineWidth = innerBorderWidth;
+            drawPath(xPos, topY, width, radius);
             ctx.stroke();
 
+            // 2. Desenhar a Borda Exterior (calcula o offset exacto para encostar no bordo exterior)
+            const offset = (innerBorderWidth / 2) + (outerBorderWidth / 2);
             
+            const outerX = xPos - offset;
+            const outerY = topY - offset;
+            const outerWidth = width + (offset * 2);
+            const outerRadius = radius + offset;
+
+            ctx.strokeStyle = farmBorder;
+            ctx.lineWidth = outerBorderWidth;
+            drawPath(outerX, outerY, outerWidth, outerRadius);
+            ctx.stroke();
 
             ctx.restore();
         });
@@ -50288,11 +50289,9 @@ function updateCultureChart() {
     const totals = filtered.map(d => (d['Horas Plantas'] || 0) + (d['Horas Colheita'] || 0) + (d['Horas Outros'] || 0) + (d['Horas Limp/Prep'] || 0));
     const bestTotal = totals.length > 0 ? Math.min(...totals) : 0;
 
-    // Verifica se há mais de 1 barra
     const hasMultipleBars = totals.length > 1;
 
     const variations = totals.map((total, idx) => {
-        // Se houver apenas 1 barra, ignora o cálculo e não mostra "(Melhor)"
         if (!hasMultipleBars) {
             return { text: '', isBest: false };
         }
@@ -50306,7 +50305,6 @@ function updateCultureChart() {
         }
     });
 
-    // Atualização dos Cards de Resumo de Médias de Horas/Semana
     const summaryContainer = document.getElementById('culture-summary-container');
     if (summaryContainer) {
         let html = '';
@@ -50320,7 +50318,6 @@ function updateCultureChart() {
 
     cultureChartInstance = new Chart(ctx, {
         type: 'bar',
-        plugins: [stackedBarOutlinePlugin],
         data: {
             labels: labels,
             datasets: [
@@ -50357,6 +50354,8 @@ function updateCultureChart() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            categoryPercentage: 0.8, // Largura total reservada para cada barra no gráfico
+            barPercentage: 0.8,      // Reduz a largura visível da barra (ajusta entre 0.4 e 0.7 para ser mais estreita)
             animation: { duration: 1000 },
             layout: { padding: { top: 35 } },
             plugins: {
@@ -50430,7 +50429,8 @@ function updateCultureChart() {
                 x: { stacked: true, grid: { display: false }, ticks: { font: { size: 9 } } },
                 y: { stacked: true, grid: { color: '#f0ebd9' }, beginAtZero: true, grace: '15%' }
             }
-        }
+        },
+        plugins: [stackedBarOutlinePlugin]
     });
 
     cultureChartInstance._filteredCultureData = filtered;

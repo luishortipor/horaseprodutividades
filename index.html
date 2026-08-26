@@ -49984,7 +49984,12 @@ function adjustColor(color, percent) {
                 }
             });
 
-            const textFilter = document.getElementById('culture-text-filter').value.toLowerCase();
+            // Obtém o valor do input em minúsculas
+const rawTextFilter = document.getElementById('culture-text-filter').value.toLowerCase();
+
+// Divide o texto por vírgulas, espaços, traços ou barras: [, \-/#]+
+// .filter(Boolean) remove entradas vazias caso sejam introduzidos vários separadores seguidos
+const searchTerms = rawTextFilter.split(/[, \-/#]+/).filter(Boolean);
             const showFinalizadas = document.getElementById('chk-finalizadas').checked;
             const showEmCurso = document.getElementById('chk-emcurso').checked;
 
@@ -49996,7 +50001,12 @@ function adjustColor(color, percent) {
                 if (!selectedYears.includes(year)) return false;
                 if (!activeWeeks.includes(week)) return false;
                 if (selectedCultureSize !== 'Todas' && item.Tipo !== selectedCultureSize) return false;
-                if (textFilter && !item.Cultura.toLowerCase().includes(textFilter)) return false;
+                if (searchTerms.length > 0) {
+    const cultura = item.Cultura.toLowerCase();
+    // Verifica se pelo menos um dos termos está presente no nome da cultura
+    const matchesAny = searchTerms.some(term => cultura.includes(term));
+    if (!matchesAny) return false;
+}
 
                 if (!ignoreStatusFilter) {
                     const isAcabada = (item.Fim && item.Fim.trim() !== "");

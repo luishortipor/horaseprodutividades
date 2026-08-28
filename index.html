@@ -51,7 +51,11 @@
             z-index: 999;
         }
 
-     .sidebar {
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
             width: 320px;
             background-color: var(--sidebar-bg);
             color: var(--sidebar-text);
@@ -63,9 +67,11 @@
             flex-shrink: 0;
             box-shadow: 4px 0 10px rgba(0,0,0,0.1);
             transition: transform 0.3s ease;
+            transform: translateX(-100%); /* Oculta a barra lateral por defeito em mobile */
+            z-index: 1000;
         }
 
-        .sidebar:hover,
+        /* Abre a barra apenas via classe .open em mobile ou hover */
         .sidebar.open,
         .sidebar-hover-trigger:hover + .sidebar {
             transform: translateX(0);
@@ -114,20 +120,21 @@
             visibility: visible;
         }
 
+        /* Comportamento exclusivo para desktop */
         @media (min-width: 1024px) {
             .sidebar-hover-trigger { display: none; }
             .toggle-sidebar-btn { display: none; }
             .sidebar-overlay { display: none !important; }
 
-.sidebar {
-    position: sticky;
-    top: 0px; /* Distância do topo da página onde a barra vai fixar */
-    min-height: 100vh;
-    background-color: #2d4a22;
-    transform: none !important;
-    height: fit-content; /* Em vez de auto, garante que o elemento ajusta à altura do seu conteúdo */
-    box-shadow: 4px 0 10px rgba(0,0,0,0.1);
-}
+            .sidebar {
+                position: sticky;
+                top: 0px;
+                min-height: 100vh;
+                height: fit-content;
+                transform: none !important; /* Mantém sempre visível em telas grandes */
+                box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+                z-index: 1;
+            }
         }
 
         .sidebar-header {

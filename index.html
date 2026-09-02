@@ -50770,7 +50770,7 @@ function adjustColor(color, percent) {
 
         function getCultureWeeksDuration(inicioStr, fimStr) {
             const start = parseDate(inicioStr);
-            const end = parseDate(fimStr);
+            const end = (fimStr && fimStr.trim() !== "") ? parseDate(fimStr) : new Date();
             if (!start || !end || isNaN(start) || isNaN(end)) return 1;
             const diffTime = Math.abs(end - start);
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -50911,8 +50911,10 @@ function renderCultureFarmCards() {
                 sumColheita += item['Horas Colheita'] || 0;
                 sumOutros += item['Horas Outros'] || 0;
                 sumLimpPrepSem += item['Horas Limp/Prep'] || 0;
-                
-                sumLimpPrepTotais += item['Horas Totais Limp/Prep'] || item['Horas Limp/Prep'] || 0;
+
+                const itemStartStr = item.Inicio || item.Início;
+                const weeksDuration = getCultureWeeksDuration(itemStartStr, item.Fim);
+                sumLimpPrepTotais += (item['Horas Limp/Prep'] || 0) * weeksDuration;
             });
 
             const count = farmItems.length || 1;
@@ -50920,6 +50922,7 @@ function renderCultureFarmCards() {
             const avgColheita = sumColheita / count;
             const avgOutros = sumOutros / count;
             const avgLimpPrepSem = sumLimpPrepSem / count;
+            const avgLimpPrepTotais = sumLimpPrepTotais / count;
 
             const totalSem = avgPlantas + avgColheita + avgOutros + avgLimpPrepSem;
 
@@ -50971,7 +50974,7 @@ function renderCultureFarmCards() {
                     <div class="metric-row">
                         <span class="metric-label">Limp/Prep</span>
                         <div class="metric-value-box">
-                            <div class="metric-val">${Math.round(sumLimpPrepTotais)} ${unitHtml}</div>
+                            <div class="metric-val">${Math.round(avgLimpPrepTotais)} ${unitHtml}</div>
                         </div>
                     </div>
                 </div>

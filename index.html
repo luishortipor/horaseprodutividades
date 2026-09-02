@@ -50324,7 +50324,7 @@ function adjustColor(color, percent) {
 
         ////////////////GRÁFICO DE BARRAS DA ABA "ATIVIDADES" //////////////////
 
-        function updateBarChart(data) {
+    function updateBarChart(data) {
     const ctx = document.getElementById('barChart').getContext('2d');
     if (barChartInstance) barChartInstance.destroy();
 
@@ -50384,19 +50384,28 @@ function adjustColor(color, percent) {
         });
     } else {
         let allItemsToSort = [];
-        orderedFarmsToRender.forEach(farm => {
-            const labelAbbr = farmAbbreviations[farm] || farm;
-            sortedYears.forEach(yr => {
-                let vals = data.filter(d => d.Ano === yr && d[farm] !== null && d[farm] !== undefined && d[farm] !== 0).map(d => d[farm]);
+
+        // 1. Itera PRIMEIRO pelos Anos (ordenados cronologicamente)
+        sortedYears.forEach(yr => {
+            // 2. Itera SEGUNDO pelas Quintas (na ordem definida em farmOrder)
+            orderedFarmsToRender.forEach(farm => {
+                const labelAbbr = farmAbbreviations[farm] || farm;
+                let vals = data.filter(d => d.Ano === yr && d[farm] !== null && d[farm] !== undefined && !isNaN(d[farm]) && d[farm] !== 0).map(d => d[farm]);
+                
                 if (vals.length > 0) {
-                    let avg = vals.reduce((a,b)=>a+b,0)/vals.length;
+                    let avg = vals.reduce((a, b) => a + b, 0) / vals.length;
                     allItemsToSort.push({ farm, year: yr, labelAbbr, avg });
                 }
             });
         });
 
-        allItemsToSort.sort((a, b) => lowerIsBetter ? a.avg - b.avg : b.avg - a.avg);
-        let bestVal = allItemsToSort.length > 0 ? allItemsToSort[0].avg : 0;
+        // Determina o melhor valor global para calcular as variações percentuais
+        let bestVal = 0;
+        if (allItemsToSort.length > 0) {
+            bestVal = allItemsToSort.reduce((prev, curr) => {
+                return lowerIsBetter ? (curr.avg < prev.avg ? curr : prev) : (curr.avg > prev.avg ? curr : prev);
+            }).avg;
+        }
 
         // Verifica se existem 2 ou mais barras
         const hasMultipleBars = allItemsToSort.length > 1;
@@ -50477,94 +50486,6 @@ function adjustColor(color, percent) {
         }
     });
 }
-
-        const targetActivities52w = [
-            { label: "Reb/Arg", keys: ["Reb/Arg"] },
-            { label: "Baix/Reb/Arg", keys: ["Baix/Reb/Arg"] },
-            { label: "Folhas", keys: ["Folhas"] },
-            { label: "Monda", keys: ["Monda"] },
-            { label: "Colheita tomate mini", keys: ["Colheita tomate mini solto", "Colheita tomate mini cacho"] },
-            { label: "Colheita tomate grande", keys: ["Colheita tomate grande solto", "Colheita tomate grande cacho"] }
-        ];
-
-        function getAverageForWeeks(act, farm, weeksSubset) {
-            let periodKeys = new Set(weeksSubset.map(w => w.Ano * 100 + w.Semana));
-            let dataPeriod = rawData.filter(d => periodKeys.has(d.Ano * 100 + d.Semana));
-
-            let avg = 0;
-            let weeksWithDataCount = 0;
-            let isValid = false;
-            let minRequired = (weeksSubset.length <= 5) ? 2 : 13;
-
-            if (act.keys.length === 1) {
-                let weeksMap = new Map();
-                dataPeriod.forEach(d => {
-                    if (d.Atividade === act.keys[0] && d[farm] !== null && d[farm] !== undefined && !isNaN(d[farm]) && d[farm] !== 0) {
-                        const wKey = d.Ano * 100 + d.Semana;
-                        if (!weeksMap.has(wKey)) weeksMap.set(wKey, []);
-                        weeksMap.get(wKey).push(d[farm]);
-                    }
-                });
-
-                weeksWithDataCount = weeksMap.size;
-                isValid = weeksWithDataCount >= Math.min(minRequired, weeksSubset.length);
-
-                let vals = [];
-                weeksMap.forEach(vList => {
-                    let avgWeek = vList.reduce((a, b) => a + b, 0) / vList.length;
-                    vals.push(avgWeek);
-                });
-                avg = vals.length > 0 ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
-            } else {
-                let keySolto = act.keys[0];
-                let keyCacho = act.keys[1];
-
-                let weeksSolto = new Map();
-                let weeksCacho = new Map();
-                let allWeeksMap = new Map();
-
-                dataPeriod.forEach(d => {
-                    if (d[farm] !== null && d[farm] !== undefined && !isNaN(d[farm]) && d[farm] !== 0) {
-                        const wKey = d.Ano * 100 + d.Semana;
-                        if (d.Atividade === keySolto) {
-                            if (!weeksSolto.has(wKey)) weeksSolto.set(wKey, []);
-                            weeksSolto.get(wKey).push(d[farm]);
-                        }
-                        if (d.Atividade === keyCacho) {
-                            if (!weeksCacho.has(wKey)) weeksCacho.set(wKey, []);
-                            weeksCacho.get(wKey).push(d[farm]);
-                        }
-                        if (act.keys.includes(d.Atividade)) {
-                            if (!allWeeksMap.has(wKey)) allWeeksMap.set(wKey, true);
-                        }
-                    }
-                });
-
-                weeksWithDataCount = allWeeksMap.size;
-                isValid = weeksWithDataCount >= Math.min(minRequired, weeksSubset.length);
-
-                let valsSolto = [];
-                weeksSolto.forEach(vList => {
-                    valsSolto.push(vList.reduce((a, b) => a + b, 0) / vList.length);
-                });
-                let avgSolto = valsSolto.length > 0 ? valsSolto.reduce((a, b) => a + b, 0) / valsSolto.length : 0;
-                let countSolto = weeksSolto.size;
-
-                let valsCacho = [];
-                weeksCacho.forEach(vList => {
-                    valsCacho.push(vList.reduce((a, b) => a + b, 0) / vList.length);
-                });
-                let avgCacho = valsCacho.length > 0 ? valsCacho.reduce((a, b) => a + b, 0) / valsCacho.length : 0;
-                let countCacho = weeksCacho.size;
-
-                if (countSolto + countCacho > 0) {
-                    avg = (avgSolto * countSolto + avgCacho * countCacho) / (countSolto + countCacho);
-                } else {
-                    avg = 0;
-                }
-            }
-            return { avg, isValid };
-        }
 
 
         ////////////////GRÁFICO DE BARRAS DA ABA "ATIVIDADES NAS ÚLTIMAS SEMANAS" //////////////////

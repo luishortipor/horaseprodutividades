@@ -680,7 +680,7 @@
         </div>
 
         <div class="filter-section" id="sidebar-filter-years">
-            <div class="filter-title">Ano de plantação</div>
+            <div class="filter-title" id="years-filter-title">Ano de plantação</div>
             <div class="btn-grid" id="years-grid"></div>
         </div>
 
@@ -694,7 +694,7 @@
         </div>
 
         <div class="filter-section" id="sidebar-filter-farms">
-            <div class="filter-title">Quintas</div>
+            <div class="filter-title">Quinta</div>
             <div class="btn-grid-1" id="farms-grid"></div>
         </div>
     </aside>
@@ -46701,8 +46701,8 @@
     "Portos Brancos": null,
     "Zambujeira": null,
     "Pegões": 194,
-    "Sobreiro": 260,
-    "Campelos": 236,
+    "Sobreiro": null,
+    "Campelos": null,
     "Caminhos da Cotovia": null
   },
   {
@@ -46844,8 +46844,8 @@
     "Portos Brancos": null,
     "Zambujeira": 218,
     "Pegões": 219,
-    "Sobreiro": null,
-    "Campelos": null,
+    "Sobreiro": 260,
+    "Campelos": 236,
     "Caminhos da Cotovia": null
   }
 ];
@@ -49940,6 +49940,11 @@ function switchTab(tabNum) {
         weeksFilterTitle.innerText = (tabNum === 3) ? 'Semanas de plantação' : 'Semanas';
     }
 
+    const yearsFilterTitle = document.getElementById('years-filter-title');
+if (yearsFilterTitle) {
+    yearsFilterTitle.innerText = (tabNum === 3) ? 'Ano de plantação' : 'Ano';
+}
+
     const farmsFilterSection = document.getElementById('sidebar-filter-farms');
     farmsFilterSection.classList.remove('sidebar-disabled');
 
@@ -49995,7 +50000,10 @@ function switchTab(tabNum) {
                 btn.onclick = () => selectActivity(act);
                 actContainer.appendChild(btn);
             });
-
+            const yearsFilterTitle = document.getElementById('years-filter-title');
+if (yearsFilterTitle) {
+    yearsFilterTitle.innerText = (currentTab === 3) ? 'Ano de plantação' : 'Ano';
+}
             updateDashboard();
         }
 

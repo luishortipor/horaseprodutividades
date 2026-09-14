@@ -606,26 +606,16 @@
         .hha-metrics {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 6px;
             padding-top: 2px;
         }
 
         .hha-metric {
             display: flex;
-            flex-direction: column;
-            gap: 1px;
-        }
-
-        .hha-metric + .hha-metric {
-            padding-top: 4px;
-            border-top: 1px dashed #ece5d5;
-        }
-
-        .hha-metric-top {
-            display: flex;
             justify-content: space-between;
             align-items: baseline;
             gap: 6px;
+            min-width: 0;
         }
 
         .hha-metric-label {
@@ -635,6 +625,8 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            min-width: 0;
+            flex: 1 1 auto;
         }
 
         .hha-metric-pct {
@@ -642,7 +634,7 @@
             font-weight: 600;
             color: #a39a86;
             white-space: nowrap;
-            flex-shrink: 0;
+            margin-left: 4px;
         }
 
         .hha-metric-val {
@@ -650,6 +642,8 @@
             font-weight: 700;
             color: var(--sidebar-bg);
             line-height: 1.1;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .hha-metric-unit {
@@ -54534,24 +54528,16 @@ if (yearsFilterTitle) {
                     </div>
                     <div class="hha-metrics">
                         <div class="hha-metric">
-                            <div class="hha-metric-top">
-                                <span class="hha-metric-label">Cultura</span>
-                                ${pctHtml(avgPctCultura)}
-                            </div>
-                            <div class="hha-metric-val">${fmtVal(avgCultura)}<span class="hha-metric-unit">${unit}</span></div>
+                            <span class="hha-metric-label" title="Cultura">Cultura</span>
+                            <span class="hha-metric-val">${fmtVal(avgCultura)}<span class="hha-metric-unit">${unit}</span>${pctHtml(avgPctCultura)}</span>
                         </div>
                         <div class="hha-metric">
-                            <div class="hha-metric-top">
-                                <span class="hha-metric-label">Fora da Cultura</span>
-                                ${pctHtml(avgPctFora)}
-                            </div>
-                            <div class="hha-metric-val">${fmtVal(avgFora)}<span class="hha-metric-unit">${unit}</span></div>
+                            <span class="hha-metric-label" title="Fora da Cultura">F. Cultura</span>
+                            <span class="hha-metric-val">${fmtVal(avgFora)}<span class="hha-metric-unit">${unit}</span>${pctHtml(avgPctFora)}</span>
                         </div>
                         <div class="hha-metric">
-                            <div class="hha-metric-top">
-                                <span class="hha-metric-label">Totais</span>
-                            </div>
-                            <div class="hha-metric-val">${fmtVal(avgTotal)}<span class="hha-metric-unit">${unit}</span></div>
+                            <span class="hha-metric-label" title="Totais">Totais</span>
+                            <span class="hha-metric-val">${fmtVal(avgTotal)}<span class="hha-metric-unit">${unit}</span></span>
                         </div>
                     </div>
                 `;

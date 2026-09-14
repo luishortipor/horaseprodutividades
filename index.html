@@ -602,7 +602,7 @@
             line-height: 1;
         }
 
-        /* Cards de detalhe h/ha/semana (Cultura / Fora da Cultura / Totais) */
+        /* Cards de detalhe h/ha/semana (Cultura / Fora da Cultura / Total) */
         .hha-metrics {
             display: flex;
             flex-direction: column;
@@ -852,7 +852,7 @@
                             <div class="hha-mode-btns">
                                 <button class="btn-hha-mode" data-mode="cultura" onclick="setHhaViewMode('cultura')">Cultura</button>
                                 <button class="btn-hha-mode" data-mode="fora" onclick="setHhaViewMode('fora')">Fora da Cultura</button>
-                                <button class="btn-hha-mode" data-mode="totais" onclick="setHhaViewMode('totais')">Totais</button>
+                                <button class="btn-hha-mode" data-mode="total" onclick="setHhaViewMode('total')">Total</button>
                             </div>
                             <label class="hha-bar-toggle">
                                 <input type="checkbox" id="chk-hha-bar" onchange="toggleHhaBarChart()"> Ver como barras
@@ -874,7 +874,7 @@
                             <div class="hha-mode-btns">
                                 <button class="btn-hha-mode" data-mode="cultura" onclick="setHhaViewMode('cultura')">Cultura</button>
                                 <button class="btn-hha-mode" data-mode="fora" onclick="setHhaViewMode('fora')">Fora da Cultura</button>
-                                <button class="btn-hha-mode" data-mode="totais" onclick="setHhaViewMode('totais')">Totais</button>
+                                <button class="btn-hha-mode" data-mode="total" onclick="setHhaViewMode('total')">Total</button>
                             </div>
                         </div>
                     </div>
@@ -54216,7 +54216,7 @@ const farmBorderColors = {
         let selectedCultureSize = 'Todas';
 
         // Filtro próprio do gráfico de linhas para as atividades h/ha/semana
-        let hhaViewMode = 'cultura'; // 'cultura' | 'fora' | 'totais'
+        let hhaViewMode = 'cultura'; // 'cultura' | 'fora' | 'total'
         let hhaAsBarChart = false;   // checkbox "ver como barras"
         let lineChartHhaLookup = {}; // guarda cultura/fora/total/% por quinta (e ano) e semana, para o tooltip
 
@@ -54490,7 +54490,7 @@ if (yearsFilterTitle) {
         card.style.borderTopColor = farmColor;
 
         if (isHha) {
-            // Aba "Atividades" com h/ha/semana: mostra sempre Cultura, Fora da Cultura e Totais,
+            // Aba "Atividades" com h/ha/semana: mostra sempre Cultura, Fora da Cultura e Total,
             // independentemente do modo selecionado nos botões dos gráficos.
             const bucket = lineChartHhaLookup[farm];
             const cultVals = [], foraVals = [], totalVals = [], pctCulturaVals = [], pctForaVals = [];
@@ -54536,7 +54536,7 @@ if (yearsFilterTitle) {
                             <span class="hha-metric-val">${fmtVal(avgFora)}<span class="hha-metric-unit">${unit}</span>${pctHtml(avgPctFora)}</span>
                         </div>
                         <div class="hha-metric">
-                            <span class="hha-metric-label" title="Totais">Totais</span>
+                            <span class="hha-metric-label" title="Total">Total</span>
                             <span class="hha-metric-val">${fmtVal(avgTotal)}<span class="hha-metric-unit">${unit}</span></span>
                         </div>
                     </div>
@@ -54663,7 +54663,7 @@ function adjustColor(color, percent) {
             return (c !== null || f !== null) ? (c || 0) + (f || 0) : null;
         });
 
-        const isStacked = (hhaViewMode === 'totais');
+        const isStacked = (hhaViewMode === 'total');
 
         if (!homologComparison) {
             orderedFarmsToRender.forEach(farm => {
@@ -54672,7 +54672,7 @@ function adjustColor(color, percent) {
                 recordLookup(farm, undefined, cultVals, foraVals);
 
                 if (useBar) {
-                    if (hhaViewMode === 'cultura' || hhaViewMode === 'totais') {
+                    if (hhaViewMode === 'cultura' || hhaViewMode === 'total') {
                         datasets.push({
                             label: `${farm} - Cultura`,
                             data: cultVals,
@@ -54684,7 +54684,7 @@ function adjustColor(color, percent) {
                             __seriesType: 'cultura'
                         });
                     }
-                    if (hhaViewMode === 'fora' || hhaViewMode === 'totais') {
+                    if (hhaViewMode === 'fora' || hhaViewMode === 'total') {
                         datasets.push({
                             label: `${farm} - Fora da Cultura`,
                             data: foraVals,
@@ -54726,7 +54726,7 @@ function adjustColor(color, percent) {
                     const yearColor = adjustColor(baseColor, shift);
 
                     if (useBar) {
-                        if (hhaViewMode === 'cultura' || hhaViewMode === 'totais') {
+                        if (hhaViewMode === 'cultura' || hhaViewMode === 'total') {
                             datasets.push({
                                 label: `${farm} (${yr}) - Cultura`,
                                 data: cultVals,
@@ -54738,7 +54738,7 @@ function adjustColor(color, percent) {
                                 __seriesType: 'cultura'
                             });
                         }
-                        if (hhaViewMode === 'fora' || hhaViewMode === 'totais') {
+                        if (hhaViewMode === 'fora' || hhaViewMode === 'total') {
                             datasets.push({
                                 label: `${farm} (${yr}) - Fora da Cultura`,
                                 data: foraVals,
@@ -54849,7 +54849,7 @@ function adjustColor(color, percent) {
             y: { type: 'number', easing: 'linear', duration: 0 }
         };
 
-    const isStackedMode = useBar && (hhaViewMode === 'totais');
+    const isStackedMode = useBar && (hhaViewMode === 'total');
 
     lineChartInstance = new Chart(ctx, {
         type: chartType,
@@ -54899,7 +54899,7 @@ function adjustColor(color, percent) {
             // Ajuste dos seletores de modo
             const isCulturaMode = (hhaViewMode === 'cultura');
             const isForaMode = (hhaViewMode === 'fora');
-            const isTotaisMode = (hhaViewMode === 'totais' || !hhaViewMode);
+            const isTotalMode = (hhaViewMode === 'total' || !hhaViewMode);
 
             // 1. Modo 'cultura': exibe apenas a linha de Cultura
             if (isCulturaMode) {
@@ -54919,8 +54919,8 @@ function adjustColor(color, percent) {
                 return `${key} - Fora da Cultura: ${fmtVal}${pct}`;
             }
 
-            // 3. Modo 'totais': exibe Cultura (com %), Fora (com %) nas respectivas barras
-            if (isTotaisMode) {
+            // 3. Modo 'total': exibe Cultura (com %), Fora (com %) nas respectivas barras
+            if (isTotalMode) {
                 if (seriesType === 'cultura') {
                     const val = entry ? entry.cultura : context.parsed.y;
                     const pct = (entry && entry.pctCultura !== null) ? ` (${Math.round(entry.pctCultura)}%)` : '';
@@ -54934,7 +54934,7 @@ function adjustColor(color, percent) {
                     return `${key} - Fora da Cultura: ${fmtVal}${pct}`;
                 }
 
-                // Caso esteja em gráfico de linha no modo 'totais'
+                // Caso esteja em gráfico de linha no modo 'total'
                 const val = context.parsed.y;
                 const fmtVal = (val !== null && val !== undefined) ? `${Math.round(val)} ${unit}` : 'sem dados';
                 return `${key} - Total: ${fmtVal}`;
@@ -54943,11 +54943,11 @@ function adjustColor(color, percent) {
             return context.dataset.label + ': ' + context.parsed.y;
         },
         footer: function(tooltipItems) {
-            // Em modo 'totais' e gráfico de barra empilhada, insere a linha final do Total
+            // Em modo 'total' e gráfico de barra empilhada, insere a linha final do Total
             if (!isHha || tooltipItems.length === 0) return undefined;
-            const isTotaisMode = (hhaViewMode === 'totais' || !hhaViewMode);
+            const isTotalMode = (hhaViewMode === 'total' || !hhaViewMode);
 
-            if (isTotaisMode && useBar) {
+            if (isTotalMode && useBar) {
                 const lines = [];
                 const seen = new Set();
 
@@ -54990,7 +54990,7 @@ function adjustColor(color, percent) {
 
         // Extrai, a partir do lineChartHhaLookup (preenchido pelo updateLineChart),
         // os valores semanais de uma quinta (opcionalmente de um ano) de acordo
-        // com o modo ativo (cultura / fora / totais), para calcular a média do gráfico de barras.
+        // com o modo ativo (cultura / fora / total), para calcular a média do gráfico de barras.
         function getHhaValsForBar(farm, yr) {
             const bucket = (yr !== undefined)
                 ? (lineChartHhaLookup[farm] && lineChartHhaLookup[farm][yr])

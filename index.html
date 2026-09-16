@@ -57424,8 +57424,8 @@ if (yearsFilterTitle) {
             activities.forEach(act => {
                 const btn = document.createElement('button');
                 btn.className = `btn-act ${act === selectedActivity ? 'active' : ''}`;
-                btn.innerText = act;
-                btn.onclick = () => selectActivity(act);
+btn.innerText = (act === 'h/ha/semana') ? 'h/semana' : act;
+btn.onclick = () => selectActivity(act);
                 actContainer.appendChild(btn);
             });
             const yearsFilterTitle = document.getElementById('years-filter-title');

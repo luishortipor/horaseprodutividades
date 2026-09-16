@@ -57614,9 +57614,46 @@ if (yearsFilterTitle) {
             updateBarChart(data);
         }
 
-        function renderFarmCards(data) {
+        // Função auxiliar pura que lê os dados filtrados sem depender do estado do gráfico
+function getCardValuesForFarm(activityName, farmName) {
+    // 1. Obtém os dados brutos filtrados por atividade, semanas e anos selecionados
+    const baseData = typeof getFilteredDataForActivity === 'function' 
+        ? getFilteredDataForActivity(activityName) 
+        : [];
+    
+    if (!Array.isArray(baseData) || baseData.length === 0) return [];
+
+    // 2. Filtra explicitamente pelas semanas ativas selecionadas
+    let activeWeeks = [];
+    if (typeof weekRanges !== 'undefined' && Array.isArray(weekRanges)) {
+        weekRanges.forEach(wr => {
+            if (selectedWeekRanges.includes(wr.label)) {
+                for (let w = wr.min; w <= wr.max; w++) activeWeeks.push(w);
+            }
+        });
+    }
+
+    // 3. Extrai apenas os registos válidos da quinta para essas semanas
+    const values = [];
+    baseData.forEach(row => {
+        const weekNum = Number(row.Semana || row.semana || row.Week);
+        const val = row[farmName];
+        
+        // Se a semana está selecionada e o valor é numérico válido
+        if ((activeWeeks.length === 0 || activeWeeks.includes(weekNum)) &&
+            val !== null && val !== undefined && !isNaN(val) && val !== '') {
+            values.push(Number(val));
+        }
+    });
+
+    return values;
+}
+
+function renderFarmCards(data) {
     const grid = document.getElementById('farms-cards-grid');
+    if (!grid) return;
     grid.innerHTML = '';
+    
     const isHha = isHhaActivity(selectedActivity);
     const rawUnit = getActivityUnit(selectedActivity);
     const unit = rawUnit === 'h/ha/semana' ? 'h' : rawUnit;
@@ -57625,36 +57662,31 @@ if (yearsFilterTitle) {
 
     orderedFarmsToRender.forEach(farm => {
         const farmColor = farmColors[farm] || '#e2d9cc';
-
         const card = document.createElement('div');
         card.className = 'farm-card';
         card.style.borderColor = farmColor;
         card.style.borderTopColor = farmColor;
 
         if (isHha) {
-            // Aba "Atividades" com h/ha/semana: mostra sempre Cultura, Fora da Cultura e Total,
-            // independentemente do modo selecionado nos botões dos gráficos.
-            const bucket = lineChartHhaLookup[farm];
-            const cultVals = [], foraVals = [], totalVals = [], embalVals = [], pctCulturaVals = [], pctForaVals = [];
-            if (bucket) {
-                Object.keys(bucket).forEach(wk => {
-                    const entry = bucket[wk];
-                    if (!entry) return;
-                    if (entry.cultura !== null && entry.cultura !== undefined) cultVals.push(entry.cultura);
-                    if (entry.fora !== null && entry.fora !== undefined) foraVals.push(entry.fora);
-                    if (entry.total !== null && entry.total !== undefined) totalVals.push(entry.total);
-                    if (entry.embalamento !== null && entry.embalamento !== undefined) embalVals.push(entry.embalamento);
-                    if (entry.pctCultura !== null && entry.pctCultura !== undefined) pctCulturaVals.push(entry.pctCultura);
-                    if (entry.pctFora !== null && entry.pctFora !== undefined) pctForaVals.push(entry.pctFora);
-                });
+            // Obtém os arrays de valores diretamente da base de dados filtrada
+            const cultVals = getCardValuesForFarm(HHA_CULTURA, farm);
+            const foraVals = getCardValuesForFarm(HHA_FORA, farm);
+            const embalVals = getCardValuesForFarm(HHA_EMBALAMENTO, farm);
+
+            const calcAvg = arr => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null;
+
+            const avgCultura = calcAvg(cultVals);
+            const avgFora = calcAvg(foraVals);
+            const avgEmbalamento = calcAvg(embalVals);
+
+            // Cálculo do total médio por semana
+            let avgTotal = null;
+            if (avgCultura !== null || avgFora !== null) {
+                avgTotal = (avgCultura || 0) + (avgFora || 0);
             }
-            const avgOf = arr => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null;
-            const avgCultura = avgOf(cultVals);
-            const avgFora = avgOf(foraVals);
-            const avgTotal = avgOf(totalVals);
-            const avgEmbalamento = avgOf(embalVals);
-            const avgPctCultura = avgOf(pctCulturaVals);
-            const avgPctFora = avgOf(pctForaVals);
+
+            let avgPctCultura = (avgTotal && avgTotal > 0 && avgCultura !== null) ? (avgCultura / avgTotal) * 100 : null;
+            let avgPctFora = (avgTotal && avgTotal > 0 && avgFora !== null) ? (avgFora / avgTotal) * 100 : null;
 
             if (avgCultura === null && avgFora === null && avgTotal === null && avgEmbalamento === null) {
                 card.innerHTML = `
@@ -57691,14 +57723,10 @@ if (yearsFilterTitle) {
                 `;
             }
         } else {
-            let farmRecords = [];
-            data.forEach(d => {
-                if (d[farm] !== null && d[farm] !== undefined && !isNaN(d[farm]) && d[farm] !== 0) {
-                    farmRecords.push({ val: d[farm], week: d.Semana, year: d.Ano });
-                }
-            });
+            // Modo h/semana e restante atividades
+            const farmVals = getCardValuesForFarm(selectedActivity, farm);
 
-            if (farmRecords.length === 0) {
+            if (farmVals.length === 0) {
                 card.innerHTML = `
                     <div class="farm-card-header-container">
                         <span class="farm-card-header" title="${farm}">${farm}</span>
@@ -57706,8 +57734,7 @@ if (yearsFilterTitle) {
                     <div style="font-size: 0.65rem; color: #999; padding: 4px 0;">Sem dados</div>
                 `;
             } else {
-                const avg = farmRecords.reduce((acc, r) => acc + r.val, 0) / farmRecords.length;
-
+                const avg = farmVals.reduce((acc, v) => acc + v, 0) / farmVals.length;
                 card.innerHTML = `
                     <div class="farm-card-header-container">
                         <span class="farm-card-header" title="${farm}">${farm}</span>

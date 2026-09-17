@@ -3322,39 +3322,56 @@ function updateCultureHTonChart() {
         };
     </script>
     <script>
-  const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzuI4uD88RGuHHQK0WBYKWvwuvf5cwZpVeGeUducux34Tp6JBvY0xZSw6t8klu9E6lJBw/exec';
+      const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzuI4uD88RGuHHQK0WBYKWvwuvf5cwZpVeGeUducux34Tp6JBvY0xZSw6t8klu9E6lJBw/exec';
 
-  async function registarAcesso() {
-    let userIP = 'Indisponível';
+      async function registarAcesso() {
+        let userIP = 'Indisponível';
 
-    try {
-      const ipResponse = await fetch('https://api.ipify.org?format=json');
-      if (ipResponse.ok) {
-        const ipData = await ipResponse.json();
-        userIP = ipData.ip;
+        // 1. Tenta obter o IP público do visitante com timeout de salvaguarda
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 3000); // Cancela se demorar mais de 3s
+
+          const ipResponse = await fetch('https://api.ipify.org?format=json', { signal: controller.signal });
+          if (ipResponse.ok) {
+            const ipData = await ipResponse.json();
+            userIP = ipData.ip;
+          }
+          clearTimeout(timeoutId);
+        } catch (err) {
+          console.warn('Não foi possível obter o IP (a continuar sem IP):', err);
+        }
+
+        // 2. Prepara os dados
+        const payload = new URLSearchParams();
+        payload.append('dataHora', new Date().toLocaleString('pt-PT'));
+        payload.append('userAgent', navigator.userAgent);
+        payload.append('ip', userIP);
+
+        // 3. Envia para o Google Apps Script
+        try {
+          await fetch(WEB_APP_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: payload
+          });
+          console.log('Registo de acesso enviado!');
+        } catch (err) {
+          console.error('Erro ao enviar para o Apps Script:', err);
+        }
       }
-    } catch (err) {
-      console.warn('Não foi possível obter o IP:', err);
-    }
 
-    // Prepara os dados em formato de formulário normal
-    const payload = new URLSearchParams();
-    payload.append('dataHora', new Date().toLocaleString('pt-PT'));
-    payload.append('userAgent', navigator.userAgent);
-    payload.append('ip', userIP);
-
-    // Envia sem restrições de CORS
-    fetch(WEB_APP_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: payload
-    }).catch(err => console.error('Erro ao registar acesso:', err));
-  }
-
-  window.addEventListener('DOMContentLoaded', registarAcesso);
-</script>
+      // Executa imediatamente assim que a página carrega
+      if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        registarAcesso();
+      } else {
+        window.addEventListener('DOMContentLoaded', registarAcesso);
+      }
+    </script>
+</body>
+</html>
 </body>
 </html>

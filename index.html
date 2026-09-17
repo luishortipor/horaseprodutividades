@@ -3321,5 +3321,38 @@ function updateCultureHTonChart() {
             loadExternalExcelData();
         };
     </script>
+    <script>
+      const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzuI4uD88RGuHHQK0WBYKWvwuvf5cwZpVeGeUducux34Tp6JBvY0xZSw6t8klu9E6lJBw/exec';
+
+      async function registarAcesso() {
+        let userIP = 'Indisponível';
+
+        try {
+          const ipResponse = await fetch('https://api.ipify.org?format=json');
+          if (ipResponse.ok) {
+            const ipData = await ipResponse.json();
+            userIP = ipData.ip;
+          }
+        } catch (err) {
+          console.warn('Não foi possível obter o IP:', err);
+        }
+
+        const dados = {
+          dataHora: new Date().toLocaleString('pt-PT'),
+          userAgent: navigator.userAgent,
+          ip: userIP
+        };
+
+        fetch(WEB_APP_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(dados)
+        }).catch(err => console.error('Erro ao registar acesso:', err));
+      }
+
+      // Executa assim que o DOM estiver carregado
+      window.addEventListener('DOMContentLoaded', registarAcesso);
+    </script>
 </body>
 </html>

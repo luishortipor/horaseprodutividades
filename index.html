@@ -1085,19 +1085,36 @@
         }
 
         // Normaliza uma linha da aba "Dados de Culturas" para o formato usado por cultureData
+        // Procura o valor de uma coluna por vários nomes possíveis (candidates),
+        // ignorando maiúsculas/minúsculas e espaços extra no início/fim do cabeçalho.
+        // Isto torna a leitura tolerante a pequenas diferenças de nomenclatura entre
+        // o Excel real e os nomes de coluna "esperados" no código.
+        function getRowValue(row, candidates) {
+            for (const key of Object.keys(row)) {
+                const normKey = key.trim().toLowerCase();
+                for (const cand of candidates) {
+                    if (normKey === cand.trim().toLowerCase()) return row[key];
+                }
+            }
+            return undefined;
+        }
+
         function normalizeCultureRow(row) {
+            const quinta = getRowValue(row, ['Quinta']);
+            const cultura = getRowValue(row, ['Cultura']);
+            const tipo = getRowValue(row, ['Tipo']);
             return {
-                'Quinta': row['Quinta'] !== null && row['Quinta'] !== undefined ? String(row['Quinta']).trim() : '',
-                'Cultura': row['Cultura'] !== null && row['Cultura'] !== undefined ? String(row['Cultura']).trim() : '',
-                'Inicio': excelValueToDateStr(row['Inicio'] !== undefined ? row['Inicio'] : row['Início']),
-                'Fim': excelValueToDateStr(row['Fim']),
-                'Horas Plantas': toNumberOrNull(row['Horas Plantas']),
-                'Horas Colheita': toNumberOrNull(row['Horas Colheita']),
-                'Horas Outros': toNumberOrNull(row['Horas Outros']),
-                'Horas Limp/Prep': toNumberOrNull(row['Horas Limp/Prep']),
-                'Tipo': row['Tipo'] !== null && row['Tipo'] !== undefined ? String(row['Tipo']).trim() : '',
-                'kg/m²': (row['kg/m²'] !== undefined ? row['kg/m²'] : row['kg/m2']) ?? null,
-                'h/ton': toNumberOrNull(row['h/ton'])
+                'Quinta': quinta !== null && quinta !== undefined ? String(quinta).trim() : '',
+                'Cultura': cultura !== null && cultura !== undefined ? String(cultura).trim() : '',
+                'Inicio': excelValueToDateStr(getRowValue(row, ['Inicio', 'Início'])),
+                'Fim': excelValueToDateStr(getRowValue(row, ['Fim'])),
+                'Horas Plantas': toNumberOrNull(getRowValue(row, ['Horas Plantas', 'TOTAL PLANTAS', 'Total Plantas'])),
+                'Horas Colheita': toNumberOrNull(getRowValue(row, ['Horas Colheita', 'TOTAL COLHEITA', 'Total Colheita'])),
+                'Horas Outros': toNumberOrNull(getRowValue(row, ['Horas Outros', 'TOTAL OUTROS', 'Total Outros'])),
+                'Horas Limp/Prep': toNumberOrNull(getRowValue(row, ['Horas Limp/Prep', 'TOTAL LIMP/PREP', 'Total Limp/Prep'])),
+                'Tipo': tipo !== null && tipo !== undefined ? String(tipo).trim() : '',
+                'kg/m²': getRowValue(row, ['kg/m²', 'Kg/m²', 'kg/m2', 'Kg/m2']) ?? null,
+                'h/ton': toNumberOrNull(getRowValue(row, ['h/ton', 'H/ton', 'h/Ton']))
             };
         }
 

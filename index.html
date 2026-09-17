@@ -3322,10 +3322,15 @@ function updateCultureHTonChart() {
         };
     </script>
     <script>
-      const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzdACwSzCd3ajUjaFt723mSG0-nHRLk0XQiHgdS5dp1mi_z1w7Lx2N5g5J_Ljm1RwXTSg/exec';
+      const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbz_vmH0uHtg3F87myyQfYH4_MQw7YzLpObldeFQA4M3eZtggPal_h4uRczY9faHziQrdw/exec';
 
       async function registarAcesso() {
         let userIP = 'Indisponível';
+        let geoCidade = '';
+        let geoRegiao = '';
+        let geoPais = '';
+        let geoLat = '';
+        let geoLon = '';
 
         // 1. Tenta obter o IP público do visitante com timeout de salvaguarda
         try {
@@ -3342,13 +3347,42 @@ function updateCultureHTonChart() {
           console.warn('Não foi possível obter o IP (a continuar sem IP):', err);
         }
 
-        // 2. Prepara os dados
+        // 2. Tenta obter a geolocalização aproximada a partir do IP (cidade/região/país)
+        try {
+          const controllerGeo = new AbortController();
+          const timeoutGeoId = setTimeout(() => controllerGeo.abort(), 3000);
+
+          const geoUrl = (userIP !== 'Indisponível')
+            ? `https://ipwho.is/${userIP}`
+            : `https://ipwho.is/`;
+          const geoResponse = await fetch(geoUrl, { signal: controllerGeo.signal });
+          if (geoResponse.ok) {
+            const geoData = await geoResponse.json();
+            if (geoData && geoData.success !== false) {
+              geoCidade = geoData.city || '';
+              geoRegiao = geoData.region || '';
+              geoPais = geoData.country || '';
+              geoLat = geoData.latitude || '';
+              geoLon = geoData.longitude || '';
+            }
+          }
+          clearTimeout(timeoutGeoId);
+        } catch (err) {
+          console.warn('Não foi possível obter a geolocalização (a continuar sem ela):', err);
+        }
+
+        // 3. Prepara os dados
         const payload = new URLSearchParams();
         payload.append('dataHora', new Date().toLocaleString('pt-PT'));
         payload.append('userAgent', navigator.userAgent);
         payload.append('ip', userIP);
+        payload.append('cidade', geoCidade);
+        payload.append('regiao', geoRegiao);
+        payload.append('pais', geoPais);
+        payload.append('latitude', geoLat);
+        payload.append('longitude', geoLon);
 
-        // 3. Envia para o Google Apps Script
+        // 4. Envia para o Google Apps Script
         try {
           await fetch(WEB_APP_URL, {
             method: 'POST',

@@ -1606,12 +1606,12 @@ if (yearsFilterTitle) {
             if (homologComparison) {
     document.getElementById('line-chart-title').innerText = `Comparação homóloga semanal- ${activityLabel}`;
     document.getElementById('line-chart-subtitle').innerText = 'Média de produtividade semanal por quinta e ano';
-    document.getElementById('bar-chart-title').innerText = `Comparação homóloga - ${activityLabel}`;
+    document.getElementById('bar-chart-title').innerText = `Comparação homóloga - ${activityLabel}${unitText}`;
     document.getElementById('bar-chart-subtitle').innerText = 'Média de produtividade por quinta e ano';
 } else {
     document.getElementById('line-chart-title').innerText = `Produtividade semanal - ${activityLabel}${unitText}`;
     document.getElementById('line-chart-subtitle').innerText = 'Média de produtividade semanal por quinta';
-    document.getElementById('bar-chart-title').innerText = `Produtividade média - ${activityLabel}`;
+    document.getElementById('bar-chart-title').innerText = `Produtividade média - ${activityLabel}${unitText}`;
     document.getElementById('bar-chart-subtitle').innerText = 'Média de produtividade por quinta';
 }
 
@@ -2635,7 +2635,7 @@ function adjustColor(color, percent) {
         div.className = 'chart-card';
         div.innerHTML = `
             <div class="chart-header" style="margin-bottom: 10px;">
-                <div class="chart-title" style="font-size: 0.95rem;">${act.label}</div>
+                <div class="chart-title" style="font-size: 0.95rem;">${act.label}${unit ? ` (${unit})` : ''}</div>
                 <div class="chart-subtitle" style="font-size: 0.72rem; color: var(--text-muted); margin-top: 1px;">${periodSubtitleText}</div>
             </div>
             <div class="chart-container-52w">

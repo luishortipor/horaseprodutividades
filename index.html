@@ -434,7 +434,6 @@
             flex-direction: column;
             align-items: flex-end;
             gap: 8px;
-            width: 100%;
         }
         .chart-hha-controls > div {
             display: flex;
@@ -697,6 +696,118 @@
             margin-top: 2px;
         }
 
+        /* ===== Cabeçalho dos gráficos =====
+           Título e subtítulo à esquerda, filtros à direita, sempre na mesma linha.
+           Os tamanhos de letra acompanham a largura do próprio cartão (unidades cqw),
+           por isso encolhem em ecrãs pequenos e em janelas estreitas. */
+        .chart-header-row {
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 8px;
+            container-type: inline-size;
+        }
+
+        .chart-header-text {
+            flex: 1 1 0;
+            min-width: 0;
+        }
+
+        .chart-header-controls {
+            flex: 0 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 6px;
+        }
+
+        .chart-header-row .chart-title {
+            font-size: 0.9rem;
+            font-size: clamp(0.66rem, 3.1cqw, 1.05rem);
+            line-height: 1.2;
+        }
+
+        .chart-header-row .chart-subtitle {
+            font-size: 0.7rem;
+            font-size: clamp(0.6rem, 2.5cqw, 0.8rem);
+            line-height: 1.25;
+        }
+
+        .chart-header-row .btn-hha-mode {
+            font-size: 0.65rem;
+            font-size: clamp(0.58rem, 2.6cqw, 0.72rem);
+            padding: 0.35em 0.85em;
+            border-radius: 999px;
+        }
+
+        .chart-header-row .hha-bar-toggle {
+            font-size: 0.7rem;
+            font-size: clamp(0.6rem, 2.6cqw, 0.75rem);
+            gap: 0.45em;
+        }
+
+        .chart-header-row .hha-bar-toggle input[type="checkbox"] {
+            width: 1.15em;
+            height: 1.15em;
+        }
+
+        /* Filtros "Finalizadas / Em curso" (separador Culturas) */
+        .chart-check-row {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 1.1em;
+            padding: 2px 0;
+            font-size: 0.75rem;
+            font-size: clamp(0.62rem, 2.8cqw, 0.85rem);
+            font-weight: 600;
+            color: var(--sidebar-bg);
+        }
+
+        .chart-check-row label {
+            display: flex;
+            align-items: center;
+            gap: 0.4em;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .chart-check-row input[type="checkbox"] {
+            width: 1.1em;
+            height: 1.1em;
+            cursor: pointer;
+        }
+
+        .chart-header-row .summary-pill .lbl {
+            font-size: 0.6rem;
+            font-size: clamp(0.55rem, 2.2cqw, 0.65rem);
+        }
+
+        .chart-header-row .summary-pill .val {
+            font-size: 0.85rem;
+            font-size: clamp(0.78rem, 3cqw, 0.95rem);
+        }
+
+        /* Cartões estreitos: os filtros ficam empilhados, encostados à direita,
+           para sobrar mais espaço ao título sem quebrar para outra linha. */
+        @container (max-width: 659px) {
+            .chart-header-row .hha-mode-btns {
+                flex-direction: column;
+                flex-wrap: nowrap;
+                align-items: stretch;
+                gap: 3px;
+            }
+        }
+
+        @container (max-width: 479px) {
+            .chart-check-row {
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 4px;
+            }
+        }
+
         .chart-container {
             position: relative;
             flex: 1;
@@ -846,12 +957,12 @@
 
             <div class="charts-row">
                 <div class="chart-card">
-                    <div class="chart-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
-                        <div>
+                    <div class="chart-header chart-header-row">
+                        <div class="chart-header-text">
                             <div class="chart-title" id="line-chart-title">Produtividade semanal</div>
                             <div class="chart-subtitle" id="line-chart-subtitle">Média de produtividade semanal por quinta</div>
                         </div>
-                        <div id="line-chart-hha-controls" class="chart-hha-controls" style="display: none;">
+                        <div id="line-chart-hha-controls" class="chart-hha-controls chart-header-controls" style="display: none;">
                             <div class="hha-mode-btns">
                                 <button class="btn-hha-mode" data-mode="cultura" onclick="toggleHhaFilter('cultura')">Cultura</button>
                                 <button class="btn-hha-mode" data-mode="fora" onclick="toggleHhaFilter('fora')">Fora da Cultura</button>
@@ -868,12 +979,12 @@
                 </div>
 
                 <div class="chart-card">
-                    <div class="chart-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
-                        <div>
+                    <div class="chart-header chart-header-row">
+                        <div class="chart-header-text">
                             <div class="chart-title" id="bar-chart-title">Produtividade média</div>
                             <div class="chart-subtitle" id="bar-chart-subtitle">Média de produtividade por quinta</div>
                         </div>
-                        <div id="bar-chart-hha-controls" class="chart-hha-controls" style="display: none;">
+                        <div id="bar-chart-hha-controls" class="chart-hha-controls chart-header-controls" style="display: none;">
                             <div class="hha-mode-btns">
                                 <button class="btn-hha-mode" data-mode="cultura" onclick="toggleHhaFilter('cultura')">Cultura</button>
                                 <button class="btn-hha-mode" data-mode="fora" onclick="toggleHhaFilter('fora')">Fora da Cultura</button>
@@ -912,18 +1023,18 @@
             <div class="farms-cards-grid" id="culture-farms-cards-grid"></div>
 
             <div class="chart-card">
-                <div class="chart-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
-                    <div>
+                <div class="chart-header chart-header-row">
+                    <div class="chart-header-text">
                         <div class="chart-title">Horas/semana (2pl/m²)</div>
-                        <div class="chart-subtitle" style="margin-bottom: 0;">Horas gastas em plantas, colheita, outros e limp/prep (ajustado a 2 pl/m²)</div>
+                        <div class="chart-subtitle" style="margin-bottom: 0;">Horas gastas em plantas, colheita, outros e limp/prep<br>(ajustado a 2 pl/m²)</div>
                     </div>
-                    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
-                        <div style="display: flex; gap: 15px; align-items: center; font-size: 0.85rem; font-weight: 600; color: var(--sidebar-bg); padding: 4px 0;">
-                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
-                                <input type="checkbox" id="chk-finalizadas" onchange="updateCultureChart()" style="accent-var: var(--sidebar-bg); width: 15px; height: 15px; cursor: pointer;"> Finalizadas
+                    <div class="chart-header-controls">
+                        <div class="chart-check-row">
+                            <label>
+                                <input type="checkbox" id="chk-finalizadas" onchange="updateCultureChart()"> Finalizadas
                             </label>
-                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
-                                <input type="checkbox" id="chk-emcurso" checked onchange="updateCultureChart()" style="accent-var: var(--sidebar-bg); width: 15px; height: 15px; cursor: pointer;"> Em curso
+                            <label>
+                                <input type="checkbox" id="chk-emcurso" checked onchange="updateCultureChart()"> Em curso
                             </label>
                         </div>
                         <!-- Resumo das Médias Horas/Semana (Posicionado na direita, abaixo das checkboxes) -->
@@ -938,12 +1049,12 @@
 
             <!-- GRÁFICO: h/ton -->
             <div class="chart-card">
-                <div class="chart-header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
-                    <div>
+                <div class="chart-header chart-header-row">
+                    <div class="chart-header-text">
                         <div class="chart-title">Horas/tonelada</div>
                         <div class="chart-subtitle">Horas trabalhadas por tonelada produzida</div>
                     </div>
-                    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+                    <div class="chart-header-controls">
                         <!-- Resumo das Médias Horas/Tonelada (Posicionado na direita) -->
                         <div id="culture-hton-summary-container" class="summary-pills-container" style="justify-content: flex-end;"></div>
                     </div>

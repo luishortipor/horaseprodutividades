@@ -2372,16 +2372,24 @@ function adjustColor(color, percent) {
         }
 
         function updateBarChart(data) {
-    const ctx = document.getElementById('barChart').getContext('2d');
-    if (barChartInstance) barChartInstance.destroy();
+    const canvas = document.getElementById('barChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
 
-    const lowerIsBetter = isLowerBetter(selectedActivity);
-    const isHha = isHhaActivity(selectedActivity);
+    // 1. Destruição completa da instância
+    if (barChartInstance) {
+        barChartInstance.destroy();
+        barChartInstance = null;
+    }
+
+    const lowerIsBetter = typeof isLowerBetter === 'function' ? isLowerBetter(selectedActivity) : false;
+    const isHha = typeof isHhaActivity === 'function' ? isHhaActivity(selectedActivity) : false;
+    
     const barHhaControls = document.getElementById('bar-chart-hha-controls');
     if (barHhaControls) barHhaControls.style.display = isHha ? 'flex' : 'none';
-    if (isHha) updateHhaModeButtons();
+    if (isHha && typeof updateHhaModeButtons === 'function') updateHhaModeButtons();
 
-    let unit = getActivityUnit(selectedActivity);
+    let unit = typeof getActivityUnit === 'function' ? getActivityUnit(selectedActivity) : '';
     const displayUnit = unit === 'h/ha/semana' ? 'h' : unit;
 
     const sortedYears = [...selectedYears].sort((a,b) => a - b);
@@ -2397,7 +2405,7 @@ function adjustColor(color, percent) {
         let farmStats = [];
         orderedFarmsToRender.forEach(farm => {
             let vals = [];
-            if (isHha) {
+            if (isHha && typeof getHhaValsForBar === 'function') {
                 vals = getHhaValsForBar(farm, undefined);
             } else {
                 data.forEach(d => {
@@ -2414,23 +2422,20 @@ function adjustColor(color, percent) {
 
         farmStats.sort((a, b) => lowerIsBetter ? a.avg - b.avg : b.avg - a.avg);
         let bestVal = farmStats.length > 0 ? farmStats[0].avg : 0;
-
-        // Verifica se existem 2 ou mais barras
         const hasMultipleBars = farmStats.length > 1;
 
         farmStats.forEach(s => {
-            const labelAbbr = farmAbbreviations[s.farm] || s.farm;
+            const labelAbbr = (farmAbbreviations && farmAbbreviations[s.farm]) || s.farm;
             labels.push(labelAbbr);
             chartData.push(s.avg);
-            bgColors.push(farmColors[s.farm] || '#cccccc');
-            borderColors.push(farmBorderColors[s.farm] || '#666666');
+            bgColors.push((farmColors && farmColors[s.farm]) || '#4a7c36');
+            borderColors.push((farmBorderColors && farmBorderColors[s.farm]) || '#1e3316');
 
-            // Só atribui "(Melhor)" se houver mais de uma barra
             const isBestBar = hasMultipleBars && s.avg === bestVal;
 
             if (isBestBar) {
                 variations.push({ text: '(Melhor)', isBest: true });
-            } else if (hasMultipleBars) {
+            } else if (hasMultipleBars && bestVal !== 0) {
                 const diffPct = ((s.avg - bestVal) / bestVal) * 100;
                 const sign = diffPct > 0 ? '+' : '';
                 variations.push({ text: `${sign}${diffPct.toFixed(0)}%`, isBest: false });
@@ -2440,24 +2445,22 @@ function adjustColor(color, percent) {
         });
     } else {
         let allItemsToSort = [];
+        const colorShifts = [0, 25, -25, 45, -45];
 
-        // 1. Itera PRIMEIRO pelos Anos (ordenados cronologicamente)
-        sortedYears.forEach(yr => {
-            // 2. Itera SEGUNDO pelas Quintas (na ordem definida em farmOrder)
+        sortedYears.forEach((yr, yrIdx) => {
             orderedFarmsToRender.forEach(farm => {
-                const labelAbbr = farmAbbreviations[farm] || farm;
-                let vals = isHha
+                const labelAbbr = (farmAbbreviations && farmAbbreviations[farm]) || farm;
+                let vals = (isHha && typeof getHhaValsForBar === 'function')
                     ? getHhaValsForBar(farm, yr)
                     : data.filter(d => d.Ano === yr && d[farm] !== null && d[farm] !== undefined && !isNaN(d[farm]) && d[farm] !== 0).map(d => d[farm]);
                 
-                if (vals.length > 0) {
+                if (vals && vals.length > 0) {
                     let avg = vals.reduce((a, b) => a + b, 0) / vals.length;
-                    allItemsToSort.push({ farm, year: yr, labelAbbr, avg });
+                    allItemsToSort.push({ farm, year: yr, labelAbbr, avg, yrIdx });
                 }
             });
         });
 
-        // Determina o melhor valor global para calcular as variações percentuais
         let bestVal = 0;
         if (allItemsToSort.length > 0) {
             bestVal = allItemsToSort.reduce((prev, curr) => {
@@ -2465,22 +2468,24 @@ function adjustColor(color, percent) {
             }).avg;
         }
 
-        // Verifica se existem 2 ou mais barras
         const hasMultipleBars = allItemsToSort.length > 1;
 
         allItemsToSort.forEach(item => {
-            labels.push(`${item.labelAbbr}\n(${item.year})`);
+            labels.push([item.labelAbbr, `(${item.year})`]);
             chartData.push(item.avg);
-            bgColors.push(farmColors[item.farm] || '#cccccc');
-            borderColors.push(farmBorderColors[item.farm] || '#666666');
 
-            // Só atribui "(Melhor)" se houver mais de uma barra
+            const baseBg = (farmColors && farmColors[item.farm]) || '#4a7c36';
+            const baseBorder = (farmBorderColors && farmBorderColors[item.farm]) || '#1e3316';
+
+            bgColors.push(typeof adjustColor === 'function' ? adjustColor(baseBg, colorShifts[item.yrIdx % colorShifts.length]) : baseBg);
+            borderColors.push(baseBorder);
+
             const isBestBar = hasMultipleBars && item.avg === bestVal;
 
             if (isBestBar) {
                 variations.push({ text: '(Melhor)', isBest: true });
-            } else if (hasMultipleBars) {
-                const diffPct = ((item.avg - bestVal) / bestVal) * 100;
+            } else if (hasMultipleBars && bestVal !== 0) {
+                const diffPct = ((s.avg - bestVal) / bestVal) * 100;
                 const sign = diffPct > 0 ? '+' : '';
                 variations.push({ text: `${sign}${diffPct.toFixed(0)}%`, isBest: false });
             } else {
@@ -2489,6 +2494,7 @@ function adjustColor(color, percent) {
         });
     }
 
+    // 2. Instanciação com Animação Forçada desde o Valor 0
     barChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -2505,7 +2511,26 @@ function adjustColor(color, percent) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            animation: { duration: 1000 },
+            // ANIMAÇÃO FORÇADA: Obriga as barras a crescerem a partir de y = 0
+            animation: {
+                duration: 900,
+                easing: 'easeOutQuart'
+            },
+            animations: {
+                height: {
+                    type: 'number',
+                    properties: ['height'],
+                    from: 0
+                },
+                y: {
+                    type: 'number',
+                    properties: ['y'],
+                    from: function(ctx) {
+                        return ctx.chart.scales.y.getPixelForValue(0);
+                    }
+                }
+            
+            },
             layout: { padding: { top: 35 } },
             plugins: {
                 legend: { display: false },
@@ -2538,8 +2563,15 @@ function adjustColor(color, percent) {
                 }
             },
             scales: {
-                x: { grid: { display: false }, ticks: { font: { size: 12 } } },
-                y: { grid: { color: '#f0ebd9' }, beginAtZero: true, grace: '15%' }
+                x: { 
+                    grid: { display: false }, 
+                    ticks: { font: { size: 11 } } 
+                },
+                y: { 
+                    grid: { color: '#f0ebd9' }, 
+                    beginAtZero: true, 
+                    grace: '18%' 
+                }
             }
         }
     });

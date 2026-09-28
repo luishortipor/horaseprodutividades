@@ -2485,7 +2485,7 @@ function adjustColor(color, percent) {
             if (isBestBar) {
                 variations.push({ text: '(Melhor)', isBest: true });
             } else if (hasMultipleBars && bestVal !== 0) {
-                const diffPct = ((s.avg - bestVal) / bestVal) * 100;
+                const diffPct = ((item.avg - bestVal) / bestVal) * 100; // <--- Corrigido para item.avg
                 const sign = diffPct > 0 ? '+' : '';
                 variations.push({ text: `${sign}${diffPct.toFixed(0)}%`, isBest: false });
             } else {
@@ -2494,7 +2494,6 @@ function adjustColor(color, percent) {
         });
     }
 
-    // 2. Instanciação com Animação Forçada desde o Valor 0
     barChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -2511,7 +2510,6 @@ function adjustColor(color, percent) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            // ANIMAÇÃO FORÇADA: Obriga as barras a crescerem a partir de y = 0
             animation: {
                 duration: 900,
                 easing: 'easeOutQuart'
@@ -2529,7 +2527,6 @@ function adjustColor(color, percent) {
                         return ctx.chart.scales.y.getPixelForValue(0);
                     }
                 }
-            
             },
             layout: { padding: { top: 35 } },
             plugins: {

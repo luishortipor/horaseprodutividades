@@ -2376,7 +2376,6 @@ function adjustColor(color, percent) {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
 
-    // 1. Destruição completa da instância
     if (barChartInstance) {
         barChartInstance.destroy();
         barChartInstance = null;
@@ -2445,7 +2444,7 @@ function adjustColor(color, percent) {
         });
     } else {
         let allItemsToSort = [];
-        const colorShifts = [0, 25, -25, 45, -45];
+        const colorShifts = [0, 20, -20, 40, -40, 60, -60];
 
         sortedYears.forEach((yr, yrIdx) => {
             orderedFarmsToRender.forEach(farm => {
@@ -2474,18 +2473,22 @@ function adjustColor(color, percent) {
             labels.push([item.labelAbbr, `(${item.year})`]);
             chartData.push(item.avg);
 
-            const baseBg = (farmColors && farmColors[item.farm]) || '#4a7c36';
-            const baseBorder = (farmBorderColors && farmBorderColors[item.farm]) || '#1e3316';
+            const baseColor = (farmBorderColors && farmBorderColors[item.farm]) || '#333333';
+            const shift = colorShifts[item.yrIdx % colorShifts.length];
+            const yearColor = adjustColor(baseColor, shift);
 
-            bgColors.push(typeof adjustColor === 'function' ? adjustColor(baseBg, colorShifts[item.yrIdx % colorShifts.length]) : baseBg);
-            borderColors.push(baseBorder);
+            // Cor de fundo = tom do ano
+            bgColors.push(yearColor);
+            
+            // Cor do contorno = mesmo tom do ano, mas 30% mais escuro
+            borderColors.push(adjustColor(yearColor, -30));
 
             const isBestBar = hasMultipleBars && item.avg === bestVal;
 
             if (isBestBar) {
                 variations.push({ text: '(Melhor)', isBest: true });
             } else if (hasMultipleBars && bestVal !== 0) {
-                const diffPct = ((item.avg - bestVal) / bestVal) * 100; // <--- Corrigido para item.avg
+                const diffPct = ((item.avg - bestVal) / bestVal) * 100;
                 const sign = diffPct > 0 ? '+' : '';
                 variations.push({ text: `${sign}${diffPct.toFixed(0)}%`, isBest: false });
             } else {
@@ -2503,7 +2506,7 @@ function adjustColor(color, percent) {
                 data: chartData,
                 backgroundColor: bgColors,
                 borderColor: borderColors,
-                borderWidth: 1.5,
+                borderWidth: 1.5, // Contorno bem definido de 1.5px
                 borderRadius: 6
             }]
         },

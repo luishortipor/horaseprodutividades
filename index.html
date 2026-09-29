@@ -918,7 +918,7 @@
         </div>
 
         <div class="filter-section" id="sidebar-filter-weeks">
-            <div class="filter-title" id="weeks-filter-title">Semanas</div>
+            <div class="filter-title" id="weeks-filter-title">Meses/Semanas</div>
             <div class="btn-grid-1" id="weeks-grid"></div>
         </div>
 
@@ -943,7 +943,7 @@
 
         <div class="main-tabs" style="margin-left: 43px;">
             <button class="tab-btn active" id="tab-btn-1" onclick="switchTab(1)">Atividades</button>
-            <button class="tab-btn" id="tab-btn-2" onclick="switchTab(2)">Atividades nas últimas semanas</button>
+            <button class="tab-btn" id="tab-btn-2" onclick="switchTab(2)">Principais atividades nas últimas semanas</button>
             <button class="tab-btn" id="tab-btn-3" onclick="switchTab(3)">Culturas</button>
         </div>
 
@@ -1393,12 +1393,15 @@ const farmBorderColors = {
             'Portos Brancos': 'Portos B'
         };
 
+        // Períodos de semanas (o primeiro atravessa a viragem de ano: 49-53 + 1-5)
+        const range = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
         const weekRanges = [
-            { label: '1-10', min: 1, max: 10 },
-            { label: '11-20', min: 11, max: 20 },
-            { label: '21-30', min: 21, max: 30 },
-            { label: '31-40', min: 31, max: 40 },
-            { label: '41-52', min: 41, max: 52 }
+            { label: 'Dez/Jan (Sem. 49-05)',  weeks: [...range(49, 53), ...range(1, 5)] },
+            { label: 'Fev/Mar (Sem. 06-14)',  weeks: range(6, 14) },
+            { label: 'Abr/Mai (Sem. 15-22)',  weeks: range(15, 22) },
+            { label: 'Jun/Jul (Sem. 23-31)',  weeks: range(23, 31) },
+            { label: 'Ago/Set (Sem. 32-40)',  weeks: range(32, 40) },
+            { label: 'Out/Nov (Sem. 41-48)',  weeks: range(41, 48) }
         ];
 
         const activities = Object.keys(activityUnits);
@@ -1421,7 +1424,7 @@ const farmBorderColors = {
         }
         recomputeAvailableYears();
 
-        let selectedWeekRanges = ['1-10', '11-20', '21-30', '31-40', '41-52'];
+        let selectedWeekRanges = weekRanges.map(wr => wr.label);
         let selectedActivity = HHA_ACTIVITY;
         
         const farmOrder = [
@@ -1483,7 +1486,7 @@ function switchTab(tabNum) {
 
     const weeksFilterTitle = document.getElementById('weeks-filter-title');
     if (weeksFilterTitle) {
-        weeksFilterTitle.innerText = (tabNum === 3) ? 'Semanas de plantação' : 'Semanas';
+        weeksFilterTitle.innerText = (tabNum === 3) ? 'Meses/Semanas de plantação' : 'Semanas';
     }
 
     const yearsFilterTitle = document.getElementById('years-filter-title');
@@ -1684,7 +1687,7 @@ if (yearsFilterTitle) {
             let activeWeeks = [];
             weekRanges.forEach(wr => {
                 if (selectedWeekRanges.includes(wr.label)) {
-                    for (let w = wr.min; w <= wr.max; w++) activeWeeks.push(w);
+                    wr.weeks.forEach(w => activeWeeks.push(w));
                 }
             });
 
@@ -1745,7 +1748,7 @@ function getCardValuesForFarm(activityName, farmName) {
     if (typeof weekRanges !== 'undefined' && Array.isArray(weekRanges)) {
         weekRanges.forEach(wr => {
             if (selectedWeekRanges.includes(wr.label)) {
-                for (let w = wr.min; w <= wr.max; w++) activeWeeks.push(w);
+                wr.weeks.forEach(w => activeWeeks.push(w));
             }
         });
     }
@@ -1909,7 +1912,7 @@ function adjustColor(color, percent) {
     let activeWeeks = [];
     weekRanges.forEach(wr => {
         if (selectedWeekRanges.includes(wr.label)) {
-            for (let w = wr.min; w <= wr.max; w++) activeWeeks.push(w);
+            wr.weeks.forEach(w => activeWeeks.push(w));
         }
     });
     activeWeeks.sort((a,b) => a - b);
@@ -2892,7 +2895,7 @@ function adjustColor(color, percent) {
             let activeWeeks = [];
             weekRanges.forEach(wr => {
                 if (selectedWeekRanges.includes(wr.label)) {
-                    for (let w = wr.min; w <= wr.max; w++) activeWeeks.push(w);
+                    wr.weeks.forEach(w => activeWeeks.push(w));
                 }
             });
 

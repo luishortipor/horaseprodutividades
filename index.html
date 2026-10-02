@@ -538,11 +538,11 @@
             border-top-width: 5px;
             border-top-style: solid;
             border-radius: 8px;
-            padding: 8px 6px;
+            padding: 3px 6px; /* Ajustado de 8px 6px para 3px 6px */
             box-shadow: 0 2px 4px rgba(0,0,0,0.03);
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 2px; /* Ajustado de 6px para 2px */
             min-width: 0;
         }
 
@@ -550,7 +550,7 @@
             display: flex;
             flex-direction: column;
             border-bottom: 1px solid #f0ebe1;
-            padding-bottom: 3px;
+            padding-bottom: 2px; /* Ajustado de 3px para 2px */
             min-width: 0;
             overflow: hidden;
         }
@@ -569,7 +569,8 @@
         .farm-card-section-title {
             font-size: 0.7rem;
             color: var(--text-muted);
-            margin-bottom: 2px;
+            margin-top: 2px; /* Adicionado para afastar ligeiramente da linha divisória */
+            margin-bottom: 0px; /* Ajustado de 2px para 0px */
             white-space: nowrap;
         }
 
@@ -584,7 +585,7 @@
         .farm-card-metrics {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 1px; /* Ajustado de 4px para 1px */
         }
 
         .metric-row {
@@ -597,7 +598,6 @@
             font-size: 0.7rem;
             font-weight: 600;
             color: var(--text-muted);
-            
         }
 
         .metric-value-box {
@@ -615,8 +615,8 @@
         .hha-metrics {
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            padding-top: 2px;
+            gap: 2px; /* Ajustado de 6px para 2px */
+            padding-top: 1px; /* Ajustado de 2px para 1px */
         }
 
         .hha-metric {
@@ -650,7 +650,7 @@
             font-size: 0.95rem;
             font-weight: 700;
             color: var(--sidebar-bg);
-            line-height: 1.1;
+            line-height: 1; /* Ajustado de 1.1 para 1 */
             white-space: nowrap;
             flex-shrink: 0;
         }
@@ -1857,7 +1857,6 @@ function renderFarmCards(data) {
         card.style.borderTopColor = farmColor;
 
         if (isHha) {
-            // Obtém os valores filtrados por quinta
             const cultVals = getCardValuesForFarm(HHA_CULTURA, farm);
             const foraVals = getCardValuesForFarm(HHA_FORA, farm);
             const embalVals = getCardValuesForFarm(HHA_EMBALAMENTO, farm);
@@ -1868,11 +1867,9 @@ function renderFarmCards(data) {
             const avgFora = calcAvg(foraVals);
             const avgEmbalamento = calcAvg(embalVals);
 
-            // Cultura ajustada a 2pl/m²
             const avgCulturaGrande = calcAvg(getCultura2plVals(farm, undefined, c2Items, 'Grande'));
             const avgCulturaMini = calcAvg(getCultura2plVals(farm, undefined, c2Items, 'Mini'));
 
-            // Total médio real
             let avgTotal = null;
             if (avgCultura !== null || avgFora !== null) {
                 avgTotal = (avgCultura || 0) + (avgFora || 0);
@@ -1886,7 +1883,7 @@ function renderFarmCards(data) {
                     <div class="farm-card-header-container">
                         <span class="farm-card-header" title="${farm}">${farm}</span>
                     </div>
-                    <div style="font-size: 0.65rem; color: #999; padding: 4px 0;">Sem dados</div>
+                    <div style="font-size: 0.65rem; color: #999; padding: 2px 0;">Sem dados</div>
                 `;
             } else {
                 const fmtVal = v => v === null ? '-' : Math.round(v);
@@ -1897,9 +1894,8 @@ function renderFarmCards(data) {
                         <span class="farm-card-header" title="${farm}">${farm}</span>
                     </div>
                     
-                    <!-- Subseção 1: Horas ajustadas -->
-                    <div class="farm-card-section-title" style="font-weight: 700; color: #1e3316; margin-top: 4px;">h/sem (2pl/m²):</div>
-                    <div class="hha-metrics" style="gap: 2px;">
+                    <div class="farm-card-section-title" style="font-weight: 700; color: #1e3316; margin-top: 3px;">h/sem (2pl/m²):</div>
+                    <div class="hha-metrics">
                         <div class="hha-metric">
                             <span class="hha-metric-label" title="Cultura (Grande)">Cultura (Grande)</span>
                             <span class="hha-metric-val">${fmtVal(avgCulturaGrande)}<span class="hha-metric-unit">h</span></span>
@@ -1910,11 +1906,10 @@ function renderFarmCards(data) {
                         </div>
                     </div>
 
-                    <div style="border-top: 1px solid #f0ebe1; margin: 4px 0 2px 0;"></div>
+                    <div style="border-top: 1px solid #f0ebe1; margin: 1px 0;"></div>
 
-                    <!-- Subseção 2: Horas reais -->
                     <div class="farm-card-section-title" style="font-weight: 700; color: #1e3316;">h/sem reais:</div>
-                    <div class="hha-metrics" style="gap: 3px;">
+                    <div class="hha-metrics">
                         <div class="hha-metric">
                             <span class="hha-metric-label" title="Cultura">Cultura</span>
                             <span class="hha-metric-val">${fmtVal(avgCultura)}<span class="hha-metric-unit">${unit}</span>${pctHtml(avgPctCultura)}</span>
@@ -1923,11 +1918,11 @@ function renderFarmCards(data) {
                             <span class="hha-metric-label" title="Fora da Cultura">F. Cultura</span>
                             <span class="hha-metric-val">${fmtVal(avgFora)}<span class="hha-metric-unit">${unit}</span>${pctHtml(avgPctFora)}</span>
                         </div>
-                        <div class="hha-metric" style="margin-top: 2px;">
+                        <div class="hha-metric">
                             <span class="hha-metric-label" title="Total" style="font-weight: 700;">Total</span>
                             <span class="hha-metric-val" style="font-weight: 800;">${fmtVal(avgTotal)}<span class="hha-metric-unit">${unit}</span></span>
                         </div>
-                        <div class="hha-metric" style="margin-top: 2px;">
+                        <div class="hha-metric">
                             <span class="hha-metric-label" title="Embalamento">Embalamento</span>
                             <span class="hha-metric-val">${fmtVal(avgEmbalamento)}<span class="hha-metric-unit">h</span></span>
                         </div>
@@ -1935,7 +1930,6 @@ function renderFarmCards(data) {
                 `;
             }
         } else {
-            // Restantes atividades
             const farmVals = getCardValuesForFarm(selectedActivity, farm);
 
             if (farmVals.length === 0) {
@@ -1943,7 +1937,7 @@ function renderFarmCards(data) {
                     <div class="farm-card-header-container">
                         <span class="farm-card-header" title="${farm}">${farm}</span>
                     </div>
-                    <div style="font-size: 0.65rem; color: #999; padding: 4px 0;">Sem dados</div>
+                    <div style="font-size: 0.65rem; color: #999; padding: 2px 0;">Sem dados</div>
                 `;
             } else {
                 const avg = farmVals.reduce((acc, v) => acc + v, 0) / farmVals.length;
@@ -1951,7 +1945,7 @@ function renderFarmCards(data) {
                     <div class="farm-card-header-container">
                         <span class="farm-card-header" title="${farm}">${farm}</span>
                     </div>
-                    <div class="farm-card-metrics" style="padding-top: 4px;">
+                    <div class="farm-card-metrics" style="padding-top: 2px;">
                         <div class="metric-row">
                             <span class="metric-label" title="${selectedActivity}">${selectedActivity}</span>
                             <div class="metric-value-box">

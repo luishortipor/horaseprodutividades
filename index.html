@@ -463,6 +463,12 @@
 
         .btn-hha-mode:hover { background-color: #e2dacb; }
 
+        .btn-hha-mode:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .btn-hha-mode:disabled:hover { background-color: #f0ebe1; }
+
         .btn-hha-mode.active {
             background-color: var(--sidebar-bg);
             color: #ffffff;
@@ -990,6 +996,12 @@
                                 <button class="btn-hha-mode" data-mode="fora" onclick="toggleHhaFilter('fora')">Fora da Cultura</button>
                                 <button class="btn-hha-mode" data-mode="embalamento" onclick="toggleHhaFilter('embalamento')">Embalamento</button>
                             </div>
+                            <label class="hha-bar-toggle">
+                                <input type="checkbox" id="chk-c2-grande" onchange="toggleCultura2pl('Grande', this.checked)"> Cultura (Grande 2pl/m²)
+                            </label>
+                            <label class="hha-bar-toggle">
+                                <input type="checkbox" id="chk-c2-mini" onchange="toggleCultura2pl('Mini', this.checked)"> Cultura (Mini 2pl/m²)
+                            </label>
                         </div>
                     </div>
                     <div class="chart-container">
@@ -1450,6 +1462,7 @@ const farmBorderColors = {
         let hhaSelection = { cultura: true, fora: false, embalamento: false };
         let hhaViewMode = 'cultura'; // 'cultura' | 'fora' | 'total' | 'embalamento' (derivado de hhaSelection)
         let hhaAsBarChart = false;   // checkbox "ver como barras"
+        let hhaCultura2pl = null;    // checkboxes do gráfico de barras: null | 'Grande' | 'Mini'
         let lineChartHhaLookup = {}; // guarda cultura/fora/total/% por quinta (e ano) e semana, para o tooltip
 
         let lineChartInstance = null;
@@ -1667,8 +1680,56 @@ if (yearsFilterTitle) {
         function updateHhaModeButtons() {
             document.querySelectorAll('.btn-hha-mode').forEach(b => {
                 const mode = b.dataset.mode;
-                b.classList.toggle('active', hhaSelection[mode] === true);
+                // No gráfico de barras, com "Cultura (Grande/Mini 2pl/m²)" ativo, os filtros
+                // Cultura / Fora da Cultura / Embalamento não se aplicam e ficam desativados.
+                const inBarChart = !!b.closest('#bar-chart-hha-controls');
+                const c2Here = inBarChart && !!hhaCultura2pl;
+                b.classList.toggle('active', !c2Here && hhaSelection[mode] === true);
+                b.disabled = c2Here;
             });
+            const g = document.getElementById('chk-c2-grande');
+            const m = document.getElementById('chk-c2-mini');
+            if (g) g.checked = (hhaCultura2pl === 'Grande');
+            if (m) m.checked = (hhaCultura2pl === 'Mini');
+        }
+
+        // Checkboxes do gráfico de barras: Grande e Mini são exclusivas entre si.
+        function toggleCultura2pl(tipo, checked) {
+            hhaCultura2pl = checked ? tipo : null;
+            updateHhaModeButtons();
+            updateDashboard();
+        }
+
+        // ---------- Cultura (2pl/m²): total h/sem dos cards da aba Culturas ----------
+        // Usa exatamente os mesmos filtros e a mesma soma (Plantas + Colheita + Outros + Limp/Prep)
+        // do bloco "h/sem (2pl/m²) > Total" dos cards da aba Culturas.
+        function getCultura2plItems() {
+            // O filtro de tamanho da aba Culturas é ignorado aqui: Grande e Mini são sempre separados.
+            const savedSize = selectedCultureSize;
+            selectedCultureSize = 'Todas';
+            let filtered;
+            // Com a Comparação Homóloga ativa, Finalizadas e Em curso contam sempre como ativas
+            // (os checkboxes reais da aba Culturas não são alterados).
+            try { filtered = getFilteredCultureData(homologComparison); }
+            finally { selectedCultureSize = savedSize; }
+            return filtered.map(item => {
+                const { year, week } = getCultureWeekAndYear(item.Inicio || item.Início);
+                return {
+                    farm: item.Quinta,
+                    tipo: item.Tipo,
+                    year: year,
+                    week: week,
+                    total: (item['Horas Plantas'] || 0) + (item['Horas Colheita'] || 0) +
+                           (item['Horas Outros'] || 0) + (item['Horas Limp/Prep'] || 0)
+                };
+            });
+        }
+
+        // Totais h/sem das culturas de uma quinta e de um tipo ('Grande' | 'Mini'),
+        // opcionalmente só de um ano de plantação
+        function getCultura2plVals(farm, yr, items, tipo) {
+            const src = items || getCultura2plItems();
+            return src.filter(i => i.farm === farm && i.tipo === tipo && (yr === undefined || i.year === yr)).map(i => i.total);
         }
 
         function toggleHhaBarChart() {
@@ -1713,21 +1774,28 @@ if (yearsFilterTitle) {
 
             // Quando a atividade é h/ha/semana mas o filtro ativo é "Embalamento",
             // as horas não são por hectare, por isso o título mostra "h/semana".
+            const c2Active = isHhaActivity(selectedActivity) && !!hhaCultura2pl;
             const activityLabel = (isHhaActivity(selectedActivity) && hhaViewMode === 'embalamento')
                 ? 'h/semana'
                 : selectedActivity;
             
             if (homologComparison) {
     document.getElementById('line-chart-title').innerText = `Comparação homóloga semanal- ${activityLabel}`;
-    document.getElementById('line-chart-subtitle').innerText = 'Média de produtividade semanal por quinta e ano';
+    document.getElementById('line-chart-subtitle').innerText = 'Média semanal por quinta e ano';
     document.getElementById('bar-chart-title').innerText = `Comparação homóloga - ${activityLabel}${unitText}`;
-    document.getElementById('bar-chart-subtitle').innerText = 'Média de produtividade por quinta e ano';
+    document.getElementById('bar-chart-subtitle').innerText = 'Média por quinta e ano';
 } else {
-    document.getElementById('line-chart-title').innerText = `Produtividade semanal - ${activityLabel}${unitText}`;
-    document.getElementById('line-chart-subtitle').innerText = 'Média de produtividade semanal por quinta';
-    document.getElementById('bar-chart-title').innerText = `Produtividade média - ${activityLabel}${unitText}`;
-    document.getElementById('bar-chart-subtitle').innerText = 'Média de produtividade por quinta';
+    document.getElementById('line-chart-title').innerText = `${activityLabel}${unitText}`;
+    document.getElementById('line-chart-subtitle').innerText = 'Média semanal por quinta';
+    document.getElementById('bar-chart-title').innerText = `${activityLabel}${unitText}`;
+    document.getElementById('bar-chart-subtitle').innerText = 'Média por quinta';
 }
+
+            if (c2Active) {
+                document.getElementById('bar-chart-subtitle').innerText = homologComparison
+                    ? 'Média de horas nas culturas ajustadas a 2pl/m², por quinta e ano'
+                    : 'Média de horas nas culturas ajustadas a 2pl/m², por quinta';
+            }
 
             updateLineChart(data);
             renderFarmCards(data);
@@ -1779,6 +1847,7 @@ function renderFarmCards(data) {
     const unit = rawUnit === 'h/ha/semana' ? 'h' : rawUnit;
 
     const orderedFarmsToRender = farmOrder.filter(farm => selectedFarms.includes(farm));
+    const c2Items = isHha ? getCultura2plItems() : [];
 
     orderedFarmsToRender.forEach(farm => {
         const farmColor = farmColors[farm] || '#e2d9cc';
@@ -1788,7 +1857,7 @@ function renderFarmCards(data) {
         card.style.borderTopColor = farmColor;
 
         if (isHha) {
-            // Obtém os arrays de valores diretamente da base de dados filtrada
+            // Obtém os valores filtrados por quinta
             const cultVals = getCardValuesForFarm(HHA_CULTURA, farm);
             const foraVals = getCardValuesForFarm(HHA_FORA, farm);
             const embalVals = getCardValuesForFarm(HHA_EMBALAMENTO, farm);
@@ -1799,7 +1868,11 @@ function renderFarmCards(data) {
             const avgFora = calcAvg(foraVals);
             const avgEmbalamento = calcAvg(embalVals);
 
-            // Cálculo do total médio por semana
+            // Cultura ajustada a 2pl/m²
+            const avgCulturaGrande = calcAvg(getCultura2plVals(farm, undefined, c2Items, 'Grande'));
+            const avgCulturaMini = calcAvg(getCultura2plVals(farm, undefined, c2Items, 'Mini'));
+
+            // Total médio real
             let avgTotal = null;
             if (avgCultura !== null || avgFora !== null) {
                 avgTotal = (avgCultura || 0) + (avgFora || 0);
@@ -1808,7 +1881,7 @@ function renderFarmCards(data) {
             let avgPctCultura = (avgTotal && avgTotal > 0 && avgCultura !== null) ? (avgCultura / avgTotal) * 100 : null;
             let avgPctFora = (avgTotal && avgTotal > 0 && avgFora !== null) ? (avgFora / avgTotal) * 100 : null;
 
-            if (avgCultura === null && avgFora === null && avgTotal === null && avgEmbalamento === null) {
+            if (avgCultura === null && avgFora === null && avgTotal === null && avgEmbalamento === null && avgCulturaGrande === null && avgCulturaMini === null) {
                 card.innerHTML = `
                     <div class="farm-card-header-container">
                         <span class="farm-card-header" title="${farm}">${farm}</span>
@@ -1818,11 +1891,30 @@ function renderFarmCards(data) {
             } else {
                 const fmtVal = v => v === null ? '-' : Math.round(v);
                 const pctHtml = v => v === null ? '' : `<span class="hha-metric-pct">${Math.round(v)}%</span>`;
+
                 card.innerHTML = `
                     <div class="farm-card-header-container">
                         <span class="farm-card-header" title="${farm}">${farm}</span>
                     </div>
-                    <div class="hha-metrics">
+                    
+                    <!-- Subseção 1: Horas ajustadas -->
+                    <div class="farm-card-section-title" style="font-weight: 700; color: #1e3316; margin-top: 4px;">Horas ajustadas a 2pl/m²:</div>
+                    <div class="hha-metrics" style="gap: 2px;">
+                        <div class="hha-metric">
+                            <span class="hha-metric-label" title="Cultura (Grande)">Cultura (Grande)</span>
+                            <span class="hha-metric-val">${fmtVal(avgCulturaGrande)}<span class="hha-metric-unit">h/sem</span></span>
+                        </div>
+                        <div class="hha-metric">
+                            <span class="hha-metric-label" title="Cultura (Mini)">Cultura (Mini)</span>
+                            <span class="hha-metric-val">${fmtVal(avgCulturaMini)}<span class="hha-metric-unit">h/sem</span></span>
+                        </div>
+                    </div>
+
+                    <div style="border-top: 1px solid #f0ebe1; margin: 4px 0 2px 0;"></div>
+
+                    <!-- Subseção 2: Horas reais -->
+                    <div class="farm-card-section-title" style="font-weight: 700; color: #1e3316;">Horas reais:</div>
+                    <div class="hha-metrics" style="gap: 3px;">
                         <div class="hha-metric">
                             <span class="hha-metric-label" title="Cultura">Cultura</span>
                             <span class="hha-metric-val">${fmtVal(avgCultura)}<span class="hha-metric-unit">${unit}</span>${pctHtml(avgPctCultura)}</span>
@@ -1831,19 +1923,19 @@ function renderFarmCards(data) {
                             <span class="hha-metric-label" title="Fora da Cultura">F. Cultura</span>
                             <span class="hha-metric-val">${fmtVal(avgFora)}<span class="hha-metric-unit">${unit}</span>${pctHtml(avgPctFora)}</span>
                         </div>
-                        <div class="hha-metric">
-                            <span class="hha-metric-label" title="Total">Total</span>
-                            <span class="hha-metric-val">${fmtVal(avgTotal)}<span class="hha-metric-unit">${unit}</span></span>
+                        <div class="hha-metric" style="margin-top: 2px;">
+                            <span class="hha-metric-label" title="Total" style="font-weight: 700;">Total</span>
+                            <span class="hha-metric-val" style="font-weight: 800;">${fmtVal(avgTotal)}<span class="hha-metric-unit">${unit}</span></span>
                         </div>
-                        <div class="hha-metric">
-                            <span class="hha-metric-label" title="Embalamento (h/semana)">Embalamento</span>
+                        <div class="hha-metric" style="margin-top: 2px;">
+                            <span class="hha-metric-label" title="Embalamento">Embalamento</span>
                             <span class="hha-metric-val">${fmtVal(avgEmbalamento)}<span class="hha-metric-unit">h/sem</span></span>
                         </div>
                     </div>
                 `;
             }
         } else {
-            // Modo h/semana e restante atividades
+            // Restantes atividades
             const farmVals = getCardValuesForFarm(selectedActivity, farm);
 
             if (farmVals.length === 0) {
@@ -2356,6 +2448,8 @@ function adjustColor(color, percent) {
         // os valores semanais de uma quinta (opcionalmente de um ano) de acordo
         // com o modo ativo (cultura / fora / total), para calcular a média do gráfico de barras.
         function getHhaValsForBar(farm, yr) {
+            // Cultura (Grande/Mini 2pl/m²): média sobre as culturas da quinta desse tipo, igual ao valor do card
+            if (hhaCultura2pl) return getCultura2plVals(farm, yr, undefined, hhaCultura2pl);
             const bucket = (yr !== undefined)
                 ? (lineChartHhaLookup[farm] && lineChartHhaLookup[farm][yr])
                 : lineChartHhaLookup[farm];
@@ -3034,7 +3128,7 @@ function renderCultureFarmCards() {
                 </div>
 
                 <!-- Bloco 1: h/sem (2pl/m²) -->
-                <div class="farm-card-section-title">h/sem (2pl/m²)</div>
+                <div class="farm-card-section-title" style="font-weight: 700; color: #1e3316; margin-top: 3px;">h/sem (2pl/m²)</div>
                 <div class="farm-card-metrics">
                     <div class="metric-row">
                         <span class="metric-label">Plantas</span>
@@ -3071,7 +3165,7 @@ function renderCultureFarmCards() {
                 <div style="border-top: 1px solid #f0ebe1; margin: 1px 0;"></div>
 
                 <!-- Bloco 2: Horas totais -->
-                <div class="farm-card-section-title">Horas totais (2pl/m²)</div>
+                <div class="farm-card-section-title" style="font-weight: 700; color: #1e3316;">Horas totais (2pl/m²)</div>
                 <div class="farm-card-metrics">
                     <div class="metric-row">
                         <span class="metric-label">Limp/Prep</span>
@@ -3086,7 +3180,7 @@ function renderCultureFarmCards() {
                 <!-- Bloco 3: h/ton -->
                 <div class="farm-card-metrics">
                     <div class="metric-row">
-                        <span class="metric-label">h/ton</span>
+                        <span class="metric-label" style="font-weight: 700; color: #1e3316;">h/ton</span>
                         <div class="metric-value-box">
                             <div class="metric-val">${displayHTon}</div>
                         </div>

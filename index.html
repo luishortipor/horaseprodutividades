@@ -1708,9 +1708,9 @@ if (yearsFilterTitle) {
             const savedSize = selectedCultureSize;
             selectedCultureSize = 'Todas';
             let filtered;
-            // Com a Comparação Homóloga ativa, Finalizadas e Em curso contam sempre como ativas
-            // (os checkboxes reais da aba Culturas não são alterados).
-            try { filtered = getFilteredCultureData(homologComparison); }
+            // Na aba Atividades contam sempre todas as culturas (Finalizadas e Em curso),
+            // independentemente dos checkboxes da aba Culturas (que não são alterados).
+            try { filtered = getFilteredCultureData(true); }
             finally { selectedCultureSize = savedSize; }
             return filtered.map(item => {
                 const { year, week } = getCultureWeekAndYear(item.Inicio || item.Início);

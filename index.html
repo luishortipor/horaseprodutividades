@@ -1703,7 +1703,7 @@ if (yearsFilterTitle) {
 
         // ---------- Cultura (2pl/m²): total h/sem dos cards da aba Culturas ----------
         // Usa exatamente os mesmos filtros e a mesma soma (Plantas + Colheita + Outros + Limp/Prep)
-        // do bloco "h/sem (2pl/m²) > Total" dos cards da aba Culturas.
+        // do bloco "h/ha/sem (2pl/m²) > Total" dos cards da aba Culturas.
         function getCultura2plItems() {
             // O filtro de tamanho da aba Culturas é ignorado aqui: Grande e Mini são sempre separados.
             const savedSize = selectedCultureSize;
@@ -3333,7 +3333,7 @@ function updateCultureChart() {
     if (summaryContainer) {
         let html = '';
         const avgSelecao = totals.length > 0 ? (totals.reduce((a, b) => a + b, 0) / totals.length) : null;
-        const valSelecao = avgSelecao !== null ? `${Math.round(avgSelecao)} h/sem` : 'N/A';
+        const valSelecao = avgSelecao !== null ? `${Math.round(avgSelecao)} h/ha/sem` : 'N/A';
 
         html += `<div class="summary-pill"><span class="lbl">Média</span><span class="val">${valSelecao}</span></div>`;
 
@@ -3395,7 +3395,7 @@ function updateCultureChart() {
                             let label = context.dataset.label || '';
                             if (label) label += ': ';
                             if (context.parsed.y !== null) {
-                                label += Math.round(context.parsed.y) + ' h/sem';
+                                label += Math.round(context.parsed.y) + ' h/ha/sem';
                             }
                             return label;
                         },
@@ -3420,7 +3420,7 @@ function updateCultureChart() {
                                             : "Sem dados";
 
                             return [
-                                `Total: ${Math.round(total)} h/sem`,
+                                `Total: ${Math.round(total)} h/ha/sem`,
                                 `Início: ${startDateStr}`,
                                 `Fim: ${dataFim}`,
                                 `Nº Semanas: ${semanas}`,
@@ -3553,7 +3553,7 @@ function updateCultureHTonChart() {
                             const totalH = (d['Horas Plantas'] || 0) + (d['Horas Colheita'] || 0) + (d['Horas Outros'] || 0) + (d['Horas Limp/Prep'] || 0);
 
                             return [
-                                `Total: ${Math.round(totalH)} h/sem (2pl/m²)`,
+                                `Total: ${Math.round(totalH)} h/ha/sem (2pl/m²)`,
                                 `Início: ${startDateStr}`,
                                 `Fim: ${dataFim}`,
                                 `Nº Semanas: ${semanas}`,

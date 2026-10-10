@@ -1044,10 +1044,10 @@
                     <div class="chart-header-controls">
                         <div class="chart-check-row">
                             <label>
-                                <input type="checkbox" id="chk-finalizadas" onchange="updateCultureChart()"> Finalizadas
+                                <input type="checkbox" id="chk-finalizadas" onchange="syncCultureStatusChecks(this)"> Finalizadas
                             </label>
                             <label>
-                                <input type="checkbox" id="chk-emcurso" checked onchange="updateCultureChart()"> Em curso
+                                <input type="checkbox" id="chk-emcurso" checked onchange="syncCultureStatusChecks(this)"> Em curso
                             </label>
                         </div>
                         <!-- Resumo das Médias Horas/Semana (Posicionado na direita, abaixo das checkboxes) -->
@@ -1068,6 +1068,14 @@
                         <div class="chart-subtitle">Horas trabalhadas por tonelada produzida</div>
                     </div>
                     <div class="chart-header-controls">
+                        <div class="chart-check-row">
+                            <label>
+                                <input type="checkbox" id="chk-finalizadas-2" onchange="syncCultureStatusChecks(this)"> Finalizadas
+                            </label>
+                            <label>
+                                <input type="checkbox" id="chk-emcurso-2" checked onchange="syncCultureStatusChecks(this)"> Em curso
+                            </label>
+                        </div>
                         <!-- Resumo das Médias Horas/Tonelada (Posicionado na direita) -->
                         <div id="culture-hton-summary-container" class="summary-pills-container" style="justify-content: flex-end;"></div>
                     </div>
@@ -3057,6 +3065,27 @@ const searchTerms = rawTextFilter.split(/[, \-/#]+/).filter(Boolean);
             });
         }
 
+        // Mantém as checkboxes Finalizadas / Em curso dos dois gráficos da aba Culturas sincronizadas
+        function syncCultureStatusChecks(source) {
+            const pairs = [['chk-finalizadas', 'chk-finalizadas-2'], ['chk-emcurso', 'chk-emcurso-2']];
+            pairs.forEach(([a, b]) => {
+                if (source.id === a || source.id === b) {
+                    const elA = document.getElementById(a);
+                    const elB = document.getElementById(b);
+                    if (elA) elA.checked = source.checked;
+                    if (elB) elB.checked = source.checked;
+                }
+            });
+            updateCultureChart();
+        }
+
+        // kg/m² com 2 casas decimais (vírgula decimal); se não for numérico, devolve o texto original
+        function formatKgM2(val) {
+            if (val === null || val === undefined || val.toString().trim() === '') return 'Sem dados';
+            const n = Number(val.toString().trim().replace(',', '.'));
+            return isNaN(n) ? val : n.toFixed(2).replace('.', ',');
+        }
+
         function getOverallCultureAvg(size, metric) {
             const chkFin = document.getElementById('chk-finalizadas');
             const chkCur = document.getElementById('chk-emcurso');
@@ -3110,7 +3139,7 @@ function renderCultureFarmCards() {
 
         // Cálculo de H/TON
         let sumHTon = 0, countHTon = 0;
-        farmItemsAllStatus.forEach(item => {
+        farmItems.forEach(item => {
             if (item['h/ton'] !== null && item['h/ton'] !== undefined && !isNaN(item['h/ton'])) {
                 sumHTon += Number(item['h/ton']);
                 countHTon++;
@@ -3408,7 +3437,7 @@ function updateCultureChart() {
                             const semanas = hasFim ? Math.round(getCultureWeeksDuration(startDateStr, d.Fim)) : "Em curso";
                             const dataFim = hasFim ? d.Fim : "Em curso";
                             
-                            const kgVal = (d["kg/m²"] && d["kg/m²"].toString().trim() !== "") ? d["kg/m²"] : "Sem dados";
+                            const kgVal = formatKgM2(d["kg/m²"]);
 
                             let total = 0;
                             tooltipItems.forEach(item => {
@@ -3468,7 +3497,7 @@ function updateCultureHTonChart() {
     const ctx = document.getElementById('cultureHTonChart').getContext('2d');
     if (cultureHTonChartInstance) cultureHTonChartInstance.destroy();
 
-    let filtered = getFilteredCultureData(true).filter(d => d['h/ton'] !== null && d['h/ton'] !== undefined && !isNaN(d['h/ton']));
+    let filtered = getFilteredCultureData(false).filter(d => d['h/ton'] !== null && d['h/ton'] !== undefined && !isNaN(d['h/ton']));
 
     filtered.sort((a, b) => Number(a['h/ton']) - Number(b['h/ton']));
 
@@ -3548,7 +3577,7 @@ function updateCultureHTonChart() {
                             const hasFim = (d.Fim && d.Fim.trim() !== "");
                             const semanas = hasFim ? Math.round(getCultureWeeksDuration(startDateStr, d.Fim)) : "Em curso";
                             const dataFim = hasFim ? d.Fim : "Em curso";
-                            const kgVal = (d["kg/m²"] && d["kg/m²"].toString().trim() !== "") ? d["kg/m²"] : "Sem dados";
+                            const kgVal = formatKgM2(d["kg/m²"]);
 
                             const totalH = (d['Horas Plantas'] || 0) + (d['Horas Colheita'] || 0) + (d['Horas Outros'] || 0) + (d['Horas Limp/Prep'] || 0);
 

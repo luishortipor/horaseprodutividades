@@ -1031,6 +1031,14 @@
                     <button class="btn-act" onclick="selectCultureSize('Grande', this)">Grande</button>
                     <button class="btn-act" onclick="selectCultureSize('Mini', this)">Mini</button>
                 </div>
+                <div class="chart-check-row">
+                    <label>
+                        <input type="checkbox" id="chk-finalizadas" onchange="syncCultureStatusChecks(this)"> Finalizadas
+                    </label>
+                    <label>
+                        <input type="checkbox" id="chk-emcurso" checked onchange="syncCultureStatusChecks(this)"> Em curso
+                    </label>
+                </div>
             </div>
 
             <div class="farms-cards-grid" id="culture-farms-cards-grid"></div>
@@ -1042,15 +1050,7 @@
                         <div class="chart-subtitle" style="margin-bottom: 0;">Horas gastas em plantas, colheita, outros e limp/prep<br>(ajustado a 2 pl/m²)</div>
                     </div>
                     <div class="chart-header-controls">
-                        <div class="chart-check-row">
-                            <label>
-                                <input type="checkbox" id="chk-finalizadas" onchange="syncCultureStatusChecks(this)"> Finalizadas
-                            </label>
-                            <label>
-                                <input type="checkbox" id="chk-emcurso" checked onchange="syncCultureStatusChecks(this)"> Em curso
-                            </label>
-                        </div>
-                        <!-- Resumo das Médias Horas/Semana (Posicionado na direita, abaixo das checkboxes) -->
+                        <!-- Resumo das Médias Horas/Semana (Posicionado na direita) -->
                         <div id="culture-summary-container" class="summary-pills-container" style="justify-content: flex-end;"></div>
                     </div>
                 </div>
@@ -1068,14 +1068,6 @@
                         <div class="chart-subtitle">Horas trabalhadas por tonelada produzida</div>
                     </div>
                     <div class="chart-header-controls">
-                        <div class="chart-check-row">
-                            <label>
-                                <input type="checkbox" id="chk-finalizadas-2" onchange="syncCultureStatusChecks(this)"> Finalizadas
-                            </label>
-                            <label>
-                                <input type="checkbox" id="chk-emcurso-2" checked onchange="syncCultureStatusChecks(this)"> Em curso
-                            </label>
-                        </div>
                         <!-- Resumo das Médias Horas/Tonelada (Posicionado na direita) -->
                         <div id="culture-hton-summary-container" class="summary-pills-container" style="justify-content: flex-end;"></div>
                     </div>
@@ -3065,17 +3057,8 @@ const searchTerms = rawTextFilter.split(/[, \-/#]+/).filter(Boolean);
             });
         }
 
-        // Mantém as checkboxes Finalizadas / Em curso dos dois gráficos da aba Culturas sincronizadas
+        // Checkboxes Finalizadas / Em curso da aba Culturas (filtram cards e gráficos)
         function syncCultureStatusChecks(source) {
-            const pairs = [['chk-finalizadas', 'chk-finalizadas-2'], ['chk-emcurso', 'chk-emcurso-2']];
-            pairs.forEach(([a, b]) => {
-                if (source.id === a || source.id === b) {
-                    const elA = document.getElementById(a);
-                    const elB = document.getElementById(b);
-                    if (elA) elA.checked = source.checked;
-                    if (elB) elB.checked = source.checked;
-                }
-            });
             updateCultureChart();
         }
 

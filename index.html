@@ -1432,8 +1432,9 @@ const farmBorderColors = {
             }
             availableYears.sort((a, b) => a - b);
 
-            let anosRecentes = availableYears.filter(yr => yr >= 2023);
-            selectedYears = anosRecentes.length > 0 ? anosRecentes : [...availableYears];
+            // Predefinição: apenas os 2 anos mais recentes que existem nos dados
+            const anosComDados = availableYears.filter(yr => rawData.some(item => item.Ano === yr));
+            selectedYears = (anosComDados.length > 0 ? anosComDados : availableYears).slice(-2);
         }
         recomputeAvailableYears();
 

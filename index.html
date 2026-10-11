@@ -3400,6 +3400,7 @@ function updateCultureChart() {
                     labels: { usePointStyle: true, boxWidth: 8, font: { size: 11 } }
                 },
                 tooltip: {
+                    footerFont: { weight: 'normal' },
                     mode: 'index',
                     intersect: false,
                     callbacks: {
@@ -3549,6 +3550,7 @@ function updateCultureHTonChart() {
             plugins: {
                 legend: { display: false },
                 tooltip: {
+                    footerFont: { weight: 'normal' },
                     callbacks: {
                         label: function(context) {
                             return `h/ton: ${Math.round(context.parsed.y)} h/ton`;

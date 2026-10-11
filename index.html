@@ -2271,26 +2271,158 @@ function adjustColor(color, percent) {
     const delayPerPoint = totalDuration / pointsCount;
     const chartType = useBar ? 'bar' : 'line';
 
-    // Barras: mesma animação dos restantes gráficos de barras (crescem desde a base)
+    // Barras: mesma animação dos restantes gráficos de barras (crescem desde a base).
+    // Nas barras sobrepostas (Cultura + Fora da Cultura), a inferior cresce primeiro desde o zero
+    // e depois a superior continua a partir do topo da inferior.
     const barAnimation = {
         duration: 1000,
-        easing: 'easeOutQuart'
+        easing: 'easeOutQuart',
+        onComplete: function(anim) { anim.chart.$barIntroDone = true; }
     };
+
+    // Devolve { role: 'solo' | 'base' | 'top', baseIdx } para o dataset de uma barra
+    const getStackRole = (chart, datasetIndex) => {
+        const dsets = chart.data.datasets;
+        const ds = dsets[datasetIndex];
+        if (!ds || !ds.stack) return { role: 'solo' };
+        const sameStack = dsets
+            .map((d, i) => ({ d, i }))
+            .filter(o => o.d.stack === ds.stack && chart.isDatasetVisible(o.i));
+        if (sameStack.length < 2) return { role: 'solo' };
+        const pos = sameStack.findIndex(o => o.i === datasetIndex);
+        if (pos <= 0) return { role: 'base' };
+        return { role: 'top', baseIdxs: sameStack.slice(0, pos).map(o => o.i) };
+    };
+
+    const barDuration = ctx => {
+        if (ctx.chart.$barIntroDone) return 1000;
+        return getStackRole(ctx.chart, ctx.datasetIndex).role === 'solo' ? 1000 : 500;
+    };
+    const barDelay = ctx => {
+        if (ctx.chart.$barIntroDone) return 0;
+        return getStackRole(ctx.chart, ctx.datasetIndex).role === 'top' ? 500 : 0;
+    };
+
+    // Pixel onde a barra começa a crescer: o zero do eixo, ou o topo da(s) barra(s) inferior(es) da pilha
+    const barStartPixel = function(ctx) {
+        const chart = ctx.chart;
+        const yScale = chart.scales.y;
+        let startValue = 0;
+        if (!chart.$barIntroDone) {
+            const info = getStackRole(chart, ctx.datasetIndex);
+            if (info.role === 'top') {
+                startValue = info.baseIdxs.reduce((acc, bi) => {
+                    const v = chart.data.datasets[bi].data[ctx.dataIndex];
+                    return acc + ((v !== null && v !== undefined && !isNaN(v)) ? v : 0);
+                }, 0);
+            }
+        }
+        const base = Math.min(Math.max(startValue, yScale.min), yScale.max);
+        return yScale.getPixelForValue(base);
+    };
+
+    // "base" também tem de ser animada (por defeito anima sem atraso e desde o zero),
+    // senão a barra superior parece começar ao mesmo tempo que a inferior.
     const barAnimations = {
         height: {
             type: 'number',
             properties: ['height'],
-            from: 0
+            from: 0,
+            duration: barDuration,
+            delay: barDelay
         },
         y: {
             type: 'number',
             properties: ['y'],
-            from: function(ctx) {
-                const yScale = ctx.chart.scales.y;
-                const base = Math.min(Math.max(0, yScale.min), yScale.max);
-                return yScale.getPixelForValue(base);
-            }
+            duration: barDuration,
+            delay: barDelay,
+            from: barStartPixel
+        },
+        base: {
+            type: 'number',
+            properties: ['base'],
+            duration: barDuration,
+            delay: barDelay,
+            from: barStartPixel
         }
+    };
+
+    // Barras sobrepostas (pilhas com 2+ séries): a animação é feita à mão, em sequência
+    // (inferior primeiro, superior depois), porque o Chart.js anima todas ao mesmo tempo.
+    const useManualIntro = useBar && datasets.some(ds => ds.stack && datasets.filter(o => o.stack === ds.stack).length >= 2);
+
+    const runStackedIntro = function(chart) {
+        const dsets = chart.data.datasets;
+        const orig = dsets.map(ds => ds.data.slice());
+        // Pilhas: índices dos datasets de cada pilha, de baixo para cima
+        const stacks = {};
+        dsets.forEach((ds, i) => {
+            if (ds.stack) (stacks[ds.stack] = stacks[ds.stack] || []).push(i);
+        });
+
+        // Fixa o eixo Y com os valores finais, para não "saltar" durante a animação
+        const yScale = chart.scales.y;
+        const yOpts = chart.options.scales.y;
+        yOpts.min = yScale.min;
+        yOpts.max = yScale.max;
+
+        const easeOutQuart = t => 1 - Math.pow(1 - t, 4);
+        const total = 1000; // 1000 ms no total, repartidos pelas barras da pilha
+        const t0 = performance.now();
+
+        // Crescimento contínuo: a altura total da pilha cresce com uma única curva de suavização;
+        // a barra inferior enche primeiro e, sem pausa, a superior continua a partir do topo dela.
+        const setFrame = function(elapsed) {
+            const t = Math.min(elapsed / total, 1);
+            const p = easeOutQuart(t);
+            const num = v => (v === null || v === undefined || isNaN(v)) ? 0 : v;
+
+            dsets.forEach((ds, i) => {
+                if (!ds.stack) ds.data = orig[i].map(v => (v === null || v === undefined || isNaN(v)) ? v : v * p);
+            });
+
+            Object.keys(stacks).forEach(key => {
+                const idxs = stacks[key];
+                const count = orig[idxs[0]].length;
+                const out = idxs.map(() => new Array(count));
+                for (let d = 0; d < count; d++) {
+                    let totalVal = 0;
+                    idxs.forEach(i => { totalVal += num(orig[i][d]); });
+                    let remaining = totalVal * p;
+                    idxs.forEach((i, k) => {
+                        const v = orig[i][d];
+                        if (v === null || v === undefined || isNaN(v)) { out[k][d] = v; return; }
+                        const shown = Math.min(Math.max(remaining, 0), v);
+                        out[k][d] = shown;
+                        remaining -= v;
+                    });
+                }
+                idxs.forEach((i, k) => { dsets[i].data = out[k]; });
+            });
+
+            chart.update('none');
+        };
+
+        const finish = function() {
+            dsets.forEach((ds, i) => { ds.data = orig[i]; });
+            yOpts.min = undefined;
+            yOpts.max = undefined;
+            chart.options.animation = barAnimation;
+            chart.options.animations = barAnimations;
+            chart.$barIntroDone = true;
+            chart.update('none');
+        };
+
+        const step = function(now) {
+            if (!chart.ctx) return; // gráfico já foi destruído (novo render)
+            const elapsed = now - t0;
+            if (elapsed >= total) { finish(); return; }
+            setFrame(elapsed);
+            requestAnimationFrame(step);
+        };
+
+        setFrame(0); // 1.º frame (tudo a zero) antes do primeiro desenho no ecrã
+        requestAnimationFrame(step);
     };
 
     const animationConfig = useBar
@@ -2330,8 +2462,8 @@ function adjustColor(color, percent) {
                     radius: 0
                 }
             },
-            animation: animationConfig,
-            animations: useBar ? barAnimations : undefined,
+            animation: useManualIntro ? false : animationConfig,
+            animations: (useBar && !useManualIntro) ? barAnimations : undefined,
             interaction: { mode: 'index', intersect: false },
             plugins: {
                 datalabels: { display: false },
@@ -2459,6 +2591,8 @@ function adjustColor(color, percent) {
                 }
         }
     });
+
+    if (useManualIntro) runStackedIntro(lineChartInstance);
 }
 
         ////////////////GRÁFICO DE BARRAS DA ABA "ATIVIDADES" //////////////////

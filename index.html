@@ -2271,8 +2271,30 @@ function adjustColor(color, percent) {
     const delayPerPoint = totalDuration / pointsCount;
     const chartType = useBar ? 'bar' : 'line';
 
+    // Barras: mesma animação dos restantes gráficos de barras (crescem desde a base)
+    const barAnimation = {
+        duration: 1000,
+        easing: 'easeOutQuart'
+    };
+    const barAnimations = {
+        height: {
+            type: 'number',
+            properties: ['height'],
+            from: 0
+        },
+        y: {
+            type: 'number',
+            properties: ['y'],
+            from: function(ctx) {
+                const yScale = ctx.chart.scales.y;
+                const base = Math.min(Math.max(0, yScale.min), yScale.max);
+                return yScale.getPixelForValue(base);
+            }
+        }
+    };
+
     const animationConfig = useBar
-        ? { duration: 1000 }
+        ? barAnimation
         : {
             x: {
                 type: 'number',
@@ -2309,6 +2331,7 @@ function adjustColor(color, percent) {
                 }
             },
             animation: animationConfig,
+            animations: useBar ? barAnimations : undefined,
             interaction: { mode: 'index', intersect: false },
             plugins: {
                 datalabels: { display: false },

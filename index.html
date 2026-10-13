@@ -197,9 +197,9 @@
             background-color: var(--btn-inactive-bg);
             color: #7a9c6d;
             border: 1px solid var(--btn-inactive-border);
-            padding: 8px 10px;
-            border-radius: 8px;
-            font-size: 0.82rem;
+            padding: 7px 8px;
+            border-radius: 6px;
+            font-size: 0.78rem;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -208,8 +208,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            opacity: 0.75;
+            position: relative;
+            gap: 6px;
+            opacity: 0.8;
         }
 
         .btn-filter:hover { filter: brightness(1.2); }
@@ -219,7 +220,7 @@
             color: #ffffff;
             font-weight: 700;
             border: 1px solid var(--btn-active-border);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
             opacity: 1;
         }
 
@@ -3090,12 +3091,12 @@ function adjustColor(color, percent) {
                 });
                 avg = vals.length > 0 ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
             } else {
+                // Atividades compostas (ex: Colheita mini / grande: Solto + Cacho)
                 let keySolto = act.keys[0];
                 let keyCacho = act.keys[1];
 
                 let weeksSolto = new Map();
                 let weeksCacho = new Map();
-                let allWeeksMap = new Map();
 
                 dataPeriod.forEach(d => {
                     if (d[farm] !== null && d[farm] !== undefined && !isNaN(d[farm]) && d[farm] !== 0) {
@@ -3108,34 +3109,18 @@ function adjustColor(color, percent) {
                             if (!weeksCacho.has(wKey)) weeksCacho.set(wKey, []);
                             weeksCacho.get(wKey).push(d[farm]);
                         }
-                        if (act.keys.includes(d.Atividade)) {
-                            if (!allWeeksMap.has(wKey)) allWeeksMap.set(wKey, true);
-                        }
                     }
                 });
 
-                weeksWithDataCount = allWeeksMap.size;
+                weeksWithDataCount = weeksSolto.size;
                 isValid = weeksWithDataCount >= Math.min(minRequired, weeksSubset.length);
 
-                let valsSolto = [];
+                let vals = [];
                 weeksSolto.forEach(vList => {
-                    valsSolto.push(vList.reduce((a, b) => a + b, 0) / vList.length);
+                    let avgWeek = vList.reduce((a, b) => a + b, 0) / vList.length;
+                    vals.push(avgWeek);
                 });
-                let avgSolto = valsSolto.length > 0 ? valsSolto.reduce((a, b) => a + b, 0) / valsSolto.length : 0;
-                let countSolto = weeksSolto.size;
-
-                let valsCacho = [];
-                weeksCacho.forEach(vList => {
-                    valsCacho.push(vList.reduce((a, b) => a + b, 0) / vList.length);
-                });
-                let avgCacho = valsCacho.length > 0 ? valsCacho.reduce((a, b) => a + b, 0) / valsCacho.length : 0;
-                let countCacho = weeksCacho.size;
-
-                if (countSolto + countCacho > 0) {
-                    avg = (avgSolto * countSolto + avgCacho * countCacho) / (countSolto + countCacho);
-                } else {
-                    avg = 0;
-                }
+                avg = vals.length > 0 ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
             }
             return { avg, isValid };
         }
@@ -3164,12 +3149,15 @@ function adjustColor(color, percent) {
     });
     let sortedWeeks = Array.from(allWeeksSet.values()).sort((a, b) => (a.Ano * 100 + a.Semana) - (b.Ano * 100 + b.Semana));
 
-    let slicedWeeks52, slicedWeeks208, slicedWeeks;
+    let slicedWeeks52, slicedWeeksPrev2y;
     const isVarMode = (periodType === 'var_52_208');
 
     if (isVarMode) {
+        // 1. As últimas 52 semanas móveis reais disponíveis nos dados
         slicedWeeks52 = sortedWeeks.slice(-52);
-        slicedWeeks208 = sortedWeeks.slice(-208);
+        
+        // 2. As 104 semanas (2 anos) imediatamente anteriores a essas 52 semanas
+        slicedWeeksPrev2y = sortedWeeks.slice(-156, -52);
     } else {
         if (periodType === 5) {
             slicedWeeks = sortedWeeks.slice(-5);
@@ -3191,10 +3179,10 @@ function adjustColor(color, percent) {
 
             if (isVarMode) {
                 let res52 = getAverageForWeeks(act, farm, slicedWeeks52);
-                let res208 = getAverageForWeeks(act, farm, slicedWeeks208);
-                isValid = res52.isValid && res208.isValid && res208.avg !== 0;
+                let resPrev2y = getAverageForWeeks(act, farm, slicedWeeksPrev2y);
+                isValid = res52.isValid && resPrev2y.isValid && resPrev2y.avg !== 0;
                 if (isValid) {
-                    avg = ((res52.avg - res208.avg) / res208.avg) * 100;
+                    avg = ((res52.avg - resPrev2y.avg) / resPrev2y.avg) * 100;
                 }
             } else {
                 let res = getAverageForWeeks(act, farm, slicedWeeks);
@@ -3253,7 +3241,7 @@ function adjustColor(color, percent) {
         } else if (periodType === 52) {
             periodSubtitleText = 'Últimas 52 semanas';
         } else if (isVarMode) {
-            periodSubtitleText = 'Último ano vs 4 anos';
+            periodSubtitleText = 'Último ano vs 2 anos anteriores';
         }
 
         const div = document.createElement('div');
